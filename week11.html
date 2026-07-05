@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week WK11: Online Content and Media - DBEC2653</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Macaron Palette */
+            --pastel-pink: #FFD1DC;
+            --pastel-mint: #B0EACD;
+            --pastel-blue: #AEC6CF;
+            --pastel-lavender: #C3B1E1;
+            --pastel-yellow: #FDFD96;
+            
+            --ink: #111111;
+            --ink-muted: #333333;
+            
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            --radius-lg: 32px;
+            --radius-md: 16px;
+            
+            --spring: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender), var(--pastel-blue), var(--pastel-mint));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Auras */
+        body::before {
+            content: ''; position: fixed; top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, var(--pastel-yellow) 0%, transparent 70%);
+            filter: blur(80px); opacity: 0.6; z-index: -1;
+            animation: floatAura 20s ease-in-out infinite alternate;
+        }
+        body::after {
+            content: ''; position: fixed; bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, var(--pastel-pink) 0%, transparent 70%);
+            filter: blur(100px); opacity: 0.5; z-index: -1;
+            animation: floatAura 25s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatAura {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: var(--ink); }
+        
+        .header { text-align: center; padding: 40px 20px 20px; position: relative; }
+        .header h1 { font-size: 2.3rem; margin-top: 20px; font-weight: 800; color: var(--ink); }
+        .nav-link { color: var(--ink-muted); text-decoration: none; font-weight: 700; display: inline-block; transition: all 0.4s var(--spring); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--glass-bg); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--glass-border); }
+        .nav-link:hover { color: var(--ink); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: rgba(255,255,255,0.7); }
+        
+        .lang-btn {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .container { max-width: 900px; margin: 20px auto 40px; padding: 0 20px; position: relative; z-index: 1; }
+        
+        .card { 
+            background: var(--glass-bg); 
+            border-radius: var(--radius-lg); 
+            padding: 40px; 
+            box-shadow: var(--glass-shadow); 
+            margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            transition: all 0.5s var(--spring);
+        }
+        .card h2 { border-bottom: 2px solid rgba(255,255,255,0.5); padding-bottom: 15px; margin-top: 0; font-size: 1.8rem;}
+        
+        .step { background: rgba(255,255,255,0.3); padding: 20px; margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .step h3 { margin-top: 0; font-size: 1.3rem; }
+        
+        .btn { 
+            background: linear-gradient(135deg, var(--pastel-lavender), var(--pastel-pink));
+            color: var(--ink); 
+            padding: 12px 28px; 
+            border: 2px solid rgba(255,255,255,0.8); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.4s var(--spring);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(195, 177, 225, 0.4); background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender)); }
+        
+        /* Quiz */
+        .quiz-q { margin-bottom: 25px; background: rgba(255,255,255,0.2); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .quiz-label { display: block; padding: 10px 16px; cursor: pointer; transition: all 0.4s var(--spring); border-radius: 12px; border: 1px solid transparent; font-weight: 600; font-size: 1.1rem;}
+        .quiz-label:hover { background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); transform: translateX(5px);}
+        .explanation { display: none; margin-top: 10px; padding: 10px 16px; background: rgba(255,255,255,0.6); border-radius: 8px; font-weight: 600; border-left: 4px solid var(--pastel-blue); }
+        
+        /* Coding */
+        .code-editor { background: rgba(0,0,0,0.85); color: #F8F9FA; padding: 20px; border-radius: var(--radius-md); font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-top: 10px; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); white-space: pre-wrap; }
+        .correct-ans { color: #0f5132; font-weight: 700; margin-top: 15px; display: inline-block; padding: 10px 16px; background: rgba(176, 234, 205, 0.6); border-radius: 12px; border: 1px solid var(--pastel-mint);}
+        
+        /* Table Styles (Bilingual High Contrast) */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(255,255,255,0.2); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--glass-border); }
+        .data-table th, .data-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--glass-border); font-size: 1.1rem; }
+        .data-table th { background: rgba(255,255,255,0.6); font-weight: 800; font-family: 'Orbitron', sans-serif; }
+        .data-table tr:last-child td { border-bottom: none; }
+        
+        /* SVG Tweaks for Macaron Glassmorphism & High Contrast */
+        svg { background: transparent !important; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05)); margin: 10px auto; display: block; max-width: 100%; }
+        svg text { font-family: 'Arial', sans-serif !important; font-weight: bold !important; fill: #000000 !important; }
+        svg [fill="url(#blueGrad)"], svg [fill="url(#purpleGrad)"], svg [fill="url(#mintGrad)"], svg [fill="url(#pinkGrad)"], svg [fill="url(#yellowGrad)"] { fill-opacity: 0.8 !important; stroke: #000000 !important; stroke-width: 2px !important; }
+        svg [fill="#FFF"], svg [fill="#ffffff"], svg [fill="none"] { stroke: #000000 !important; }
+        
+        /* Vocabulary Matching Game Styles */
+        .match-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .match-col { width: 48%; display: flex; flex-direction: column; gap: 10px; }
+        .match-btn {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s var(--spring);
+            user-select: none;
+            text-align: left;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+        .match-btn:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(3px);
+        }
+        .match-btn.selected {
+            background: var(--pastel-yellow) !important;
+            border: 2px solid var(--ink);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .match-btn.matched {
+            background: var(--pastel-mint) !important;
+            border: 1px solid var(--pastel-mint);
+            opacity: 0.6;
+            cursor: default;
+            pointer-events: none;
+            transform: none !important;
+        }
+        .match-btn.error {
+            background: var(--pastel-pink) !important;
+            border: 1px solid var(--pastel-pink);
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Collapsible Q&A Review style */
+        .qa-block { margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); background: rgba(255,255,255,0.25); overflow: hidden; }
+        .qa-header { padding: 18px 24px; font-weight: 700; cursor: pointer; background: rgba(255,255,255,0.4); display: flex; justify-content: space-between; align-items: center; font-size: 1.15rem; }
+        .qa-body { padding: 20px 24px; display: none; border-top: 1px solid var(--glass-border); background: rgba(255,255,255,0.5); font-size: 1.1rem; line-height: 1.7; }
+        .qa-icon { transition: transform 0.3s; font-weight: bold; }
+        .qa-block.open .qa-body { display: block; }
+        .qa-block.open .qa-icon { transform: rotate(90deg); }
+
+        /* Translation CSS Rules */
+        .lang-cn { display: none !important; }
+        body.cn-active .lang-en { display: none !important; }
+        body.cn-active .lang-cn { display: block !important; }
+        
+        span.lang-cn { display: none !important; }
+        body.cn-active span.lang-en { display: none !important; }
+        body.cn-active span.lang-cn { display: inline !important; }
+
+        @media (max-width: 768px) {
+            .lang-btn {
+                position: static;
+                margin-top: 15px;
+            }
+            .match-col { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="nav-link">
+            <span class="lang-en">← Back to Hub</span>
+            <span class="lang-cn">← 返回主页</span>
+        </a>
+        <h1>
+            <span class="lang-en">Week 11: Online Content and Media</span>
+            <span class="lang-cn">第 11 周：在线内容与媒体</span>
+        </h1>
+        <button class="btn lang-btn" onclick="toggleLanguage()">🌐 EN / 中文</button>
+    </div>
+
+    <div class="container">
+        <!-- Objectives Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-lavender);">
+            <h2>
+                <span class="lang-en">Learning Objectives</span>
+                <span class="lang-cn">学习目标</span>
+            </h2>
+            <div class="lang-en">
+                <ul>
+                    <li>Apply online content and media concepts to e-commerce (CLO3).</li><li>Describe the online publishing business models and media convergence.</li><li>Compare different online entertainment models and subscription systems.</li>
+                </ul>
+            </div>
+            <div class="lang-cn">
+                <ul>
+                    <li>将在线内容和媒体概念应用于电子商务 (CLO3)。</li><li>描述在线出版商业模式和媒体融合。</li><li>对比不同的在线娱乐模式和订阅系统。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sample Company / Case Study Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Bustiness Case Context</span>
+                <span class="lang-cn">商业案例情境</span>
+            </h2>
+            <div class="lang-en">
+                <p><strong>Kompas Publisher:</strong> A premium online publishing platform offering digital newspapers. The platform employs a metered paywall system, allowing users to view 3 articles for free before demanding subscription credentials. Digital Rights Management (DRM) checks prevent the illegal distribution of copyrighted materials.</p>
+            </div>
+            <div class="lang-cn">
+                <p><strong>Kompas 出版社：</strong>一个提供数字报纸的高端在线出版平台。该平台采用计量付费墙（Metered paywall）系统，在要求订阅凭证前允许用户免费阅读 3 篇文章。数字版权管理 (DRM) 检查可防止盗版受版权保护材料的非法分发。</p>
+            </div>
+        </div>
+
+        <!-- Comparative Table Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Key Comparison: Digital Content Paywalls vs. Subscription Models</span>
+                <span class="lang-cn">关键对比：数字内容付费墙与订阅模式</span>
+            </h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th><span class="lang-en">Content Strategy</span><span class="lang-cn">内容策略</span></th><th><span class="lang-en">Billing Trigger</span><span class="lang-cn">计费触发点</span></th><th><span class="lang-en">Access Level</span><span class="lang-cn">访问级别</span></th><th><span class="lang-en">Example</span><span class="lang-cn">示例</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="lang-en">Metered Paywall</span><span class="lang-cn">计量付费墙</span></td><td><span class="lang-en">After crossing a specific quota of free articles (e.g. 3/month).</span><span class="lang-cn">超过特定的免费文章配额后（如 3 篇/月）。</span></td><td><span class="lang-en">Conditional access (free quota + paid threshold).</span><span class="lang-cn">有条件的访问（免费配额 + 付费门槛）。</span></td><td><span class="lang-en">New York Times, Kompas Publisher</span><span class="lang-cn">纽约时报、Kompas 出版社</span></td></tr><tr><td><span class="lang-en">Hard Paywall</span><span class="lang-cn">硬付费墙</span></td><td><span class="lang-en">Immediate block; no content is viewable without a subscription.</span><span class="lang-cn">立即拦截；没有订阅无法查看任何内容。</span></td><td><span class="lang-en">Strict paid-only access.</span><span class="lang-cn">严格的仅限付费访问。</span></td><td><span class="lang-en">Wall Street Journal, Financial Times</span><span class="lang-cn">华尔街日报、金融时报</span></td></tr><tr><td><span class="lang-en">All-You-Can-Eat Sub</span><span class="lang-cn">自助式订阅</span></td><td><span class="lang-en">Periodic flat rate (monthly/annually).</span><span class="lang-cn">定期统一定价（按月/按年）。</span></td><td><span class="lang-en">Unlimited access to the entire media catalog.</span><span class="lang-cn">无限访问整个媒体目录。</span></td><td><span class="lang-en">Netflix, Spotify</span><span class="lang-cn">Netflix, Spotify</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Concept Visualization Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Concept Visualization</span>
+                <span class="lang-cn">概念可视化</span>
+            </h2>
+            <div style="background: rgba(255,255,255,0.5); border-radius: var(--radius-md); padding: 20px; border: 1px solid var(--glass-border);">
+                
+        <svg height="240" viewBox="0 0 600 240" width="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="blueGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stop-color="#AEC6CF"></stop>
+                    <stop offset="100%" stop-color="#C3B1E1"></stop>
+                </linearGradient>
+            </defs>
+            <!-- User -->
+            <circle cx="60" cy="120" fill="url(#blueGrad)" r="30" stroke="#111" stroke-width="1.5"></circle>
+            <text fill="#111" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="60" y="123">User Reader</text>
+            
+            <path d="M 90 120 L 220 120" fill="none" id="readPath" stroke="#111" stroke-width="2"></path>
+            <text fill="#111" font-family="Arial" font-size="9" x="110" y="105">1. Reads 3 Articles</text>
+            
+            <!-- Paywall Gate -->
+            <rect fill="url(#blueGrad)" stroke="#111" stroke-width="1.5" height="60" rx="10" width="120" x="220" y="90"></rect>
+            <text fill="#111" font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="280" y="120">Paywall Gate</text>
+            <text fill="#D81B60" font-family="Arial" font-size="9" font-weight="bold" text-anchor="middle" x="280" y="138">[Counter = 3]</text>
+            
+            <path d="M 340 120 L 460 120" fill="none" id="blockPath" stroke="#D81B60" stroke-width="2" stroke-dasharray="5,5"></path>
+            <text fill="#D81B60" font-family="Arial" font-size="9" x="350" y="105">2. Block & Ask Sub</text>
+            
+            <!-- Subscription -->
+            <rect fill="url(#blueGrad)" stroke="#111" stroke-width="1.5" height="50" rx="5" width="110" x="460" y="95"></rect>
+            <text fill="#111" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="515" y="125">Subscription Portal</text>
+        </svg>
+        
+            </div>
+        </div>
+
+        <!-- Practical Exercise Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-mint);">
+            <h2>
+                <span class="lang-en">Practical Exercise: Copywriting with the AIDA Template</span>
+                <span class="lang-cn">实践练习：使用 AIDA 模板进行文案创作</span>
+            </h2>
+            <div class="lang-en">
+                <p><b>Steps to complete:</b></p>
+                <ol>
+                    <li>Understand the AIDA sequence: Attention, Interest, Desire, Action.</li><li>Write a product sales copywriting block for a digital subscription.</li><li>Identify the conversion trigger element (e.g. Call-to-action button 'Subscribe Now').</li>
+                </ol>
+            </div>
+            <div class="lang-cn">
+                <p><b>操作步骤：</b></p>
+                <ol>
+                    <li>理解 AIDA 顺序：引起注意 (Attention)、激发兴趣 (Interest)、创造欲望 (Desire)、促成行动 (Action)。</li><li>为数字订阅产品撰写一段产品销售文案块。</li><li>识别转化触发元素（例如：呼吁行动按钮“立即订阅”）。</li>
+                </ol>
+            </div>
+            <button class="btn" onclick="showCodeAns('practical')">
+                <span class="lang-en">Show AIDA Copywriting Block</span>
+                <span class="lang-cn">显示 AIDA 文案块</span>
+            </button>
+            <div class="code-editor" id="code-ans-practical" style="display:none;">Attention: 'Stop missing out on daily tech trends!'\nInterest: 'Unlock exclusive business insights and case studies curated by industry experts.'\nDesire: 'Get 50% off your first month and join a community of 50,000 global tech leaders.'\nAction: Click [Subscribe Now - 50% Off] to unlock instant access.</div>
+        </div>
+
+        <!-- Vocabulary Matching Game -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Vocabulary Connection Game</span>
+                <span class="lang-cn">词汇连线互动游戏</span>
+            </h2>
+            <p>
+                <span class="lang-en">Match the term on the left with its definition on the right. (Click a term, then click its matching definition).</span>
+                <span class="lang-cn">将左侧的术语与右侧的定义进行配对。（点击术语，然后点击匹配的定义）。</span>
+            </p>
+            <div class="match-grid">
+                <!-- Terms Column -->
+                <div class="match-col">
+                    <div class="match-btn match-term" data-key="term_0"><span class="lang-en">Metered Paywall</span><span class="lang-cn">计量付费墙</span></div><div class="match-btn match-term" data-key="term_3"><span class="lang-en">Media Convergence</span><span class="lang-cn">媒体融合</span></div><div class="match-btn match-term" data-key="term_2"><span class="lang-en">Hard Paywall</span><span class="lang-cn">硬付费墙</span></div><div class="match-btn match-term" data-key="term_1"><span class="lang-en">DRM</span><span class="lang-cn">数字版权管理</span></div><div class="match-btn match-term" data-key="term_4"><span class="lang-en">AIDA Template</span><span class="lang-cn">AIDA 模板</span></div>
+                </div>
+                <!-- Definitions Column -->
+                <div class="match-col">
+                    <div class="match-btn match-def" data-key="term_2"><span class="lang-en">A system blocking all website content until a subscription fee is paid</span><span class="lang-cn">在支付订阅费之前屏蔽所有网站内容的系统</span></div><div class="match-btn match-def" data-key="term_3"><span class="lang-en">The merging of print, audio, and video content onto a single digital infrastructure</span><span class="lang-cn">印刷、音频和视频内容整合到单一数字基础设施中的过程</span></div><div class="match-btn match-def" data-key="term_4"><span class="lang-en">Attention, Interest, Desire, Action - a structured copywriting framework</span><span class="lang-cn">引起注意、激发兴趣、创造欲望、促成行动 - 结构化广告文案框架</span></div><div class="match-btn match-def" data-key="term_1"><span class="lang-en">Technical solutions designed to control access and copy protection of digital media</span><span class="lang-cn">旨在控制数字媒体的访问权限和防复制保护的技术解决方案</span></div><div class="match-btn match-def" data-key="term_0"><span class="lang-en">Allowing users to read a set number of free articles before requiring a subscription</span><span class="lang-cn">在要求付费订阅之前，允许用户免费阅读固定数量文章的机制</span></div>
+                </div>
+            </div>
+            <div id="match-message" style="margin-top: 20px; font-weight: bold; text-align: center; min-height: 28px;"></div>
+        </div>
+
+        <!-- MCQ Practice Quiz -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Knowledge Check Practice</span>
+                <span class="lang-cn">知识自测练习</span>
+            </h2>
+            <form id="quiz-form">
+                
+            <div class="quiz-q">
+                <p><b>1. 
+                    <span class="lang-en">Which paywall system allows users to view a limited number of articles before locking content?</span>
+                    <span class="lang-cn">哪种付费墙系统允许用户在锁定内容前查看有限数量的文章？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="0"> A. 
+                    <span class="lang-en">Hard Paywall</span>
+                    <span class="lang-cn">硬付费墙</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="1"> B. 
+                    <span class="lang-en">Metered Paywall</span>
+                    <span class="lang-cn">计量付费墙</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="2"> C. 
+                    <span class="lang-en">All-You-Can-Eat subscription</span>
+                    <span class="lang-cn">自助式订阅</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="3"> D. 
+                    <span class="lang-en">Affiliate gateway</span>
+                    <span class="lang-cn">联属网关</span>
+                </label>
+                <div class="explanation" id="exp-0">
+                    <span class="lang-en">Explanation: Metered paywalls allow a specific free quota of articles (e.g., 3-5 articles) before demanding subscription credentials.</span>
+                    <span class="lang-cn">解析：计量付费墙在要求订阅凭证前允许特定数量的免费文章配额（如 3-5 篇）。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>2. 
+                    <span class="lang-en">Digital Rights Management (DRM) is primarily used to __________________.</span>
+                    <span class="lang-cn">数字版权管理（DRM）主要用于 __________________。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="0"> A. 
+                    <span class="lang-en">Speed up the database queries</span>
+                    <span class="lang-cn">加快数据库查询</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="1"> B. 
+                    <span class="lang-en">Control access and prevent illegal copying of digital media content</span>
+                    <span class="lang-cn">控制访问并防止数字媒体内容的非法复制</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="2"> C. 
+                    <span class="lang-en">Link CSS classes to HTML tags</span>
+                    <span class="lang-cn">将 CSS 类链接到 HTML 标签</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="3"> D. 
+                    <span class="lang-en">Calculate ad conversion costs</span>
+                    <span class="lang-cn">计算广告转化成本</span>
+                </label>
+                <div class="explanation" id="exp-1">
+                    <span class="lang-en">Explanation: DRM consists of software and cryptographic solutions designed to protect digital media assets from piracy.</span>
+                    <span class="lang-cn">解析：DRM 由旨在保护数字媒体资产免受盗版的软件和加密解决方案组成。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>3. 
+                    <span class="lang-en">Which convergence dimension refers to print, audio, and video content merging into a single digital platform?</span>
+                    <span class="lang-cn">哪种融合维度是指印刷、音频和视频内容融合到单个数字平台中？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="0"> A. 
+                    <span class="lang-en">Industry convergence</span>
+                    <span class="lang-cn">行业融合</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="1"> B. 
+                    <span class="lang-en">Content convergence</span>
+                    <span class="lang-cn">内容融合</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="2"> C. 
+                    <span class="lang-en">Technology convergence</span>
+                    <span class="lang-cn">技术融合</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="3"> D. 
+                    <span class="lang-en">Symmetric convergence</span>
+                    <span class="lang-cn">对称融合</span>
+                </label>
+                <div class="explanation" id="exp-2">
+                    <span class="lang-en">Explanation: Content convergence refers to the integration of various media formats (text, audio, video) into a single digital content stream.</span>
+                    <span class="lang-cn">解析：内容融合是指将各种媒体格式（文本、音频、视频）整合到单个数字内容流中。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>4. 
+                    <span class="lang-en">A hard paywall __________________.</span>
+                    <span class="lang-cn">硬付费墙 __________________。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="0"> A. 
+                    <span class="lang-en">Allows unlimited free reading</span>
+                    <span class="lang-cn">允许无限免费阅读</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="1"> B. 
+                    <span class="lang-en">Blocks all content access until a user subscribes</span>
+                    <span class="lang-cn">在用户订阅前阻止所有内容访问</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="2"> C. 
+                    <span class="lang-en">Only filters incoming network packets</span>
+                    <span class="lang-cn">仅过滤传入的网络数据包</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="3"> D. 
+                    <span class="lang-en">Saves CSS style layouts</span>
+                    <span class="lang-cn">保存 CSS 样式布局</span>
+                </label>
+                <div class="explanation" id="exp-3">
+                    <span class="lang-en">Explanation: A hard paywall requires immediate subscription; no article content is accessible to non-paying users.</span>
+                    <span class="lang-cn">解析：硬付费墙要求立即订阅；非付费用户无法访问任何文章内容。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>5. 
+                    <span class="lang-en">In the AIDA copywriting framework, what does the first 'A' stand for?</span>
+                    <span class="lang-cn">在 AIDA 文案框架中，第一个“A”代表什么？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="0"> A. 
+                    <span class="lang-en">Action</span>
+                    <span class="lang-cn">行动</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="1"> B. 
+                    <span class="lang-en">Acquisition</span>
+                    <span class="lang-cn">获取</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="2"> C. 
+                    <span class="lang-en">Attention</span>
+                    <span class="lang-cn">注意 (Attention)</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="3"> D. 
+                    <span class="lang-en">Affiliate</span>
+                    <span class="lang-cn">联属</span>
+                </label>
+                <div class="explanation" id="exp-4">
+                    <span class="lang-en">Explanation: AIDA stands for Attention, Interest, Desire, Action. The first stage is grabbing the reader's attention.</span>
+                    <span class="lang-cn">解析：AIDA 代表注意、兴趣、欲望、行动。第一阶段是吸引读者的注意力。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>6. 
+                    <span class="lang-en">The Spotify business model is best described as an example of:</span>
+                    <span class="lang-cn">Spotify 的商业模式最适合被描述为以下哪项的示例：</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="0"> A. 
+                    <span class="lang-en">Metered paywall</span>
+                    <span class="lang-cn">计量付费墙</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="1"> B. 
+                    <span class="lang-en">All-you-can-eat subscription model</span>
+                    <span class="lang-cn">自助式订阅模式</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="2"> C. 
+                    <span class="lang-en">Transaction fee model</span>
+                    <span class="lang-cn">交易费用模式</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="3"> D. 
+                    <span class="lang-en">Symmetric key system</span>
+                    <span class="lang-cn">对称密钥系统</span>
+                </label>
+                <div class="explanation" id="exp-5">
+                    <span class="lang-en">Explanation: Spotify provides unlimited access to its entire music streaming catalog for a flat monthly subscription fee.</span>
+                    <span class="lang-cn">解析：Spotify 允许以定期的月度订阅费无限访问其整个音乐流媒体目录。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>7. 
+                    <span class="lang-en">Digital media convergence allows content to be delivered across __________________.</span>
+                    <span class="lang-cn">数字媒体融合允许将内容分发到 __________________。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="0"> A. 
+                    <span class="lang-en">Wired phone lines only</span>
+                    <span class="lang-cn">仅限有线电话线</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="1"> B. 
+                    <span class="lang-en">Any internet-enabled digital device (smartphones, PCs, smart TVs)</span>
+                    <span class="lang-cn">任何启用互联网的数字设备（智能手机、电脑、智能电视）</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="2"> C. 
+                    <span class="lang-en">Analog radios exclusively</span>
+                    <span class="lang-cn">排他性的模拟收音机</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="3"> D. 
+                    <span class="lang-en">SQL databases only</span>
+                    <span class="lang-cn">仅限 SQL 数据库</span>
+                </label>
+                <div class="explanation" id="exp-6">
+                    <span class="lang-en">Explanation: Media convergence merges content formats so they can be parsed by any computing client device.</span>
+                    <span class="lang-cn">解析：媒体融合合并了内容格式，以便可以通过任何计算客户端设备对其进行解析。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>8. 
+                    <span class="lang-en">What is a metered paywall's main benefit compared to a hard paywall?</span>
+                    <span class="lang-cn">与硬付费墙相比，计量付费墙的主要好处是什么？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="0"> A. 
+                    <span class="lang-en">It completely avoids server costs</span>
+                    <span class="lang-cn">它完全避免了服务器成本</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="1"> B. 
+                    <span class="lang-en">It allows search engine crawlers to index articles, driving organic traffic</span>
+                    <span class="lang-cn">它允许搜索引擎爬虫索引文章，从而带来自然流量</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="2"> C. 
+                    <span class="lang-en">It does not require databases</span>
+                    <span class="lang-cn">它不需要数据库</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="3"> D. 
+                    <span class="lang-en">It uses symmetric encryption keys</span>
+                    <span class="lang-cn">它使用对称加密密钥</span>
+                </label>
+                <div class="explanation" id="exp-7">
+                    <span class="lang-en">Explanation: Metered paywalls allow search crawlers to index content and let users sample articles, building audience trust.</span>
+                    <span class="lang-cn">解析：计量付费墙允许搜索爬虫对内容进行索引，并让用户对文章进行采样，从而建立受众信任。</span>
+                </div>
+            </div>
+            </form>
+            <button class="btn" type="button" onclick="checkQuiz()">
+                <span class="lang-en">Submit & Grade Answers</span>
+                <span class="lang-cn">提交并评定答案</span>
+            </button>
+            <div id="quiz-result" style="margin-top: 20px; font-weight: bold; min-height: 30px;"></div>
+        </div>
+
+        <!-- Review Q&A Section (Hidden QP answers) -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Revision Review Q&A</span>
+                <span class="lang-cn">课程复习问答</span>
+            </h2>
+            
+            <div class="qa-block" id="qa-WK11-0">
+                <div class="qa-header" onclick="toggleQA('WK11-0')">
+                    <span>
+                        <span class="lang-en">Review Exercise 1</span>
+                        <span class="lang-cn">复习练习题 1</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Explain the concept of media convergence. Identify the three main dimensions of convergence.</span>
+                        <span class="lang-cn">解释媒体融合（Media Convergence）的概念。指出媒体融合的三个主要维度。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en"><strong>1. Concept (概念):</strong> Media convergence refers to the merging of previously distinct media technologies and content formats (text, audio, video) into a single digital infrastructure and client device.<br><strong>2. Three Dimensions (三个维度):</strong> <br>- <em>Technology Convergence:</em> Standardizing hardware and communication channels to run digital media.<br>- <em>Content Convergence:</em> Transforming analog print, sound, and video into digital streams that can be shared and co-created.<br>- <em>Industry Convergence:</em> Merging of media publishing firms with telecommunications and computing companies (e.g. Disney buying streaming services).</span>
+                        <span class="lang-cn"><strong>1. 概念：</strong>媒体融合是指将以前不同的媒体技术和内容格式（文本、音频、视频）合并到单一的数字基础设施和客户端设备中。<br><strong>2. 三个维度：</strong><br>- <em>技术融合：</em>标准化硬件和通信渠道以运行数字媒体。<br>- <em>内容融合：</em>将模拟的印刷、声音和视频转化为可以共享和共同创作的数字流。<br>- <em>行业融合：</em>媒体出版公司与电信和计算机公司的合并（如迪士尼购买流媒体服务）。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            document.body.classList.toggle('cn-active');
+        }
+
+        function showCodeAns(id) {
+            const el = document.getElementById('code-ans-' + id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleQA(id) {
+            const el = document.getElementById('qa-' + id);
+            el.classList.toggle('open');
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            const total = 8;
+            const answers = [1, 1, 1, 1, 2, 1, 1, 1];
+            
+            // Highlight options
+            for (let qIdx = 0; qIdx < total; qIdx++) {
+                const checkedOpt = document.querySelector(`input[name="q${qIdx}"]:checked`);
+                const expEl = document.getElementById(`exp-${qIdx}`);
+                if (expEl) {
+                    expEl.style.display = 'block';
+                }
+                
+                if (checkedOpt) {
+                    const val = parseInt(checkedOpt.value);
+                    if (val === answers[qIdx]) {
+                        score++;
+                    }
+                }
+            }
+            
+            const resEl = document.getElementById('quiz-result');
+            resEl.innerHTML = `<span class='correct-ans'>
+                <span class="lang-en">You scored: ${score} / ${total}</span>
+                <span class="lang-cn">您的得分：${score} / ${total}</span>
+            </span>`;
+        }
+
+        // Matching Game JS Logic
+        let selectedTerm = null;
+        let selectedDef = null;
+
+        document.querySelectorAll('.match-term').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-term').forEach(t => t.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedTerm = item;
+                checkMatch();
+            });
+        });
+
+        document.querySelectorAll('.match-def').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-def').forEach(d => d.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedDef = item;
+                checkMatch();
+            });
+        });
+
+        function checkMatch() {
+            if (selectedTerm && selectedDef) {
+                const termKey = selectedTerm.getAttribute('data-key');
+                const defKey = selectedDef.getAttribute('data-key');
+                const msgEl = document.getElementById('match-message');
+                
+                if (termKey === defKey) {
+                    selectedTerm.classList.add('matched');
+                    selectedDef.classList.add('matched');
+                    selectedTerm.classList.remove('selected');
+                    selectedDef.classList.remove('selected');
+                    selectedTerm = null;
+                    selectedDef = null;
+                    
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132;">
+                            <span class="lang-en">✓ Correct Match!</span>
+                            <span class="lang-cn">✓ 配对正确！</span>
+                        </span>`;
+                    }
+                    
+                    const unmatched = document.querySelectorAll('.match-term:not(.matched)');
+                    if (unmatched.length === 0 && msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132; font-size: 1.2rem; font-weight: bold;">
+                            <span class="lang-en">🎉 Congratulations! You matched all terms correctly!</span>
+                            <span class="lang-cn">🎉 恭喜！您已成功配对所有词汇！</span>
+                        </span>`;
+                    }
+                } else {
+                    selectedTerm.classList.add('error');
+                    selectedDef.classList.add('error');
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #842029;">
+                            <span class="lang-en">✗ Incorrect Match! Try again.</span>
+                            <span class="lang-cn">✗ 配对错误！请再试一次。</span>
+                        </span>`;
+                    }
+                    const t = selectedTerm;
+                    const d = selectedDef;
+                    setTimeout(() => {
+                        t.classList.remove('error', 'selected');
+                        d.classList.remove('error', 'selected');
+                    }, 400);
+                    selectedTerm = null;
+                    selectedDef = null;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

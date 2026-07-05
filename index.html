@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBEC2653: E-Commerce - Learning & Revision Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Macaron Palette */
+            --pastel-pink: #FFD1DC;
+            --pastel-mint: #B0EACD;
+            --pastel-blue: #AEC6CF;
+            --pastel-lavender: #C3B1E1;
+            --pastel-yellow: #FDFD96;
+            
+            --ink: #111111;
+            --ink-muted: #333333;
+            
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            --radius-lg: 32px;
+            --radius-md: 16px;
+            
+            --spring: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender), var(--pastel-blue), var(--pastel-mint));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Auras */
+        body::before {
+            content: ''; position: fixed; top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, var(--pastel-yellow) 0%, transparent 70%);
+            filter: blur(80px); opacity: 0.6; z-index: -1;
+            animation: floatAura 20s ease-in-out infinite alternate;
+        }
+        body::after {
+            content: ''; position: fixed; bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, var(--pastel-pink) 0%, transparent 70%);
+            filter: blur(100px); opacity: 0.5; z-index: -1;
+            animation: floatAura 25s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatAura {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: var(--ink); }
+        
+        .header { text-align: center; padding: 60px 20px 30px; position: relative; }
+        .header h1 { font-size: 2.8rem; margin: 10px 0; font-weight: 900; letter-spacing: 0.02em; }
+        .header p { font-size: 1.2rem; font-weight: 600; text-transform: uppercase; color: var(--ink-muted); }
+        
+        .lang-btn {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto 60px; padding: 0 20px; position: relative; z-index: 1; }
+        
+        .card { 
+            background: var(--glass-bg); 
+            border-radius: var(--radius-lg); 
+            padding: 40px; 
+            box-shadow: var(--glass-shadow); 
+            margin-bottom: 40px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+        }
+        .card h2 { border-bottom: 2px solid rgba(255,255,255,0.5); padding-bottom: 15px; margin-top: 0; font-size: 2rem; }
+
+        /* Dashboard and progress elements */
+        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 25px; }
+        .dash-item { background: rgba(255,255,255,0.3); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 20px; text-align: center; }
+        .dash-item h4 { margin: 0 0 10px; font-family: 'Orbitron', sans-serif; font-size: 1.1rem; }
+        .dash-item .weight { font-size: 2.2rem; font-weight: 900; color: var(--ink); }
+
+        /* Grid Layout */
+        .week-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; margin-top: 30px; }
+        .week-card { 
+            background: var(--glass-bg); 
+            border-radius: var(--radius-md); 
+            padding: 25px; 
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            transition: all 0.4s var(--spring);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+        .week-card:hover { transform: translateY(-8px); box-shadow: 0 12px 35px rgba(31, 38, 135, 0.12); border-color: rgba(255,255,255,0.8); }
+        .week-card::before { content: ''; position: absolute; left: 0; top: 0; width: 6px; height: 100%; }
+        
+        /* Macaron Left Borders */
+        .week-card:nth-child(5n+1)::before { background: var(--pastel-pink); }
+        .week-card:nth-child(5n+2)::before { background: var(--pastel-lavender); }
+        .week-card:nth-child(5n+3)::before { background: var(--pastel-blue); }
+        .week-card:nth-child(5n+4)::before { background: var(--pastel-mint); }
+        .week-card:nth-child(5n+5)::before { background: var(--pastel-yellow); }
+
+        .week-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .week-num { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.1rem; text-transform: uppercase; color: var(--ink-muted); }
+        .week-date { font-weight: 700; font-size: 0.95rem; color: var(--ink-muted); }
+        
+        .week-card h3 { margin: 10px 0; font-size: 1.4rem; font-weight: 700; min-height: 50px; }
+        .week-card p { font-size: 1rem; color: var(--ink-muted); margin: 0 0 20px; line-height: 1.5; }
+        
+        .btn { 
+            background: linear-gradient(135deg, var(--pastel-lavender), var(--pastel-pink));
+            color: var(--ink); 
+            padding: 10px 24px; 
+            border: 2px solid rgba(255,255,255,0.8); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            transition: all 0.4s var(--spring);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-decoration: none;
+            text-align: center;
+            display: block;
+        }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(195, 177, 225, 0.4); background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender)); }
+
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; border: 1px solid var(--glass-border); }
+        .badge-exam { background: var(--pastel-pink); }
+        .badge-test { background: var(--pastel-blue); }
+        .badge-project { background: var(--pastel-lavender); }
+        .badge-quiz { background: var(--pastel-mint); }
+        
+        /* Translation CSS Rules */
+        .lang-cn { display: none !important; }
+        body.cn-active .lang-en { display: none !important; }
+        body.cn-active .lang-cn { display: block !important; }
+        
+        span.lang-cn { display: none !important; }
+        body.cn-active span.lang-en { display: none !important; }
+        body.cn-active span.lang-cn { display: inline !important; }
+
+        @media (max-width: 768px) {
+            .lang-btn {
+                position: static;
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <p>DBEC2653</p>
+        <h1>
+            <span class="lang-en">E-Commerce</span>
+            <span class="lang-cn">电子商务</span>
+        </h1>
+        <p>
+            <span class="lang-en">Learning & Revision Hub — July 2026</span>
+            <span class="lang-cn">学习与复习中心 — 2026年7月</span>
+        </p>
+        <button class="btn lang-btn" onclick="toggleLanguage()">🌐 EN / 中文</button>
+    </div>
+
+    <div class="container">
+        <!-- Overview & Assessment Weightages -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Course Overview & Assessments</span>
+                <span class="lang-cn">课程概述与评估</span>
+            </h2>
+            <div class="lang-en">
+                <p>Welcome to the DBEC2653 E-Commerce Learning Hub. This portal guides you through the 14-week course schedule, linking core lecture notes, dynamic visualizations of e-commerce concepts, practical shop configurations, and structured assessments. Explore each week's content to prepare for your assessments and build your group venture project.</p>
+            </div>
+            <div class="lang-cn">
+                <p>欢迎来到 DBEC2653 电子商务学习中心。本主页引导您了解为期 14 周的课程安排，链接核心讲义、电子商务概念的动态可视化、实际店铺配置和结构化评估。探索每周的内容，为您阶段性评估做准备并开展您的创业小组项目。</p>
+            </div>
+            <div class="dash-grid">
+                <div class="dash-item" style="border-top: 5px solid var(--pastel-mint);">
+                    <h4>
+                        <span class="lang-en">Assessment 1 (Week 6)</span>
+                        <span class="lang-cn">阶段评估 1（第6周）</span>
+                    </h4>
+                    <div class="weight">20%</div>
+                </div>
+                <div class="dash-item" style="border-top: 5px solid var(--pastel-blue);">
+                    <h4>
+                        <span class="lang-en">Case Study Report (Week 10)</span>
+                        <span class="lang-cn">案例分析报告（第10周）</span>
+                    </h4>
+                    <div class="weight">10%</div>
+                </div>
+                <div class="dash-item" style="border-top: 5px solid var(--pastel-lavender);">
+                    <h4>
+                        <span class="lang-en">Group Venture Report (Week 13)</span>
+                        <span class="lang-cn">创业项目报告（第13周）</span>
+                    </h4>
+                    <div class="weight">20%</div>
+                </div>
+                <div class="dash-item" style="border-top: 5px solid var(--pastel-pink);">
+                    <h4>
+                        <span class="lang-en">Venture Presentation (W14)</span>
+                        <span class="lang-cn">创业项目路演（第14周）</span>
+                    </h4>
+                    <div class="weight">10%</div>
+                </div>
+                <div class="dash-item" style="border-top: 5px solid var(--pastel-yellow);">
+                    <h4>
+                        <span class="lang-en">Integrated Assessment</span>
+                        <span class="lang-cn">综合评定</span>
+                    </h4>
+                    <div class="weight">40%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weeks Navigation Grid -->
+        <h2>
+            <span class="lang-en">Weekly Study Schedule</span>
+            <span class="lang-cn">每周学习计划</span>
+        </h2>
+        <div class="week-grid">
+            
+        <div class="week-card">
+            <div>
+                
+                <div class="week-header">
+                    <div class="week-num">Week 1</div>
+                    <div class="week-date">1 Jul - 2 Jul 2026</div>
+                </div>
+                <h3>
+                    <span class="lang-en">Introduction to E-commerce</span>
+                    <span class="lang-cn">电子商务引言</span>
+                </h3>
+                <p>
+                    <span class="lang-en">CHAPTER 1 : INTRODUCTION TO E-COMMERCE</span>
+                    <span class="lang-cn">CHAPTER 1 : INTRODUCTION TO E-COMMERCE</span>
+                </p>
+            </div>
+            <a href="week1.html" class="btn">
+                <span class="lang-en">Enter Week 1 →</span>
+                <span class="lang-cn">进入第 1 周 →</span>
+            </a>
+        </div>
+
+        <div class="week-card">
+            <div>
+                
+                <div class="week-header">
+                    <div class="week-num">Week 2</div>
+                    <div class="week-date">8 Jul - 9 Jul 2026</div>
+                </div>
+                <h3>
+                    <span class="lang-en">E-commerce Business Models and Concepts</span>
+                    <span class="lang-cn">电子商务商业模式与概念</span>
+                </h3>
+                <p>
+                    <span class="lang-en">CHAPTER 2 : E-COMMERCE BUSINESS MODELS AND CONCEPTS</span>
+                    <span class="lang-cn">CHAPTER 2 : E-COMMERCE BUSINESS MODELS AND CONCEPTS</span>
+                </p>
+            </div>
+            <a href="week2.html" class="btn">
+                <span class="lang-en">Enter Week 2 →</span>
+                <span class="lang-cn">进入第 2 周 →</span>
+            </a>
+        </div>
+
+        <div class="week-card">
+            <div>
+                
+                <div class="week-header">
+                    <div class="week-num">Week 3</div>
+                    <div class="week-date">15 Jul - 16 Jul 2026</div>
+                </div>
+                <h3>
+                    <span class="lang-en">E-commerce Infrastructure</span>
+                    <span class="lang-cn">电子商务基础设施</span>
+                </h3>
+                <p>
+                    <span class="lang-en">CHAPTER 3 : E-COMMERCE INFRASTRUCTURE: THE INTERNET, WEB, AND MOBILE PLATFORM</span>
+                    <span class="lang-cn">CHAPTER 3 : E-COMMERCE INFRASTRUCTURE: THE INTERNET, WEB, AND MOBILE PLATFORM</span>
+                </p>
+            </div>
+            <a href="week3.html" class="btn">
+                <span class="lang-en">Enter Week 3 →</span>
+                <span class="lang-cn">进入第 3 周 →</span>
+            </a>
+        </div>
+
+        <div class="week-card">
+            <div>
+                
+                <div class="week-header">
+                    <div class="week-num">Week 4</div>
+                    <div class="week-date">22 Jul - 23 Jul 2026</div>
+                </div>
+                <h3>
+                    <span class="lang-en">Building an E-commerce Presence</span>
+                    <span class="lang-cn">构建电子商务平台</span>
+                </h3>
+                <p>
+                    <span class="lang-en">CHAPTER 4 : BUILDING AN E-COMMERCE PRESENCE: WEBSITES, MOBILE SITES, AND APPS</span>
+                    <span class="lang-cn">CHAPTER 4 : BUILDING AN E-COMMERCE PRESENCE: WEBSITES, MOBILE SITES, AND APPS</span>
+                </p>
+            </div>
+            <a href="week4.html" class="btn">
+                <span class="lang-en">Enter Week 4 →</span>
+                <span class="lang-cn">进入第 4 周 →</span>
+            </a>
+        </div>
+
+        <div class="week-card">
+            <div>
+                
+                <div class="week-header">
+                    <div class="week-num">Week 5</div>
+                    <div class="week-date">29 Jul - 30 Jul 2026</div>
+                </div>
+                <h3>
+                    <span class="lang-en">E-commerce Security and Payment Systems</span>
+                    <span class="lang-cn">电子商务安全与支付系统</span>
+                </h3>
+                <p>
+                    <span class="lang-en">CHAPTER 5 : E-COMMERCE SECURITY AND PAYMENT SYSTEMS</span>
+                    <span class="lang-cn">CHAPTER 5 : E-COMMERCE SECURITY AND PAYMENT SYSTEMS</span>
+                </p>
+            </div>
+            <a href="week5.html" class="btn">
+                <span class="lang-en">Enter Week 5 →</span>
+                <span class="lang-cn">进入第 5 周 →</span>
+            </a>
+        </div>
+
+        <div class="week-card">
+            <div>
+                <div class="badge badge-test"><span class="lang-en">Assessment 1 (20%)</span><span class="lang-cn">阶段评估 1 (20%)</span></div>
+                <div class="week-header">
+                    <div class="week-num">Week 6</div>
+                    <div class="week-date">5 Aug - 6 Aug 2026</div>
+                </div>
+                <h3>
+                    <span class="lang-en">E-commerce Marketing and Advertising</span>
+                    <span class="lang-cn">电子商务营销与广告</span>
+                </h3>
+                <p>
+                    <span class="lang-en">CHAPTER 6 : E-COMMERCE MARKETING AND ADVERTISING CONCEPTS</span>
+                    <span class="lang-cn">CHAPTER 6 : E-COMMERCE MARKETING AND ADVERTISING CONCEPTS</span>
+                </p>
+            </div>
+            <a href="week6.html" class="btn">
+                <span class="lang-en">Enter Week 6 →</span>
+                <span class="lang-cn">进入第 6 周 →</span>
+            </a>
+        </div>
+
+        <div class="week-card">
+            <div>
+                
+                <div class="week-header">
+                    <div class="week-num">Week 7</div>
+                    <div class="week-date">12 Aug - 13 Aug 2026</div>
+                </div>
+                <h3>
+                    <span class="lang-en">Social, Mobile, and Local Marketing</span>
+                    <span class="lang-cn">社交、移动与本地营销</span>
+                </h3>
+                <p>
+                    <span class="lang-en">CHAPTER 7 : SOCIAL, MOBILE, AND LOCAL MARKETING</span>
+                    <span class="lang-cn">CHAPTER 7 : SOCIAL, MOBILE, AND LOCAL MARKETING</span>
+                </p>
+            </div>
+            <a href="week7.html" class="btn">
+                <span class="lang-en">Enter Week 7 →</span>
+                <span class="lang-cn">进入第 7 周 →</span>
+            </a>
+        </div>
+
+        <div class="week-card">
+            <div>
+                
+                <div class="week-header">
+                    <div class="week-num">Week 8</div>
+                    <div class="week-date">26 Aug - 27 Aug 2026</div>
+                </div>
+                <h3>
+                    <span class="lang-en">Ethical, Social, and Political Issues</span>
+                    <span class="lang-cn">伦理、社会与政治问题</span>
+                </h3>
+                <p>
+                    <span class="lang-en">CHAPTER 8 : ETHICAL, SOCIAL, AND POLITICAL ISSUES IN E-COMMERCE</span>
+                    <span class="lang-cn">CHAPTER 8 : ETHICAL, SOCIAL, AND POLITICAL ISSUES IN E-COMMERCE</span>
+                </p>
+            </div>
+            <a href="week8.html" class="btn">
+                <span class="lang-en">Enter Week 8 →</span>
+                <span class="lang-cn">进入第 8 周 →</span>
+            </a>
+        </div>
+
+        <div class="week-card">
+            <div>
+                
+                <div class="week-header">
+                    <div class="week-num">Week 9</div>
+                    <div class="week-date">2 Sep - 3 Sep 2026</div>
+                </div>
+                <h3>
+                    <span class="lang-en">Online Retail and Services (Part 1)</span>
+                    <span class="lang-cn">在线零售与服务（第一部分）</span>
+                </h3>
+                <p>
+                    <span class="lang-en">CHAPTER 9 : ONLINE RETAIL AND SERVICES (Part 1)</span>
+                    <span class="lang-cn">CHAPTER 9 : ONLINE RETAIL AND SERVICES (Part 1)</span>
+                </p>
+            </div>
+            <a href="week9.html" class="btn">
+                <span class="lang-en">Enter Week 9 →</span>
+                <span class="lang-cn">进入第 9 周 →</span>
+            </a>
+        </div>
+
+        <div class="week-card">
+            <div>
+                <div class="badge badge-exam"><span class="lang-en">Case Study Due (10%)</span><span class="lang-cn">案例分析报告 (10%)</span></div>
+                <div class="week-header">
+                    <div class="week-num">Week 10</div>
+                    <div class="week-date">9 Sep - 10 Sep 2026</div>
+                </div>
+                <h3>
+                    <span class="lang-en">Online Retail and Services (Part 2)</span>
+                    <span class="lang-cn">在线零售与服务（第二部分）</span>
+                </h3>
+                <p>
+                    <span class="lang-en">CHAPTER 9 : ONLINE RETAIL AND SERVICES (Part 2)</span>
+                    <span class="lang-cn">CHAPTER 9 : ONLINE RETAIL AND SERVICES (Part 2)</span>
+                </p>
+            </div>
+            <a href="week10.html" class="btn">
+                <span class="lang-en">Enter Week 10 →</span>
+                <span class="lang-cn">进入第 10 周 →</span>
+            </a>
+        </div>
+
+        <div class="week-card">
+            <div>
+                
+                <div class="week-header">
+                    <div class="week-num">Week 11</div>
+                    <div class="week-date">17 Sep 2026</div>
+                </div>
+                <h3>
+                    <span class="lang-en">Online Content and Media</span>
+                    <span class="lang-cn">在线内容与媒体</span>
+                </h3>
+                <p>
+                    <span class="lang-en">CHAPTER 10 : ONLINE CONTENT AND MEDIA</span>
+                    <span class="lang-cn">CHAPTER 10 : ONLINE CONTENT AND MEDIA</span>
+                </p>
+            </div>
+            <a href="week11.html" class="btn">
+                <span class="lang-en">Enter Week 11 →</span>
+                <span class="lang-cn">进入第 11 周 →</span>
+            </a>
+        </div>
+
+        <div class="week-card">
+            <div>
+                
+                <div class="week-header">
+                    <div class="week-num">Week 12</div>
+                    <div class="week-date">23 Sep - 24 Sep 2026</div>
+                </div>
+                <h3>
+                    <span class="lang-en">Social Networks, Auctions, and Portals</span>
+                    <span class="lang-cn">社交网络、拍卖与门户网站</span>
+                </h3>
+                <p>
+                    <span class="lang-en">CHAPTER 11 : SOCIAL NETWORKS, AUCTIONS, AND PORTALS</span>
+                    <span class="lang-cn">CHAPTER 11 : SOCIAL NETWORKS, AUCTIONS, AND PORTALS</span>
+                </p>
+            </div>
+            <a href="week12.html" class="btn">
+                <span class="lang-en">Enter Week 12 →</span>
+                <span class="lang-cn">进入第 12 周 →</span>
+            </a>
+        </div>
+
+        <div class="week-card">
+            <div>
+                <div class="badge badge-project"><span class="lang-en">Venture Report (20%)</span><span class="lang-cn">项目报告 (20%)</span></div>
+                <div class="week-header">
+                    <div class="week-num">Week 13</div>
+                    <div class="week-date">30 Sep - 1 Oct 2026</div>
+                </div>
+                <h3>
+                    <span class="lang-en">B2B E-commerce Supply Chain (Part 1)</span>
+                    <span class="lang-cn">B2B 电子商务供应链（第一部分）</span>
+                </h3>
+                <p>
+                    <span class="lang-en">CHAPTER 12 : B2B E-COMMERCE: SUPPLY CHAIN MANAGEMENT AND COLLABORATIVE COMMERCE (Part 1)</span>
+                    <span class="lang-cn">CHAPTER 12 : B2B E-COMMERCE: SUPPLY CHAIN MANAGEMENT AND COLLABORATIVE COMMERCE (Part 1)</span>
+                </p>
+            </div>
+            <a href="week13.html" class="btn">
+                <span class="lang-en">Enter Week 13 →</span>
+                <span class="lang-cn">进入第 13 周 →</span>
+            </a>
+        </div>
+
+        <div class="week-card">
+            <div>
+                <div class="badge badge-project"><span class="lang-en">Venture Pitch (10%)</span><span class="lang-cn">项目路演 (10%)</span></div>
+                <div class="week-header">
+                    <div class="week-num">Week 14</div>
+                    <div class="week-date">7 Oct - 8 Oct 2026</div>
+                </div>
+                <h3>
+                    <span class="lang-en">B2B E-commerce Supply Chain (Part 2)</span>
+                    <span class="lang-cn">B2B 电子商务供应链（第二部分）</span>
+                </h3>
+                <p>
+                    <span class="lang-en">CHAPTER 12 : B2B E-COMMERCE: SUPPLY CHAIN MANAGEMENT AND COLLABORATIVE COMMERCE (Part 2)</span>
+                    <span class="lang-cn">CHAPTER 12 : B2B E-COMMERCE: SUPPLY CHAIN MANAGEMENT AND COLLABORATIVE COMMERCE (Part 2)</span>
+                </p>
+            </div>
+            <a href="week14.html" class="btn">
+                <span class="lang-en">Enter Week 14 →</span>
+                <span class="lang-cn">进入第 14 周 →</span>
+            </a>
+        </div>
+        </div>
+
+        <!-- Textbooks & Reference Section -->
+        <div class="card" style="margin-top: 40px;">
+            <h2>
+                <span class="lang-en">References & Textbooks</span>
+                <span class="lang-cn">参考文献与教科书</span>
+            </h2>
+            <div class="lang-en">
+                <ul>
+                    <li>Kenneth C. Laudon, Carol Guercio Traver, <i>E-Commerce 2026</i>, Global Edition 17th Edition, Pearson 2026</li>
+                    <li>Gary Schneider, <i>Electronic Commerce</i> 15th Edition, Cengage Learning, 2026</li>
+                </ul>
+            </div>
+            <div class="lang-cn">
+                <ul>
+                    <li>Kenneth C. Laudon, Carol Guercio Traver, <i>E-Commerce 2026</i>, 全球版第 17 版, 培生 2026</li>
+                    <li>Gary Schneider, <i>Electronic Commerce</i> 第 15 版, 圣智学习, 2026</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            document.body.classList.toggle('cn-active');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week WK10: Online Retail and Services (Part 2) - DBEC2653</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Macaron Palette */
+            --pastel-pink: #FFD1DC;
+            --pastel-mint: #B0EACD;
+            --pastel-blue: #AEC6CF;
+            --pastel-lavender: #C3B1E1;
+            --pastel-yellow: #FDFD96;
+            
+            --ink: #111111;
+            --ink-muted: #333333;
+            
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            --radius-lg: 32px;
+            --radius-md: 16px;
+            
+            --spring: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender), var(--pastel-blue), var(--pastel-mint));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Auras */
+        body::before {
+            content: ''; position: fixed; top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, var(--pastel-yellow) 0%, transparent 70%);
+            filter: blur(80px); opacity: 0.6; z-index: -1;
+            animation: floatAura 20s ease-in-out infinite alternate;
+        }
+        body::after {
+            content: ''; position: fixed; bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, var(--pastel-pink) 0%, transparent 70%);
+            filter: blur(100px); opacity: 0.5; z-index: -1;
+            animation: floatAura 25s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatAura {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: var(--ink); }
+        
+        .header { text-align: center; padding: 40px 20px 20px; position: relative; }
+        .header h1 { font-size: 2.3rem; margin-top: 20px; font-weight: 800; color: var(--ink); }
+        .nav-link { color: var(--ink-muted); text-decoration: none; font-weight: 700; display: inline-block; transition: all 0.4s var(--spring); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--glass-bg); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--glass-border); }
+        .nav-link:hover { color: var(--ink); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: rgba(255,255,255,0.7); }
+        
+        .lang-btn {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .container { max-width: 900px; margin: 20px auto 40px; padding: 0 20px; position: relative; z-index: 1; }
+        
+        .card { 
+            background: var(--glass-bg); 
+            border-radius: var(--radius-lg); 
+            padding: 40px; 
+            box-shadow: var(--glass-shadow); 
+            margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            transition: all 0.5s var(--spring);
+        }
+        .card h2 { border-bottom: 2px solid rgba(255,255,255,0.5); padding-bottom: 15px; margin-top: 0; font-size: 1.8rem;}
+        
+        .step { background: rgba(255,255,255,0.3); padding: 20px; margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .step h3 { margin-top: 0; font-size: 1.3rem; }
+        
+        .btn { 
+            background: linear-gradient(135deg, var(--pastel-lavender), var(--pastel-pink));
+            color: var(--ink); 
+            padding: 12px 28px; 
+            border: 2px solid rgba(255,255,255,0.8); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.4s var(--spring);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(195, 177, 225, 0.4); background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender)); }
+        
+        /* Quiz */
+        .quiz-q { margin-bottom: 25px; background: rgba(255,255,255,0.2); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .quiz-label { display: block; padding: 10px 16px; cursor: pointer; transition: all 0.4s var(--spring); border-radius: 12px; border: 1px solid transparent; font-weight: 600; font-size: 1.1rem;}
+        .quiz-label:hover { background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); transform: translateX(5px);}
+        .explanation { display: none; margin-top: 10px; padding: 10px 16px; background: rgba(255,255,255,0.6); border-radius: 8px; font-weight: 600; border-left: 4px solid var(--pastel-blue); }
+        
+        /* Coding */
+        .code-editor { background: rgba(0,0,0,0.85); color: #F8F9FA; padding: 20px; border-radius: var(--radius-md); font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-top: 10px; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); white-space: pre-wrap; }
+        .correct-ans { color: #0f5132; font-weight: 700; margin-top: 15px; display: inline-block; padding: 10px 16px; background: rgba(176, 234, 205, 0.6); border-radius: 12px; border: 1px solid var(--pastel-mint);}
+        
+        /* Table Styles (Bilingual High Contrast) */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(255,255,255,0.2); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--glass-border); }
+        .data-table th, .data-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--glass-border); font-size: 1.1rem; }
+        .data-table th { background: rgba(255,255,255,0.6); font-weight: 800; font-family: 'Orbitron', sans-serif; }
+        .data-table tr:last-child td { border-bottom: none; }
+        
+        /* SVG Tweaks for Macaron Glassmorphism & High Contrast */
+        svg { background: transparent !important; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05)); margin: 10px auto; display: block; max-width: 100%; }
+        svg text { font-family: 'Arial', sans-serif !important; font-weight: bold !important; fill: #000000 !important; }
+        svg [fill="url(#blueGrad)"], svg [fill="url(#purpleGrad)"], svg [fill="url(#mintGrad)"], svg [fill="url(#pinkGrad)"], svg [fill="url(#yellowGrad)"] { fill-opacity: 0.8 !important; stroke: #000000 !important; stroke-width: 2px !important; }
+        svg [fill="#FFF"], svg [fill="#ffffff"], svg [fill="none"] { stroke: #000000 !important; }
+        
+        /* Vocabulary Matching Game Styles */
+        .match-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .match-col { width: 48%; display: flex; flex-direction: column; gap: 10px; }
+        .match-btn {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s var(--spring);
+            user-select: none;
+            text-align: left;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+        .match-btn:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(3px);
+        }
+        .match-btn.selected {
+            background: var(--pastel-yellow) !important;
+            border: 2px solid var(--ink);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .match-btn.matched {
+            background: var(--pastel-mint) !important;
+            border: 1px solid var(--pastel-mint);
+            opacity: 0.6;
+            cursor: default;
+            pointer-events: none;
+            transform: none !important;
+        }
+        .match-btn.error {
+            background: var(--pastel-pink) !important;
+            border: 1px solid var(--pastel-pink);
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Collapsible Q&A Review style */
+        .qa-block { margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); background: rgba(255,255,255,0.25); overflow: hidden; }
+        .qa-header { padding: 18px 24px; font-weight: 700; cursor: pointer; background: rgba(255,255,255,0.4); display: flex; justify-content: space-between; align-items: center; font-size: 1.15rem; }
+        .qa-body { padding: 20px 24px; display: none; border-top: 1px solid var(--glass-border); background: rgba(255,255,255,0.5); font-size: 1.1rem; line-height: 1.7; }
+        .qa-icon { transition: transform 0.3s; font-weight: bold; }
+        .qa-block.open .qa-body { display: block; }
+        .qa-block.open .qa-icon { transform: rotate(90deg); }
+
+        /* Translation CSS Rules */
+        .lang-cn { display: none !important; }
+        body.cn-active .lang-en { display: none !important; }
+        body.cn-active .lang-cn { display: block !important; }
+        
+        span.lang-cn { display: none !important; }
+        body.cn-active span.lang-en { display: none !important; }
+        body.cn-active span.lang-cn { display: inline !important; }
+
+        @media (max-width: 768px) {
+            .lang-btn {
+                position: static;
+                margin-top: 15px;
+            }
+            .match-col { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="nav-link">
+            <span class="lang-en">← Back to Hub</span>
+            <span class="lang-cn">← 返回主页</span>
+        </a>
+        <h1>
+            <span class="lang-en">Week 10: Online Retail and Services (Part 2)</span>
+            <span class="lang-cn">第 10 周：在线零售与服务（第二部分）</span>
+        </h1>
+        <button class="btn lang-btn" onclick="toggleLanguage()">🌐 EN / 中文</button>
+    </div>
+
+    <div class="container">
+        <!-- Objectives Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-lavender);">
+            <h2>
+                <span class="lang-en">Learning Objectives</span>
+                <span class="lang-cn">学习目标</span>
+            </h2>
+            <div class="lang-en">
+                <ul>
+                    <li>Apply online service sector models to e-commerce (CLO3).</li><li>Discuss the ethical, social and political issues in e-commerce service delivery (CLO2).</li><li>Identify online financial service models and transactions.</li>
+                </ul>
+            </div>
+            <div class="lang-cn">
+                <ul>
+                    <li>应用在线服务行业模式于电子商务 (CLO3)。</li><li>讨论电子商务服务提供中的伦理、社会和政治问题 (CLO2)。</li><li>识别在线金融服务模式和交易。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sample Company / Case Study Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Bustiness Case Context</span>
+                <span class="lang-cn">商业案例情境</span>
+            </h2>
+            <div class="lang-en">
+                <p><strong>Kompas Financial Services:</strong> An online transaction brokerage portal that handles personal investment trades. The service replaces physical brokers with instant online checkout flows, providing real-time stock quotes while securing client session credentials using HTTPS databases.</p>
+            </div>
+            <div class="lang-cn">
+                <p><strong>Kompas 金融服务：</strong>一个处理个人投资交易的在线交易经纪门户。该服务用即时在线结账流程取代了实体经纪人，提供实时股票报价，同时使用 HTTPS 数据库保护客户的会话凭证。</p>
+            </div>
+        </div>
+
+        <!-- Comparative Table Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Key Comparison: Offline vs. Online Service Industries</span>
+                <span class="lang-cn">关键对比：线下与在线服务行业</span>
+            </h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th><span class="lang-en">Parameter</span><span class="lang-cn">参数</span></th><th><span class="lang-en">Traditional Offline Services</span><span class="lang-cn">传统线下服务</span></th><th><span class="lang-en">E-commerce Online Services</span><span class="lang-cn">电商在线服务</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="lang-en">Client Interactions</span><span class="lang-cn">客户互动</span></td><td><span class="lang-en">Face-to-face consultation at physical offices.</span><span class="lang-cn">在实体办公室进行面对面咨询。</span></td><td><span class="lang-en">Self-service web dashboard interfaces, 24/7/365 access.</span><span class="lang-cn">自助式网页控制台界面，全年无休访问。</span></td></tr><tr><td><span class="lang-en">Cost of Delivery</span><span class="lang-cn">交付成本</span></td><td><span class="lang-en">High labor costs per customer visit.</span><span class="lang-cn">每次客户拜访的人工成本较高。</span></td><td><span class="lang-en">Low marginal transaction cost per session.</span><span class="lang-cn">每次会话的边际交易成本较低。</span></td></tr><tr><td><span class="lang-en">Distribution</span><span class="lang-cn">分销覆盖</span></td><td><span class="lang-en">Limited by geographic store locations.</span><span class="lang-cn">受地理商店位置的限制。</span></td><td><span class="lang-en">Global reach via internet access, mobile responsive apps.</span><span class="lang-cn">通过互联网访问和移动响应式应用程序触达全球。</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Concept Visualization Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Concept Visualization</span>
+                <span class="lang-cn">概念可视化</span>
+            </h2>
+            <div style="background: rgba(255,255,255,0.5); border-radius: var(--radius-md); padding: 20px; border: 1px solid var(--glass-border);">
+                
+        <svg height="240" viewBox="0 0 600 240" width="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="purpleGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stop-color="#C3B1E1"></stop>
+                    <stop offset="100%" stop-color="#FFD1DC"></stop>
+                </linearGradient>
+            </defs>
+            <!-- User -->
+            <circle cx="60" cy="120" fill="url(#purpleGrad)" r="30" stroke="#111" stroke-width="1.5"></circle>
+            <text fill="#111" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="60" y="123">Investor</text>
+            
+            <path d="M 90 120 L 220 120" fill="none" id="brokerPath" stroke="#111" stroke-width="2"></path>
+            <text fill="#111" font-family="Arial" font-size="9" x="115" y="105">1. Order request</text>
+            
+            <!-- Broker -->
+            <rect fill="url(#purpleGrad)" stroke="#111" stroke-width="1.5" height="60" rx="10" width="120" x="220" y="90"></rect>
+            <text fill="#111" font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="280" y="125">Transaction Broker</text>
+            
+            <path d="M 340 120 L 470 120" fill="none" id="exchangePath" stroke="#D81B60" stroke-width="2"></path>
+            <text fill="#D81B60" font-family="Arial" font-size="9" x="365" y="105">2. Execute trade</text>
+            
+            <circle fill="#D81B60" r="5">
+                <animateMotion dur="2.5s" repeatCount="indefinite">
+                    <mpath href="#exchangePath"></mpath>
+                </animateMotion>
+            </circle>
+            
+            <!-- Exchange -->
+            <rect fill="url(#purpleGrad)" stroke="#111" stroke-width="1.5" height="50" rx="5" width="100" x="470" y="95"></rect>
+            <text fill="#111" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="520" y="125">Stock Exchange</text>
+        </svg>
+        
+            </div>
+        </div>
+
+        <!-- Practical Exercise Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-mint);">
+            <h2>
+                <span class="lang-en">Practical Exercise: Configuring Products in WooCommerce</span>
+                <span class="lang-cn">实践练习：在 WooCommerce 中配置产品</span>
+            </h2>
+            <div class="lang-en">
+                <p><b>Steps to complete:</b></p>
+                <ol>
+                    <li>Log in to your WordPress dashboard and click Products -> Add New.</li><li>Create a virtual product (e.g. E-Book or Digital styling guide), tick the <strong>Virtual</strong> checkbox, and enter price variables.</li><li>Publish the product and verify its listing details on the storefront page.</li>
+                </ol>
+            </div>
+            <div class="lang-cn">
+                <p><b>操作步骤：</b></p>
+                <ol>
+                    <li>登录您的 WordPress 控制台，然后点击“产品” -> “添加新产品”。</li><li>创建虚拟产品（例如电子书或数字搭配指南），勾选 <strong>虚拟 (Virtual)</strong> 复选框，并输入价格参数。</li><li>发布该产品并验证其在商店前台页面上的展示细节。</li>
+                </ol>
+            </div>
+            <button class="btn" onclick="showCodeAns('practical')">
+                <span class="lang-en">Show Product Metadata Config</span>
+                <span class="lang-cn">显示产品元数据配置</span>
+            </button>
+            <div class="code-editor" id="code-ans-practical" style="display:none;">Product ID: 204\nType: Simple (Virtual checked, Downloadable unchecked)\nSku: SKU-VIRTUAL-001\nPrice: Regular $29.99, Sale $24.99\nStatus: Published</div>
+        </div>
+
+        <!-- Vocabulary Matching Game -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Vocabulary Connection Game</span>
+                <span class="lang-cn">词汇连线互动游戏</span>
+            </h2>
+            <p>
+                <span class="lang-en">Match the term on the left with its definition on the right. (Click a term, then click its matching definition).</span>
+                <span class="lang-cn">将左侧的术语与右侧的定义进行配对。（点击术语，然后点击匹配的定义）。</span>
+            </p>
+            <div class="match-grid">
+                <!-- Terms Column -->
+                <div class="match-col">
+                    <div class="match-btn match-term" data-key="term_3"><span class="lang-en">Virtual Product</span><span class="lang-cn">虚拟产品</span></div><div class="match-btn match-term" data-key="term_4"><span class="lang-en">Financial Portal</span><span class="lang-cn">金融门户</span></div><div class="match-btn match-term" data-key="term_2"><span class="lang-en">Online Banking</span><span class="lang-cn">在线银行</span></div><div class="match-btn match-term" data-key="term_1"><span class="lang-en">Transaction Broker</span><span class="lang-cn">交易经纪人</span></div><div class="match-btn match-term" data-key="term_0"><span class="lang-en">Service Sector</span><span class="lang-cn">服务行业</span></div>
+                </div>
+                <!-- Definitions Column -->
+                <div class="match-col">
+                    <div class="match-btn match-def" data-key="term_0"><span class="lang-en">Industries that provide intangible services rather than physical products</span><span class="lang-cn">提供无形服务而不是实体产品的行业</span></div><div class="match-btn match-def" data-key="term_2"><span class="lang-en">Internet-based financial portals handling account checks and transfers</span><span class="lang-cn">处理账户检查和转账的基于互联网的金融门户</span></div><div class="match-btn match-def" data-key="term_4"><span class="lang-en">Platforms providing financial news, quotes, and advice advice online</span><span class="lang-cn">在网上提供金融新闻、报价和建议的平台</span></div><div class="match-btn match-def" data-key="term_3"><span class="lang-en">A non-physical digital asset sold online (no shipping required)</span><span class="lang-cn">在网上销售的非实体数字资产（不需要运送）</span></div><div class="match-btn match-def" data-key="term_1"><span class="lang-en">Online service models that execute transactions, saving time and fees</span><span class="lang-cn">执行交易，为客户节省时间和费用的在线服务模式</span></div>
+                </div>
+            </div>
+            <div id="match-message" style="margin-top: 20px; font-weight: bold; text-align: center; min-height: 28px;"></div>
+        </div>
+
+        <!-- MCQ Practice Quiz -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Knowledge Check Practice</span>
+                <span class="lang-cn">知识自测练习</span>
+            </h2>
+            <form id="quiz-form">
+                
+            <div class="quiz-q">
+                <p><b>1. 
+                    <span class="lang-en">The online service sector differs from the physical retail sector in that services are:</span>
+                    <span class="lang-cn">在线服务行业与实体零售行业的不同之处在于，服务是：</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="0"> A. 
+                    <span class="lang-en">Physical items that can be stored</span>
+                    <span class="lang-cn">可以存储的实物商品</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="1"> B. 
+                    <span class="lang-en">Intangible processes and value exchanges</span>
+                    <span class="lang-cn">无形的过程和价值交换</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="2"> C. 
+                    <span class="lang-en">Completely free of charge</span>
+                    <span class="lang-cn">完全免费的</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="3"> D. 
+                    <span class="lang-en">Hosted on local switches only</span>
+                    <span class="lang-cn">仅在本地交换机上托管</span>
+                </label>
+                <div class="explanation" id="exp-0">
+                    <span class="lang-en">Explanation: Services are intangible processes and activities, which cannot be stored or touched physically.</span>
+                    <span class="lang-cn">解析：服务是无形的过程和活动，不能以物理方式存储或触摸。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>2. 
+                    <span class="lang-en">Which model executes financial transactions for users online, saving time?</span>
+                    <span class="lang-cn">哪种模式在线为用户执行金融交易，从而节省时间？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="0"> A. 
+                    <span class="lang-en">E-tailer</span>
+                    <span class="lang-cn">电子零售商</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="1"> B. 
+                    <span class="lang-en">Transaction Broker</span>
+                    <span class="lang-cn">交易经纪人</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="2"> C. 
+                    <span class="lang-en">Market Creator</span>
+                    <span class="lang-cn">市场创建者</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="3"> D. 
+                    <span class="lang-en">Content Provider</span>
+                    <span class="lang-cn">内容提供商</span>
+                </label>
+                <div class="explanation" id="exp-1">
+                    <span class="lang-en">Explanation: A transaction broker executes user trades or travel bookings (e.g. PayPal, Expedia) online.</span>
+                    <span class="lang-cn">解析：交易经纪人在网上执行用户交易或旅游预订（例如 PayPal、Expedia）。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>3. 
+                    <span class="lang-en">Which of the following represents an online transaction broker?</span>
+                    <span class="lang-cn">以下哪项代表在线交易经纪人？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="0"> A. 
+                    <span class="lang-en">Walmart online</span>
+                    <span class="lang-cn">沃尔玛在线</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="1"> B. 
+                    <span class="lang-en">Expedia</span>
+                    <span class="lang-cn">Expedia</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="2"> C. 
+                    <span class="lang-en">Amazon basics</span>
+                    <span class="lang-cn">亚马逊基础</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="3"> D. 
+                    <span class="lang-en">Netflix</span>
+                    <span class="lang-cn">Netflix</span>
+                </label>
+                <div class="explanation" id="exp-2">
+                    <span class="lang-en">Explanation: Expedia is an online travel transaction broker that processes flight/hotel reservations for consumers.</span>
+                    <span class="lang-cn">解析：Expedia 是一家在线旅游交易经纪商，为消费者处理机票/酒店预订。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>4. 
+                    <span class="lang-en">What does checking the 'Virtual' box in WooCommerce product settings do?</span>
+                    <span class="lang-cn">在 WooCommerce 产品设置中勾选“虚拟 (Virtual)”复选框有什么作用？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="0"> A. 
+                    <span class="lang-en">Speeds up page loading</span>
+                    <span class="lang-cn">加快页面加载速度</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="1"> B. 
+                    <span class="lang-en">Disables shipping calculations for this product</span>
+                    <span class="lang-cn">禁用此产品的运费计算</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="2"> C. 
+                    <span class="lang-en">Converts the product to a blog post</span>
+                    <span class="lang-cn">将产品转换为博客文章</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="3"> D. 
+                    <span class="lang-en">Saves it as secret database code</span>
+                    <span class="lang-cn">将其另存为机密数据库代码</span>
+                </label>
+                <div class="explanation" id="exp-3">
+                    <span class="lang-en">Explanation: Virtual products are intangible; checking the box disables all shipping configurations and checkout shipping forms.</span>
+                    <span class="lang-cn">解析：虚拟产品是无形的；勾选该框将禁用所有运输配置和结账运输表单。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>5. 
+                    <span class="lang-en">Which service industry has seen the highest digital penetration and displacement of physical storefronts?</span>
+                    <span class="lang-cn">哪个服务行业的数字渗透率最高且取代了实体店面？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="0"> A. 
+                    <span class="lang-en">Plumbing services</span>
+                    <span class="lang-cn">管道服务</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="1"> B. 
+                    <span class="lang-en">Travel services and online banking</span>
+                    <span class="lang-cn">旅游服务与在线银行</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="2"> C. 
+                    <span class="lang-en">Automotive manufacturing</span>
+                    <span class="lang-cn">汽车制造</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="3"> D. 
+                    <span class="lang-en">Restaurant dining</span>
+                    <span class="lang-cn">餐厅餐饮</span>
+                </label>
+                <div class="explanation" id="exp-4">
+                    <span class="lang-en">Explanation: Online banking and travel booking have migrated almost entirely online, displacing traditional brick-and-mortar storefronts.</span>
+                    <span class="lang-cn">解析：在线银行和旅游预订已几乎完全迁移到网上，取代了传统的实体店面。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>6. 
+                    <span class="lang-en">What is the primary revenue source for financial portals?</span>
+                    <span class="lang-cn">金融门户网站的主要收入来源是什么？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="0"> A. 
+                    <span class="lang-en">Direct stock sales</span>
+                    <span class="lang-cn">直接股票销售</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="1"> B. 
+                    <span class="lang-en">Advertising and referral/affiliate fees</span>
+                    <span class="lang-cn">广告和转介/联属营销费</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="2"> C. 
+                    <span class="lang-en">Domain registration sales</span>
+                    <span class="lang-cn">域名注册销售</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="3"> D. 
+                    <span class="lang-en">Physical shipping charges</span>
+                    <span class="lang-cn">物理运费</span>
+                </label>
+                <div class="explanation" id="exp-5">
+                    <span class="lang-en">Explanation: Financial portals provide news and advice, monetizing via display advertising and affiliate referrals to brokerages.</span>
+                    <span class="lang-cn">解析：金融门户提供新闻和建议，通过展示广告和向经纪人进行联属引流来实现商业变现。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>7. 
+                    <span class="lang-en">Offline service providers are limited primarily by __________________.</span>
+                    <span class="lang-cn">线下服务提供商主要受限于 __________________。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="0"> A. 
+                    <span class="lang-en">Browser compatibility</span>
+                    <span class="lang-cn">浏览器兼容性</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="1"> B. 
+                    <span class="lang-en">Geographic locations and physical office hours</span>
+                    <span class="lang-cn">地理位置和物理办公时间</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="2"> C. 
+                    <span class="lang-en">Symmetric keys</span>
+                    <span class="lang-cn">对称密钥</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="3"> D. 
+                    <span class="lang-en">SQL query limits</span>
+                    <span class="lang-cn">SQL 查询限制</span>
+                </label>
+                <div class="explanation" id="exp-6">
+                    <span class="lang-en">Explanation: Traditional offline services are constrained by local store boundaries and business operating hours.</span>
+                    <span class="lang-cn">解析：传统的线下服务受限于当地商店边界和业务营业时间。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>8. 
+                    <span class="lang-en">Why is security critical in online financial services compared to traditional brick-and-mortar banking?</span>
+                    <span class="lang-cn">与传统的实体银行相比，为什么安全在在线金融服务中至关重要？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="0"> A. 
+                    <span class="lang-en">Because online systems use thin clients</span>
+                    <span class="lang-cn">因为在线系统使用薄客户端</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="1"> B. 
+                    <span class="lang-en">Due to the threat of online identity theft, phishing, and interceptors</span>
+                    <span class="lang-cn">由于在线身份盗窃、网络钓鱼和拦截者的威胁</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="2"> C. 
+                    <span class="lang-en">Because database tables are smaller</span>
+                    <span class="lang-cn">因为数据库表较小</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="3"> D. 
+                    <span class="lang-en">Online users do not check accounts</span>
+                    <span class="lang-cn">在线用户不检查账户</span>
+                </label>
+                <div class="explanation" id="exp-7">
+                    <span class="lang-en">Explanation: Online financial systems are target vectors for social engineering (phishing) and credential sniffing, demanding robust security.</span>
+                    <span class="lang-cn">解析：在线金融系统是社会工程（网络钓鱼）和凭证嗅探的目标载体，因此需要强大的安全保护。</span>
+                </div>
+            </div>
+            </form>
+            <button class="btn" type="button" onclick="checkQuiz()">
+                <span class="lang-en">Submit & Grade Answers</span>
+                <span class="lang-cn">提交并评定答案</span>
+            </button>
+            <div id="quiz-result" style="margin-top: 20px; font-weight: bold; min-height: 30px;"></div>
+        </div>
+
+        <!-- Review Q&A Section (Hidden QP answers) -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Revision Review Q&A</span>
+                <span class="lang-cn">课程复习问答</span>
+            </h2>
+            
+            <div class="qa-block" id="qa-WK10-0">
+                <div class="qa-header" onclick="toggleQA('WK10-0')">
+                    <span>
+                        <span class="lang-en">Review Exercise 1</span>
+                        <span class="lang-cn">复习练习题 1</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Differentiate between Transaction Brokers and Market Creators in the online service sector, giving business examples.</span>
+                        <span class="lang-cn">区分在线服务行业中的交易经纪人与市场创建者，并给出商业示例。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en"><strong>1. Transaction Broker (交易经纪人):</strong> Processes transactions for consumers (saving them time and money) and collects transaction fees. <br><em>Example:</em> E*Trade (stock brokerage) or Expedia (travel booking). (1 Mark)<br><strong>2. Market Creator (市场创建者):</strong> Builds a digital environment where buyers and sellers meet, display products, and negotiate prices. <br><em>Example:</em> eBay or Etsy (1 Mark).</span>
+                        <span class="lang-cn"><strong>1. 交易经纪人：</strong>为消费者处理交易（为他们节省时间和金钱）并收取交易费。<br><em>示例：</em>E*Trade（股票经纪）或 Expedia（旅游预订）。（1分）<br><strong>2. 市场创建者：</strong>构建一个数字环境，买家和卖家在此会面、展示产品和协商价格。<br><em>示例：</em>eBay 或 Etsy（1分）。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            document.body.classList.toggle('cn-active');
+        }
+
+        function showCodeAns(id) {
+            const el = document.getElementById('code-ans-' + id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleQA(id) {
+            const el = document.getElementById('qa-' + id);
+            el.classList.toggle('open');
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            const total = 8;
+            const answers = [1, 1, 1, 1, 1, 1, 1, 1];
+            
+            // Highlight options
+            for (let qIdx = 0; qIdx < total; qIdx++) {
+                const checkedOpt = document.querySelector(`input[name="q${qIdx}"]:checked`);
+                const expEl = document.getElementById(`exp-${qIdx}`);
+                if (expEl) {
+                    expEl.style.display = 'block';
+                }
+                
+                if (checkedOpt) {
+                    const val = parseInt(checkedOpt.value);
+                    if (val === answers[qIdx]) {
+                        score++;
+                    }
+                }
+            }
+            
+            const resEl = document.getElementById('quiz-result');
+            resEl.innerHTML = `<span class='correct-ans'>
+                <span class="lang-en">You scored: ${score} / ${total}</span>
+                <span class="lang-cn">您的得分：${score} / ${total}</span>
+            </span>`;
+        }
+
+        // Matching Game JS Logic
+        let selectedTerm = null;
+        let selectedDef = null;
+
+        document.querySelectorAll('.match-term').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-term').forEach(t => t.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedTerm = item;
+                checkMatch();
+            });
+        });
+
+        document.querySelectorAll('.match-def').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-def').forEach(d => d.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedDef = item;
+                checkMatch();
+            });
+        });
+
+        function checkMatch() {
+            if (selectedTerm && selectedDef) {
+                const termKey = selectedTerm.getAttribute('data-key');
+                const defKey = selectedDef.getAttribute('data-key');
+                const msgEl = document.getElementById('match-message');
+                
+                if (termKey === defKey) {
+                    selectedTerm.classList.add('matched');
+                    selectedDef.classList.add('matched');
+                    selectedTerm.classList.remove('selected');
+                    selectedDef.classList.remove('selected');
+                    selectedTerm = null;
+                    selectedDef = null;
+                    
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132;">
+                            <span class="lang-en">✓ Correct Match!</span>
+                            <span class="lang-cn">✓ 配对正确！</span>
+                        </span>`;
+                    }
+                    
+                    const unmatched = document.querySelectorAll('.match-term:not(.matched)');
+                    if (unmatched.length === 0 && msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132; font-size: 1.2rem; font-weight: bold;">
+                            <span class="lang-en">🎉 Congratulations! You matched all terms correctly!</span>
+                            <span class="lang-cn">🎉 恭喜！您已成功配对所有词汇！</span>
+                        </span>`;
+                    }
+                } else {
+                    selectedTerm.classList.add('error');
+                    selectedDef.classList.add('error');
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #842029;">
+                            <span class="lang-en">✗ Incorrect Match! Try again.</span>
+                            <span class="lang-cn">✗ 配对错误！请再试一次。</span>
+                        </span>`;
+                    }
+                    const t = selectedTerm;
+                    const d = selectedDef;
+                    setTimeout(() => {
+                        t.classList.remove('error', 'selected');
+                        d.classList.remove('error', 'selected');
+                    }, 400);
+                    selectedTerm = null;
+                    selectedDef = null;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

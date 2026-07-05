@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week WK4: Building an E-commerce Presence - DBEC2653</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Macaron Palette */
+            --pastel-pink: #FFD1DC;
+            --pastel-mint: #B0EACD;
+            --pastel-blue: #AEC6CF;
+            --pastel-lavender: #C3B1E1;
+            --pastel-yellow: #FDFD96;
+            
+            --ink: #111111;
+            --ink-muted: #333333;
+            
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            --radius-lg: 32px;
+            --radius-md: 16px;
+            
+            --spring: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender), var(--pastel-blue), var(--pastel-mint));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Auras */
+        body::before {
+            content: ''; position: fixed; top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, var(--pastel-yellow) 0%, transparent 70%);
+            filter: blur(80px); opacity: 0.6; z-index: -1;
+            animation: floatAura 20s ease-in-out infinite alternate;
+        }
+        body::after {
+            content: ''; position: fixed; bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, var(--pastel-pink) 0%, transparent 70%);
+            filter: blur(100px); opacity: 0.5; z-index: -1;
+            animation: floatAura 25s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatAura {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: var(--ink); }
+        
+        .header { text-align: center; padding: 40px 20px 20px; position: relative; }
+        .header h1 { font-size: 2.3rem; margin-top: 20px; font-weight: 800; color: var(--ink); }
+        .nav-link { color: var(--ink-muted); text-decoration: none; font-weight: 700; display: inline-block; transition: all 0.4s var(--spring); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--glass-bg); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--glass-border); }
+        .nav-link:hover { color: var(--ink); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: rgba(255,255,255,0.7); }
+        
+        .lang-btn {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .container { max-width: 900px; margin: 20px auto 40px; padding: 0 20px; position: relative; z-index: 1; }
+        
+        .card { 
+            background: var(--glass-bg); 
+            border-radius: var(--radius-lg); 
+            padding: 40px; 
+            box-shadow: var(--glass-shadow); 
+            margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            transition: all 0.5s var(--spring);
+        }
+        .card h2 { border-bottom: 2px solid rgba(255,255,255,0.5); padding-bottom: 15px; margin-top: 0; font-size: 1.8rem;}
+        
+        .step { background: rgba(255,255,255,0.3); padding: 20px; margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .step h3 { margin-top: 0; font-size: 1.3rem; }
+        
+        .btn { 
+            background: linear-gradient(135deg, var(--pastel-lavender), var(--pastel-pink));
+            color: var(--ink); 
+            padding: 12px 28px; 
+            border: 2px solid rgba(255,255,255,0.8); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.4s var(--spring);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(195, 177, 225, 0.4); background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender)); }
+        
+        /* Quiz */
+        .quiz-q { margin-bottom: 25px; background: rgba(255,255,255,0.2); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .quiz-label { display: block; padding: 10px 16px; cursor: pointer; transition: all 0.4s var(--spring); border-radius: 12px; border: 1px solid transparent; font-weight: 600; font-size: 1.1rem;}
+        .quiz-label:hover { background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); transform: translateX(5px);}
+        .explanation { display: none; margin-top: 10px; padding: 10px 16px; background: rgba(255,255,255,0.6); border-radius: 8px; font-weight: 600; border-left: 4px solid var(--pastel-blue); }
+        
+        /* Coding */
+        .code-editor { background: rgba(0,0,0,0.85); color: #F8F9FA; padding: 20px; border-radius: var(--radius-md); font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-top: 10px; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); white-space: pre-wrap; }
+        .correct-ans { color: #0f5132; font-weight: 700; margin-top: 15px; display: inline-block; padding: 10px 16px; background: rgba(176, 234, 205, 0.6); border-radius: 12px; border: 1px solid var(--pastel-mint);}
+        
+        /* Table Styles (Bilingual High Contrast) */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(255,255,255,0.2); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--glass-border); }
+        .data-table th, .data-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--glass-border); font-size: 1.1rem; }
+        .data-table th { background: rgba(255,255,255,0.6); font-weight: 800; font-family: 'Orbitron', sans-serif; }
+        .data-table tr:last-child td { border-bottom: none; }
+        
+        /* SVG Tweaks for Macaron Glassmorphism & High Contrast */
+        svg { background: transparent !important; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05)); margin: 10px auto; display: block; max-width: 100%; }
+        svg text { font-family: 'Arial', sans-serif !important; font-weight: bold !important; fill: #000000 !important; }
+        svg [fill="url(#blueGrad)"], svg [fill="url(#purpleGrad)"], svg [fill="url(#mintGrad)"], svg [fill="url(#pinkGrad)"], svg [fill="url(#yellowGrad)"] { fill-opacity: 0.8 !important; stroke: #000000 !important; stroke-width: 2px !important; }
+        svg [fill="#FFF"], svg [fill="#ffffff"], svg [fill="none"] { stroke: #000000 !important; }
+        
+        /* Vocabulary Matching Game Styles */
+        .match-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .match-col { width: 48%; display: flex; flex-direction: column; gap: 10px; }
+        .match-btn {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s var(--spring);
+            user-select: none;
+            text-align: left;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+        .match-btn:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(3px);
+        }
+        .match-btn.selected {
+            background: var(--pastel-yellow) !important;
+            border: 2px solid var(--ink);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .match-btn.matched {
+            background: var(--pastel-mint) !important;
+            border: 1px solid var(--pastel-mint);
+            opacity: 0.6;
+            cursor: default;
+            pointer-events: none;
+            transform: none !important;
+        }
+        .match-btn.error {
+            background: var(--pastel-pink) !important;
+            border: 1px solid var(--pastel-pink);
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Collapsible Q&A Review style */
+        .qa-block { margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); background: rgba(255,255,255,0.25); overflow: hidden; }
+        .qa-header { padding: 18px 24px; font-weight: 700; cursor: pointer; background: rgba(255,255,255,0.4); display: flex; justify-content: space-between; align-items: center; font-size: 1.15rem; }
+        .qa-body { padding: 20px 24px; display: none; border-top: 1px solid var(--glass-border); background: rgba(255,255,255,0.5); font-size: 1.1rem; line-height: 1.7; }
+        .qa-icon { transition: transform 0.3s; font-weight: bold; }
+        .qa-block.open .qa-body { display: block; }
+        .qa-block.open .qa-icon { transform: rotate(90deg); }
+
+        /* Translation CSS Rules */
+        .lang-cn { display: none !important; }
+        body.cn-active .lang-en { display: none !important; }
+        body.cn-active .lang-cn { display: block !important; }
+        
+        span.lang-cn { display: none !important; }
+        body.cn-active span.lang-en { display: none !important; }
+        body.cn-active span.lang-cn { display: inline !important; }
+
+        @media (max-width: 768px) {
+            .lang-btn {
+                position: static;
+                margin-top: 15px;
+            }
+            .match-col { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="nav-link">
+            <span class="lang-en">← Back to Hub</span>
+            <span class="lang-cn">← 返回主页</span>
+        </a>
+        <h1>
+            <span class="lang-en">Week 4: Building an E-commerce Presence</span>
+            <span class="lang-cn">第 4 周：构建电子商务平台</span>
+        </h1>
+        <button class="btn lang-btn" onclick="toggleLanguage()">🌐 EN / 中文</button>
+    </div>
+
+    <div class="container">
+        <!-- Objectives Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-lavender);">
+            <h2>
+                <span class="lang-en">Learning Objectives</span>
+                <span class="lang-cn">学习目标</span>
+            </h2>
+            <div class="lang-en">
+                <ul>
+                    <li>Explain the systematic process of planning and building an e-commerce presence (CLO1).</li><li>Compare hardware, software, and development tool options for hosting.</li><li>Describe key considerations in developing mobile-optimized sites.</li>
+                </ul>
+            </div>
+            <div class="lang-cn">
+                <ul>
+                    <li>解释规划和构建电子商务平台的系统化过程 (CLO1)。</li><li>对比用于托管的硬件、软件和开发工具选项。</li><li>描述开发移动优化网站的关键注意事项。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sample Company / Case Study Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Bustiness Case Context</span>
+                <span class="lang-cn">商业案例情境</span>
+            </h2>
+            <div class="lang-en">
+                <p><strong>Kompas Store Builder:</strong> An e-commerce developer consultancy advising online merchants on platform choices. When designing client projects, Kompas Store Builder manages the Systems Development Life Cycle (SDLC), assessing logical database flow against physical hardware capacity before deciding whether to build in-house or outsource development.</p>
+            </div>
+            <div class="lang-cn">
+                <p><strong>Kompas 网站构建器：</strong>一家为在线商家提供平台选择建议的电商开发咨询公司。在设计客户端项目时，Kompas 网站构建器管理系统开发生命周期（SDLC），在决定是内部开发还是外包开发之前，根据物理硬件容量评估逻辑数据库流程。</p>
+            </div>
+        </div>
+
+        <!-- Comparative Table Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Key Comparison: In-House Development vs. Outsourcing</span>
+                <span class="lang-cn">关键对比：内部开发与外包开发</span>
+            </h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th><span class="lang-en">Dimension</span><span class="lang-cn">维度</span></th><th><span class="lang-en">In-House Development</span><span class="lang-cn">内部开发 (In-House)</span></th><th><span class="lang-en">Outsourcing Development</span><span class="lang-cn">外包开发 (Outsourcing)</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="lang-en">Control & Choice</span><span class="lang-cn">控制与选择</span></td><td><span class="lang-en">High control over specific features and source code.</span><span class="lang-cn">对特定功能和源代码拥有极高的控制权。</span></td><td><span class="lang-en">Low control, high dependency on vendor schedules.</span><span class="lang-cn">控制权较低，高度依赖开发商的日程安排。</span></td></tr><tr><td><span class="lang-en">Failure Risk</span><span class="lang-cn">失败风险</span></td><td><span class="lang-en">High failure risk if internal staff lack specialized skills.</span><span class="lang-cn">如果内部员工缺乏专业技能，失败风险较高。</span></td><td><span class="lang-en">Lower risk due to vendor experience and SLAs.</span><span class="lang-cn">得益于开发商的经验和 SLA，风险较低。</span></td></tr><tr><td><span class="lang-en">Initial Cost</span><span class="lang-cn">初始成本</span></td><td><span class="lang-en">High recruitment and training costs for builders.</span><span class="lang-cn">开发人员的招聘和培训成本高昂。</span></td><td><span class="lang-en">High custom changes fees but predictable base build cost.</span><span class="lang-cn">定制修改费用高，但基础构建成本可预测。</span></td></tr><tr><td><span class="lang-en">Time-to-Market</span><span class="lang-cn">上线时间</span></td><td><span class="lang-en">Often slower due to learning curves.</span><span class="lang-cn">由于学习曲线，通常上线较慢。</span></td><td><span class="lang-en">Typically faster as vendors use pre-built templates.</span><span class="lang-cn">通常较快，因为开发商使用预构建的模板。</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Concept Visualization Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Concept Visualization</span>
+                <span class="lang-cn">概念可视化</span>
+            </h2>
+            <div style="background: rgba(255,255,255,0.5); border-radius: var(--radius-md); padding: 20px; border: 1px solid var(--glass-border);">
+                
+        <svg height="240" viewBox="0 0 600 240" width="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="mintGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stop-color="#B0EACD"></stop>
+                    <stop offset="100%" stop-color="#AEC6CF"></stop>
+                </linearGradient>
+            </defs>
+            <!-- SDLC Path -->
+            <path d="M 50 120 L 150 120 L 250 120 L 350 120 L 450 120" fill="none" id="sdlcPath" stroke="#111" stroke-width="3"></path>
+            
+            <circle cx="50" cy="120" fill="url(#mintGrad)" r="35" stroke="#111" stroke-width="1.5"></circle>
+            <text fill="#111" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="50" y="123">1. Analysis</text>
+            
+            <circle cx="175" cy="120" fill="url(#mintGrad)" r="35" stroke="#111" stroke-width="1.5"></circle>
+            <text fill="#111" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="175" y="123">2. Design</text>
+            
+            <circle cx="300" cy="120" fill="url(#mintGrad)" r="35" stroke="#111" stroke-width="1.5"></circle>
+            <text fill="#111" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="300" y="123">3. Build</text>
+            
+            <circle cx="425" cy="120" fill="url(#mintGrad)" r="35" stroke="#111" stroke-width="1.5"></circle>
+            <text fill="#111" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="425" y="123">4. Test</text>
+            
+            <circle cx="550" cy="120" fill="url(#mintGrad)" r="35" stroke="#111" stroke-width="1.5"></circle>
+            <text fill="#111" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="550" y="123">5. Maintain</text>
+        </svg>
+        
+            </div>
+        </div>
+
+        <!-- Practical Exercise Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-mint);">
+            <h2>
+                <span class="lang-en">Practical Exercise: Designing UI Wireframes</span>
+                <span class="lang-cn">实践练习：设计 UI 线框图</span>
+            </h2>
+            <div class="lang-en">
+                <p><b>Steps to complete:</b></p>
+                <ol>
+                    <li>Open Figma (or draw.io) and create a mock workspace layout.</li><li>Design the header navigation, hero banner slider, product showcase grids, and checkout button.</li><li>Examine how the grid structure rearranges when resizing the canvas to mobile viewport width.</li>
+                </ol>
+            </div>
+            <div class="lang-cn">
+                <p><b>操作步骤：</b></p>
+                <ol>
+                    <li>打开 Figma（或 draw.io）并创建一个模拟工作区布局。</li><li>设计头部导航栏、海报轮播图、产品展示网格以及结账按钮。</li><li>观察在将画布大小调整为移动端视口宽度时，网格结构如何重新排列。</li>
+                </ol>
+            </div>
+            <button class="btn" onclick="showCodeAns('practical')">
+                <span class="lang-en">Show Wireframe Layout Specifications</span>
+                <span class="lang-cn">显示线框图布局规范</span>
+            </button>
+            <div class="code-editor" id="code-ans-practical" style="display:none;">Grid: 4-Columns (Desktop: 1200px) -> 2-Columns (Tablet: 768px) -> 1-Column (Mobile: 480px).
+Header: Fixed top, hamburger menu enabled on viewport < 768px.
+Button: Primary CTA color Hex #D81B60, target area min 48px x 48px for touch targets.</div>
+        </div>
+
+        <!-- Vocabulary Matching Game -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Vocabulary Connection Game</span>
+                <span class="lang-cn">词汇连线互动游戏</span>
+            </h2>
+            <p>
+                <span class="lang-en">Match the term on the left with its definition on the right. (Click a term, then click its matching definition).</span>
+                <span class="lang-cn">将左侧的术语与右侧的定义进行配对。（点击术语，然后点击匹配的定义）。</span>
+            </p>
+            <div class="match-grid">
+                <!-- Terms Column -->
+                <div class="match-col">
+                    <div class="match-btn match-term" data-key="term_1"><span class="lang-en">Outsourcing</span><span class="lang-cn">外包</span></div><div class="match-btn match-term" data-key="term_3"><span class="lang-en">System Testing</span><span class="lang-cn">系统测试</span></div><div class="match-btn match-term" data-key="term_0"><span class="lang-en">SDLC</span><span class="lang-cn">系统开发生命周期</span></div><div class="match-btn match-term" data-key="term_2"><span class="lang-en">Unit Testing</span><span class="lang-cn">单元测试</span></div><div class="match-btn match-term" data-key="term_4"><span class="lang-en">Logical Design</span><span class="lang-cn">逻辑设计</span></div>
+                </div>
+                <!-- Definitions Column -->
+                <div class="match-col">
+                    <div class="match-btn match-def" data-key="term_4"><span class="lang-en">Flowcharts describing system data flows and specifications without physical hardware details</span><span class="lang-cn">描述系统数据流和规范的流程图，不涉及具体的物理硬件细节</span></div><div class="match-btn match-def" data-key="term_0"><span class="lang-en">A methodology for understanding business objectives and designing a system to meet them</span><span class="lang-cn">用于理解业务目标并设计系统以满足这些目标的系统化方法</span></div><div class="match-btn match-def" data-key="term_1"><span class="lang-en">Hiring an external vendor to write code or run hosting infrastructure</span><span class="lang-cn">雇佣外部服务商来编写代码或运行托管基础设施</span></div><div class="match-btn match-def" data-key="term_2"><span class="lang-en">Testing individual code modules or page forms in isolation before integration</span><span class="lang-cn">在集成前对独立的代码模块或页面表单进行单独测试</span></div><div class="match-btn match-def" data-key="term_3"><span class="lang-en">Testing the website as a whole to ensure all modules work together correctly</span><span class="lang-cn">将网站作为一个整体进行测试，以确保所有模块正确协同工作</span></div>
+                </div>
+            </div>
+            <div id="match-message" style="margin-top: 20px; font-weight: bold; text-align: center; min-height: 28px;"></div>
+        </div>
+
+        <!-- MCQ Practice Quiz -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Knowledge Check Practice</span>
+                <span class="lang-cn">知识自测练习</span>
+            </h2>
+            <form id="quiz-form">
+                
+            <div class="quiz-q">
+                <p><b>1. 
+                    <span class="lang-en">Which phase of the Systems Development Life Cycle (SDLC) defines the system's business objectives and requirements?</span>
+                    <span class="lang-cn">系统开发生命周期（SDLC）的哪个阶段定义了系统的业务目标和需求？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="0"> A. 
+                    <span class="lang-en">Systems Design</span>
+                    <span class="lang-cn">系统设计</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="1"> B. 
+                    <span class="lang-en">Building the System</span>
+                    <span class="lang-cn">构建系统</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="2"> C. 
+                    <span class="lang-en">Systems Analysis/Planning</span>
+                    <span class="lang-cn">系统分析/规划</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="3"> D. 
+                    <span class="lang-en">System Testing</span>
+                    <span class="lang-cn">系统测试</span>
+                </label>
+                <div class="explanation" id="exp-0">
+                    <span class="lang-en">Explanation: Systems Analysis/Planning is the first phase of SDLC, where business goals are identified and translated into requirements.</span>
+                    <span class="lang-cn">解析：系统分析/规划是 SDLC 的第一阶段，在此阶段识别业务目标并将其转化为需求。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>2. 
+                    <span class="lang-en">A logical system design describes __________________.</span>
+                    <span class="lang-cn">逻辑系统设计描述了 __________________。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="0"> A. 
+                    <span class="lang-en">The specific brands of servers to purchase</span>
+                    <span class="lang-cn">要购买的服务器的具体品牌</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="1"> B. 
+                    <span class="lang-en">Data flows, specifications, and processing rules without naming hardware</span>
+                    <span class="lang-cn">数据流、规范和处理规则，而不指明具体硬件</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="2"> C. 
+                    <span class="lang-en">The physical database cables to plug in</span>
+                    <span class="lang-cn">要插接的物理数据库电缆</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="3"> D. 
+                    <span class="lang-en">The salary details of database administrators</span>
+                    <span class="lang-cn">数据库管理员的薪资详情</span>
+                </label>
+                <div class="explanation" id="exp-1">
+                    <span class="lang-en">Explanation: Logical design defines what the system should do conceptually (specifications, data flow) without specifying actual physical hardware.</span>
+                    <span class="lang-cn">解析：逻辑设计定义了系统在概念上应该做什么（规范、数据流），而不指定实际的物理硬件。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>3. 
+                    <span class="lang-en">What is unit testing in e-commerce site development?</span>
+                    <span class="lang-cn">电子商务网站开发中的单元测试是什么？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="0"> A. 
+                    <span class="lang-en">Testing the server's backup electrical units</span>
+                    <span class="lang-cn">测试服务器的备用电力单元</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="1"> B. 
+                    <span class="lang-en">Testing individual code modules and page forms in isolation</span>
+                    <span class="lang-cn">单独测试独立的代码模块和页面表单</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="2"> C. 
+                    <span class="lang-en">Testing the entire live website under high traffic loads</span>
+                    <span class="lang-cn">在高流量负载下测试整个在线网站</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="3"> D. 
+                    <span class="lang-en">Comparing your website against competitors</span>
+                    <span class="lang-cn">将你的网站与竞争对手进行对比</span>
+                </label>
+                <div class="explanation" id="exp-2">
+                    <span class="lang-en">Explanation: Unit testing involves testing specific modules of code, forms, or pages in isolation to ensure they perform correctly before integration.</span>
+                    <span class="lang-cn">解析：单元测试涉及隔离测试特定的代码模块、表单或页面，以确保它们在集成前正确运行。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>4. 
+                    <span class="lang-en">Which of the following is a major advantage of outsourcing website development?</span>
+                    <span class="lang-cn">以下哪项是外包网站开发的主要优势？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="0"> A. 
+                    <span class="lang-en">Complete control over internal code</span>
+                    <span class="lang-cn">对内部代码的完全控制</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="1"> B. 
+                    <span class="lang-en">Low technical risk and fast deployment using vendor expertise</span>
+                    <span class="lang-cn">利用开发商的专业知识，降低技术风险并快速部署</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="2"> C. 
+                    <span class="lang-en">Zero dependency on external schedules</span>
+                    <span class="lang-cn">完全不依赖外部日程安排</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="3"> D. 
+                    <span class="lang-en">No cost for modifications</span>
+                    <span class="lang-cn">修改无需成本</span>
+                </label>
+                <div class="explanation" id="exp-3">
+                    <span class="lang-en">Explanation: Outsourcing leverages the vendor's specialized experience, lowering development risk and accelerating deployment.</span>
+                    <span class="lang-cn">解析：外包利用了开发商的专业经验，降低了开发风险并加速了部署。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>5. 
+                    <span class="lang-en">A physical system design specifies which of the following?</span>
+                    <span class="lang-cn">物理系统设计指定了以下哪项？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="0"> A. 
+                    <span class="lang-en">Only conceptual data flow diagrams</span>
+                    <span class="lang-cn">仅概念数据流程图</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="1"> B. 
+                    <span class="lang-en">Actual server brands, programming languages, and database products</span>
+                    <span class="lang-cn">实际服务器品牌、编程语言和数据库产品</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="2"> C. 
+                    <span class="lang-en">The corporate logo design guidelines</span>
+                    <span class="lang-cn">公司徽标设计指南</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="3"> D. 
+                    <span class="lang-en">Marketing objectives</span>
+                    <span class="lang-cn">营销目标</span>
+                </label>
+                <div class="explanation" id="exp-4">
+                    <span class="lang-en">Explanation: Physical design translates the logical design into actual physical components, naming specific hardware, databases, and software languages.</span>
+                    <span class="lang-cn">解析：物理设计将逻辑设计转化为实际的物理组件，指明具体的硬件、数据库和软件语言。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>6. 
+                    <span class="lang-en">What does SDLC stand for?</span>
+                    <span class="lang-cn">SDLC 代表什么？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="0"> A. 
+                    <span class="lang-en">System Design Life Cycle</span>
+                    <span class="lang-cn">系统设计生命周期</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="1"> B. 
+                    <span class="lang-en">Systems Development Life Cycle</span>
+                    <span class="lang-cn">系统开发生命周期</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="2"> C. 
+                    <span class="lang-en">Software Design Line Center</span>
+                    <span class="lang-cn">软件设计线路中心</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="3"> D. 
+                    <span class="lang-en">Secure Development Law Code</span>
+                    <span class="lang-cn">安全开发法律规范</span>
+                </label>
+                <div class="explanation" id="exp-5">
+                    <span class="lang-en">Explanation: SDLC stands for Systems Development Life Cycle, a methodology for managing the planning, building, testing, and deployment of systems.</span>
+                    <span class="lang-cn">解析：SDLC 代表系统开发生命周期，是管理系统规划、构建、测试和部署的方法论。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>7. 
+                    <span class="lang-en">System testing checks __________________.</span>
+                    <span class="lang-cn">系统测试检查 __________________。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="0"> A. 
+                    <span class="lang-en">Only single page buttons in isolation</span>
+                    <span class="lang-cn">隔离测试单个页面按钮</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="1"> B. 
+                    <span class="lang-en">The website as a whole to ensure all integrated modules work together</span>
+                    <span class="lang-cn">网站整体，以确保所有集成的模块协同工作</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="2"> C. 
+                    <span class="lang-en">The offline backup drives</span>
+                    <span class="lang-cn">离线备份驱动器</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="3"> D. 
+                    <span class="lang-en">Only server room temperature</span>
+                    <span class="lang-cn">仅服务器机房温度</span>
+                </label>
+                <div class="explanation" id="exp-6">
+                    <span class="lang-en">Explanation: System testing tests the entire integrated website, confirming that shopping carts, payment gateways, and inventories cooperate correctly.</span>
+                    <span class="lang-cn">解析：系统测试对整个集成网站进行测试，确认购物车、支付网关和库存协同工作正常。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>8. 
+                    <span class="lang-en">Which practice compares your site's operational metrics against industry top performers?</span>
+                    <span class="lang-cn">哪项实践将您网站的运营指标与行业顶尖企业进行对比？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="0"> A. 
+                    <span class="lang-en">Unit testing</span>
+                    <span class="lang-cn">单元测试</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="1"> B. 
+                    <span class="lang-en">Benchmarking</span>
+                    <span class="lang-cn">基准测试 (Benchmarking)</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="2"> C. 
+                    <span class="lang-en">Outsourcing</span>
+                    <span class="lang-cn">外包</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="3"> D. 
+                    <span class="lang-en">Data mapping</span>
+                    <span class="lang-cn">数据映射</span>
+                </label>
+                <div class="explanation" id="exp-7">
+                    <span class="lang-en">Explanation: Benchmarking compares a firm's system metrics (loading speed, transaction rates) against industry standards or leading competitors.</span>
+                    <span class="lang-cn">解析：基准测试将公司的系统指标（加载速度、交易率）与行业标准或领先的竞争对手进行比较。</span>
+                </div>
+            </div>
+            </form>
+            <button class="btn" type="button" onclick="checkQuiz()">
+                <span class="lang-en">Submit & Grade Answers</span>
+                <span class="lang-cn">提交并评定答案</span>
+            </button>
+            <div id="quiz-result" style="margin-top: 20px; font-weight: bold; min-height: 30px;"></div>
+        </div>
+
+        <!-- Review Q&A Section (Hidden QP answers) -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Revision Review Q&A</span>
+                <span class="lang-cn">课程复习问答</span>
+            </h2>
+            
+            <div class="qa-block" id="qa-WK4-0">
+                <div class="qa-header" onclick="toggleQA('WK4-0')">
+                    <span>
+                        <span class="lang-en">Review Exercise 1</span>
+                        <span class="lang-cn">复习练习题 1</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Describe the System Development Life Cycle (SDLC) phases specifically for developing an e-commerce website.</span>
+                        <span class="lang-cn">描述开发电子商务网站特定的系统开发生命周期（SDLC）阶段。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en">The SDLC methodology consists of 5 main phases:<br>1. <strong>Systems Analysis (系统分析):</strong> Identify business goals and translate them into system functionalities.<br>2. <strong>Systems Design (系统设计):</strong> Map out system specifications, including logical (data flow) and physical (actual servers, languages) designs.<br>3. <strong>Building the System (构建系统):</strong> Code, compile, configure servers, and build templates.<br>4. <strong>Testing (测试):</strong> Execute unit tests on isolated modules and system tests on the integrated site to ensure no bugs remain.<br>5. <strong>Implementation & Maintenance (实施与维护):</strong> Launch the website live, monitor performance, and continuously update database systems.</span>
+                        <span class="lang-cn">SDLC 方法论由 5 个主要阶段组成：<br>1. <strong>系统分析：</strong>确定业务目标并将其转化为系统功能。<br>2. <strong>系统设计：</strong>规划系统规范，包括逻辑（数据流）和物理（实际服务器、语言）设计。<br>3. <strong>构建系统：</strong>编写代码、编译、配置服务器并构建模板。<br>4. <strong>测试：</strong>对独立模块执行单元测试，对集成网站执行系统测试，确保无漏洞。<br>5. <strong>实施与维护：</strong>使网站上线，监控性能，并持续更新数据库系统。</span>
+                    </div>
+                </div>
+            </div>
+            <div class="qa-block" id="qa-WK4-1">
+                <div class="qa-header" onclick="toggleQA('WK4-1')">
+                    <span>
+                        <span class="lang-en">Review Exercise 2</span>
+                        <span class="lang-cn">复习练习题 2</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Differentiate between System Logical Design and System Physical Design, explaining why both are necessary.</span>
+                        <span class="lang-cn">区分系统逻辑设计与系统物理设计，并解释为什么两者都是必要的。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en"><strong>1. System Logical Design (系统逻辑设计):</strong> Focuses on data flows, input/output requirements, and processing rules conceptually without specifying hardware brands or code syntax (1 Mark). It ensures business specifications are logically complete.<br><strong>2. System Physical Design (系统物理设计):</strong> Translates logical models into concrete physical layouts, specifying database software (e.g. MySQL), server architectures (e.g. CPU, RAM), and coding languages (e.g. PHP/Python) (1 Mark).<br><strong>Necessity (必要性):</strong> Logical design ensures the system meets user business needs. Physical design provides the exact build plan to guide programmers and hardware purchases.</span>
+                        <span class="lang-cn"><strong>1. 系统逻辑设计：</strong>侧重于数据流、输入/输出要求和处理规则的概念，不指定硬件品牌或代码语法（1分）。它确保业务规范在逻辑上完整。<br><strong>2. 系统物理设计：</strong>将逻辑模型转化为具体的物理布局，指定数据库软件（如 MySQL）、服务器架构（如 CPU、RAM）和编程语言（如 PHP/Python）（1分）。<br><strong>必要性：</strong>逻辑设计确保系统满足用户的业务需求。物理设计提供了确切的构建计划，以指导程序员和硬件采购。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            document.body.classList.toggle('cn-active');
+        }
+
+        function showCodeAns(id) {
+            const el = document.getElementById('code-ans-' + id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleQA(id) {
+            const el = document.getElementById('qa-' + id);
+            el.classList.toggle('open');
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            const total = 8;
+            const answers = [2, 1, 1, 1, 1, 1, 1, 1];
+            
+            // Highlight options
+            for (let qIdx = 0; qIdx < total; qIdx++) {
+                const checkedOpt = document.querySelector(`input[name="q${qIdx}"]:checked`);
+                const expEl = document.getElementById(`exp-${qIdx}`);
+                if (expEl) {
+                    expEl.style.display = 'block';
+                }
+                
+                if (checkedOpt) {
+                    const val = parseInt(checkedOpt.value);
+                    if (val === answers[qIdx]) {
+                        score++;
+                    }
+                }
+            }
+            
+            const resEl = document.getElementById('quiz-result');
+            resEl.innerHTML = `<span class='correct-ans'>
+                <span class="lang-en">You scored: ${score} / ${total}</span>
+                <span class="lang-cn">您的得分：${score} / ${total}</span>
+            </span>`;
+        }
+
+        // Matching Game JS Logic
+        let selectedTerm = null;
+        let selectedDef = null;
+
+        document.querySelectorAll('.match-term').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-term').forEach(t => t.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedTerm = item;
+                checkMatch();
+            });
+        });
+
+        document.querySelectorAll('.match-def').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-def').forEach(d => d.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedDef = item;
+                checkMatch();
+            });
+        });
+
+        function checkMatch() {
+            if (selectedTerm && selectedDef) {
+                const termKey = selectedTerm.getAttribute('data-key');
+                const defKey = selectedDef.getAttribute('data-key');
+                const msgEl = document.getElementById('match-message');
+                
+                if (termKey === defKey) {
+                    selectedTerm.classList.add('matched');
+                    selectedDef.classList.add('matched');
+                    selectedTerm.classList.remove('selected');
+                    selectedDef.classList.remove('selected');
+                    selectedTerm = null;
+                    selectedDef = null;
+                    
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132;">
+                            <span class="lang-en">✓ Correct Match!</span>
+                            <span class="lang-cn">✓ 配对正确！</span>
+                        </span>`;
+                    }
+                    
+                    const unmatched = document.querySelectorAll('.match-term:not(.matched)');
+                    if (unmatched.length === 0 && msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132; font-size: 1.2rem; font-weight: bold;">
+                            <span class="lang-en">🎉 Congratulations! You matched all terms correctly!</span>
+                            <span class="lang-cn">🎉 恭喜！您已成功配对所有词汇！</span>
+                        </span>`;
+                    }
+                } else {
+                    selectedTerm.classList.add('error');
+                    selectedDef.classList.add('error');
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #842029;">
+                            <span class="lang-en">✗ Incorrect Match! Try again.</span>
+                            <span class="lang-cn">✗ 配对错误！请再试一次。</span>
+                        </span>`;
+                    }
+                    const t = selectedTerm;
+                    const d = selectedDef;
+                    setTimeout(() => {
+                        t.classList.remove('error', 'selected');
+                        d.classList.remove('error', 'selected');
+                    }, 400);
+                    selectedTerm = null;
+                    selectedDef = null;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week WK1: Introduction to E-commerce - DBEC2653</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Macaron Palette */
+            --pastel-pink: #FFD1DC;
+            --pastel-mint: #B0EACD;
+            --pastel-blue: #AEC6CF;
+            --pastel-lavender: #C3B1E1;
+            --pastel-yellow: #FDFD96;
+            
+            --ink: #111111;
+            --ink-muted: #333333;
+            
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            --radius-lg: 32px;
+            --radius-md: 16px;
+            
+            --spring: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender), var(--pastel-blue), var(--pastel-mint));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Auras */
+        body::before {
+            content: ''; position: fixed; top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, var(--pastel-yellow) 0%, transparent 70%);
+            filter: blur(80px); opacity: 0.6; z-index: -1;
+            animation: floatAura 20s ease-in-out infinite alternate;
+        }
+        body::after {
+            content: ''; position: fixed; bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, var(--pastel-pink) 0%, transparent 70%);
+            filter: blur(100px); opacity: 0.5; z-index: -1;
+            animation: floatAura 25s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatAura {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: var(--ink); }
+        
+        .header { text-align: center; padding: 40px 20px 20px; position: relative; }
+        .header h1 { font-size: 2.3rem; margin-top: 20px; font-weight: 800; color: var(--ink); }
+        .nav-link { color: var(--ink-muted); text-decoration: none; font-weight: 700; display: inline-block; transition: all 0.4s var(--spring); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--glass-bg); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--glass-border); }
+        .nav-link:hover { color: var(--ink); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: rgba(255,255,255,0.7); }
+        
+        .lang-btn {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .container { max-width: 900px; margin: 20px auto 40px; padding: 0 20px; position: relative; z-index: 1; }
+        
+        .card { 
+            background: var(--glass-bg); 
+            border-radius: var(--radius-lg); 
+            padding: 40px; 
+            box-shadow: var(--glass-shadow); 
+            margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            transition: all 0.5s var(--spring);
+        }
+        .card h2 { border-bottom: 2px solid rgba(255,255,255,0.5); padding-bottom: 15px; margin-top: 0; font-size: 1.8rem;}
+        
+        .step { background: rgba(255,255,255,0.3); padding: 20px; margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .step h3 { margin-top: 0; font-size: 1.3rem; }
+        
+        .btn { 
+            background: linear-gradient(135deg, var(--pastel-lavender), var(--pastel-pink));
+            color: var(--ink); 
+            padding: 12px 28px; 
+            border: 2px solid rgba(255,255,255,0.8); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.4s var(--spring);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(195, 177, 225, 0.4); background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender)); }
+        
+        /* Quiz */
+        .quiz-q { margin-bottom: 25px; background: rgba(255,255,255,0.2); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .quiz-label { display: block; padding: 10px 16px; cursor: pointer; transition: all 0.4s var(--spring); border-radius: 12px; border: 1px solid transparent; font-weight: 600; font-size: 1.1rem;}
+        .quiz-label:hover { background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); transform: translateX(5px);}
+        .explanation { display: none; margin-top: 10px; padding: 10px 16px; background: rgba(255,255,255,0.6); border-radius: 8px; font-weight: 600; border-left: 4px solid var(--pastel-blue); }
+        
+        /* Coding */
+        .code-editor { background: rgba(0,0,0,0.85); color: #F8F9FA; padding: 20px; border-radius: var(--radius-md); font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-top: 10px; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); white-space: pre-wrap; }
+        .correct-ans { color: #0f5132; font-weight: 700; margin-top: 15px; display: inline-block; padding: 10px 16px; background: rgba(176, 234, 205, 0.6); border-radius: 12px; border: 1px solid var(--pastel-mint);}
+        
+        /* Table Styles (Bilingual High Contrast) */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(255,255,255,0.2); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--glass-border); }
+        .data-table th, .data-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--glass-border); font-size: 1.1rem; }
+        .data-table th { background: rgba(255,255,255,0.6); font-weight: 800; font-family: 'Orbitron', sans-serif; }
+        .data-table tr:last-child td { border-bottom: none; }
+        
+        /* SVG Tweaks for Macaron Glassmorphism & High Contrast */
+        svg { background: transparent !important; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05)); margin: 10px auto; display: block; max-width: 100%; }
+        svg text { font-family: 'Arial', sans-serif !important; font-weight: bold !important; fill: #000000 !important; }
+        svg [fill="url(#blueGrad)"], svg [fill="url(#purpleGrad)"], svg [fill="url(#mintGrad)"], svg [fill="url(#pinkGrad)"], svg [fill="url(#yellowGrad)"] { fill-opacity: 0.8 !important; stroke: #000000 !important; stroke-width: 2px !important; }
+        svg [fill="#FFF"], svg [fill="#ffffff"], svg [fill="none"] { stroke: #000000 !important; }
+        
+        /* Vocabulary Matching Game Styles */
+        .match-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .match-col { width: 48%; display: flex; flex-direction: column; gap: 10px; }
+        .match-btn {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s var(--spring);
+            user-select: none;
+            text-align: left;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+        .match-btn:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(3px);
+        }
+        .match-btn.selected {
+            background: var(--pastel-yellow) !important;
+            border: 2px solid var(--ink);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .match-btn.matched {
+            background: var(--pastel-mint) !important;
+            border: 1px solid var(--pastel-mint);
+            opacity: 0.6;
+            cursor: default;
+            pointer-events: none;
+            transform: none !important;
+        }
+        .match-btn.error {
+            background: var(--pastel-pink) !important;
+            border: 1px solid var(--pastel-pink);
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Collapsible Q&A Review style */
+        .qa-block { margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); background: rgba(255,255,255,0.25); overflow: hidden; }
+        .qa-header { padding: 18px 24px; font-weight: 700; cursor: pointer; background: rgba(255,255,255,0.4); display: flex; justify-content: space-between; align-items: center; font-size: 1.15rem; }
+        .qa-body { padding: 20px 24px; display: none; border-top: 1px solid var(--glass-border); background: rgba(255,255,255,0.5); font-size: 1.1rem; line-height: 1.7; }
+        .qa-icon { transition: transform 0.3s; font-weight: bold; }
+        .qa-block.open .qa-body { display: block; }
+        .qa-block.open .qa-icon { transform: rotate(90deg); }
+
+        /* Translation CSS Rules */
+        .lang-cn { display: none !important; }
+        body.cn-active .lang-en { display: none !important; }
+        body.cn-active .lang-cn { display: block !important; }
+        
+        span.lang-cn { display: none !important; }
+        body.cn-active span.lang-en { display: none !important; }
+        body.cn-active span.lang-cn { display: inline !important; }
+
+        @media (max-width: 768px) {
+            .lang-btn {
+                position: static;
+                margin-top: 15px;
+            }
+            .match-col { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="nav-link">
+            <span class="lang-en">← Back to Hub</span>
+            <span class="lang-cn">← 返回主页</span>
+        </a>
+        <h1>
+            <span class="lang-en">Week 1: Introduction to E-commerce</span>
+            <span class="lang-cn">第 1 周：电子商务引言</span>
+        </h1>
+        <button class="btn lang-btn" onclick="toggleLanguage()">🌐 EN / 中文</button>
+    </div>
+
+    <div class="container">
+        <!-- Objectives Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-lavender);">
+            <h2>
+                <span class="lang-en">Learning Objectives</span>
+                <span class="lang-cn">学习目标</span>
+            </h2>
+            <div class="lang-en">
+                <ul>
+                    <li>Explain basic concepts, theories, and business models underlying e-commerce (CLO1).</li><li>Describe the unique features of e-commerce technology.</li><li>Identify the major academic disciplines concerned with e-commerce.</li>
+                </ul>
+            </div>
+            <div class="lang-cn">
+                <ul>
+                    <li>解释电子商务的基本概念、理论和商业模式 (CLO1)。</li><li>描述电子商务技术的独特特征。</li><li>识别涉及电子商务的主要学术学科。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sample Company / Case Study Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Bustiness Case Context</span>
+                <span class="lang-cn">商业案例情境</span>
+            </h2>
+            <div class="lang-en">
+                <p><strong>Kompas Retail:</strong> A legacy brick-and-mortar clothing retailer that is transitioning into the digital space. The firm must distinguish between simple electronic business processes and true e-commerce to ensure its digital transformation successfully expands its market reach and customer interactivity.</p>
+            </div>
+            <div class="lang-cn">
+                <p><strong>Kompas 零售：</strong>一家正在向数字化转型的传统实体服装零售商。该公司必须区分简单的电子业务（E-business）流程与真正的电子商务（E-commerce），以确保其数字化转型成功扩大市场覆盖面并增强客户互动性。</p>
+            </div>
+        </div>
+
+        <!-- Comparative Table Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Key Comparison: E-Commerce vs. E-Business</span>
+                <span class="lang-cn">关键对比：电子商务（E-Commerce）与电子业务（E-Business）</span>
+            </h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th><span class="lang-en">Feature / Dimension</span><span class="lang-cn">特征 / 维度</span></th><th><span class="lang-en">E-Commerce</span><span class="lang-cn">电子商务 (E-Commerce)</span></th><th><span class="lang-en">E-Business</span><span class="lang-cn">电子业务 (E-Business)</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="lang-en">Primary Scope</span><span class="lang-cn">主要范围</span></td><td><span class="lang-en">Commercial transactions conducted electronically across organization boundaries.</span><span class="lang-cn">跨越组织边界以电子方式进行的商业交易。</span></td><td><span class="lang-en">Digital enablement of business processes and transactions within a firm.</span><span class="lang-cn">企业内部业务流程和交易的数字化实现。</span></td></tr><tr><td><span class="lang-en">Core Focus</span><span class="lang-cn">核心焦点</span></td><td><span class="lang-en">External relations: Customers, suppliers, and payment gateways.</span><span class="lang-cn">外部关系：客户、供应商和支付网关。</span></td><td><span class="lang-en">Internal systems: Inventory, payroll, manufacturing, and HR systems.</span><span class="lang-cn">内部系统：库存、工资单、制造和人力资源系统。</span></td></tr><tr><td><span class="lang-en">Value Creation</span><span class="lang-cn">价值创造</span></td><td><span class="lang-en">Revenue generation through buying and selling products online.</span><span class="lang-cn">通过在线购买和销售产品来创造收入。</span></td><td><span class="lang-en">Cost reduction and operational efficiency through automated workflows.</span><span class="lang-cn">通过自动化工作流程降低成本并提高运营效率。</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Concept Visualization Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Concept Visualization</span>
+                <span class="lang-cn">概念可视化</span>
+            </h2>
+            <div style="background: rgba(255,255,255,0.5); border-radius: var(--radius-md); padding: 20px; border: 1px solid var(--glass-border);">
+                
+        <svg height="240" viewBox="0 0 600 240" width="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="blueGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stop-color="#AEC6CF"></stop>
+                    <stop offset="100%" stop-color="#C3B1E1"></stop>
+                </linearGradient>
+            </defs>
+            <!-- Firm Boundary -->
+            <rect fill="none" stroke="#111" stroke-dasharray="5,5" stroke-width="2" height="180" width="340" x="130" y="30"></rect>
+            <text fill="#111" font-family="Arial" font-size="12" font-weight="bold" x="140" y="45">FIRM BOUNDARY (企业边界)</text>
+            
+            <!-- E-Business Box -->
+            <rect fill="url(#blueGrad)" stroke="#111" stroke-width="2" height="100" rx="15" width="200" x="150" y="70"></rect>
+            <text fill="#111" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" x="250" y="110">E-Business (电子业务)</text>
+            <text fill="#333" font-family="Arial" font-size="11" text-anchor="middle" x="250" y="130">Internal HR, ERP, Database</text>
+            
+            <!-- E-Commerce Circle -->
+            <circle cx="430" cy="120" fill="none" r="70" stroke="#D81B60" stroke-width="3"></circle>
+            <text fill="#D81B60" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" x="430" y="115">E-Commerce</text>
+            <text fill="#D81B60" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="430" y="135">(电子商务)</text>
+            
+            <!-- Transaction Flow -->
+            <path d="M 350 120 L 510 120" fill="none" id="transPath" stroke="#111" stroke-width="2"></path>
+            <circle fill="#D81B60" r="5">
+                <animateMotion dur="3s" repeatCount="indefinite">
+                    <mpath href="#transPath"></mpath>
+                </animateMotion>
+            </circle>
+            <text fill="#111" font-family="Arial" font-size="11" text-anchor="middle" x="480" y="105">Transactions</text>
+        </svg>
+        
+            </div>
+        </div>
+
+        <!-- Practical Exercise Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-mint);">
+            <h2>
+                <span class="lang-en">Practical Exercise: Exploring E-Commerce Features</span>
+                <span class="lang-cn">实践练习：探索电子商务特征</span>
+            </h2>
+            <div class="lang-en">
+                <p><b>Steps to complete:</b></p>
+                <ol>
+                    <li>Visit a major e-commerce portal (e.g. Amazon, Shopee).</li><li>Identify examples of <strong>Ubiquity</strong> (e.g. mobile app shopping in bed) and <strong>Interactivity</strong> (e.g. live chats with sellers).</li><li>Inspect how <strong>Price Transparency</strong> allows you to compare identical items instantly across different merchants.</li>
+                </ol>
+            </div>
+            <div class="lang-cn">
+                <p><b>操作步骤：</b></p>
+                <ol>
+                    <li>访问主流电子商务网站（如亚马逊、Shopee）。</li><li>寻找<strong>无处不在 (Ubiquity)</strong>（例如在床上用手机购物）和<strong>交互性 (Interactivity)</strong>（例如与卖家在线实时聊天）的实例。</li><li>观察<strong>价格透明度 (Price Transparency)</strong>如何允许您立即在不同商家之间对比相同商品的价格。</li>
+                </ol>
+            </div>
+            <button class="btn" onclick="showCodeAns('practical')">
+                <span class="lang-en">Show Feature Analysis Log</span>
+                <span class="lang-cn">显示特征分析日志</span>
+            </button>
+            <div class="code-editor" id="code-ans-practical" style="display:none;">Feature: Ubiquity -> Result: App is accessible 24/7/365 from anywhere.
+Feature: Price Transparency -> Result: User can compare seller A ($15) vs seller B ($14.50) with 1 click.
+Feature: Interactivity -> Result: Live chat bot automatically prompts recommendations.</div>
+        </div>
+
+        <!-- Vocabulary Matching Game -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Vocabulary Connection Game</span>
+                <span class="lang-cn">词汇连线互动游戏</span>
+            </h2>
+            <p>
+                <span class="lang-en">Match the term on the left with its definition on the right. (Click a term, then click its matching definition).</span>
+                <span class="lang-cn">将左侧的术语与右侧的定义进行配对。（点击术语，然后点击匹配的定义）。</span>
+            </p>
+            <div class="match-grid">
+                <!-- Terms Column -->
+                <div class="match-col">
+                    <div class="match-btn match-term" data-key="term_3"><span class="lang-en">Global Reach</span><span class="lang-cn">全球触达</span></div><div class="match-btn match-term" data-key="term_1"><span class="lang-en">E-business</span><span class="lang-cn">电子业务</span></div><div class="match-btn match-term" data-key="term_2"><span class="lang-en">Ubiquity</span><span class="lang-cn">无处不在</span></div><div class="match-btn match-term" data-key="term_4"><span class="lang-en">Interactivity</span><span class="lang-cn">交互性</span></div><div class="match-btn match-term" data-key="term_0"><span class="lang-en">E-commerce</span><span class="lang-cn">电子商务</span></div>
+                </div>
+                <!-- Definitions Column -->
+                <div class="match-col">
+                    <div class="match-btn match-def" data-key="term_3"><span class="lang-en">The technology permits commercial transactions to cross cultural and national boundaries</span><span class="lang-cn">该技术允许商业交易跨越文化和国界</span></div><div class="match-btn match-def" data-key="term_2"><span class="lang-en">E-commerce technology is available everywhere: at work, at home, and elsewhere via mobile devices</span><span class="lang-cn">电子商务技术无处不在：在工作场所、家中以及通过移动设备在其他地方均可用</span></div><div class="match-btn match-def" data-key="term_0"><span class="lang-en">Commercial transactions conducted electronically across organization boundaries</span><span class="lang-cn">跨越组织边界以电子方式进行的商业交易</span></div><div class="match-btn match-def" data-key="term_4"><span class="lang-en">Technology that allows for two-way communication between merchant and consumer</span><span class="lang-cn">允许商家与消费者之间进行双向沟通的技术</span></div><div class="match-btn match-def" data-key="term_1"><span class="lang-en">Digital enablement of transactions and processes within a firm</span><span class="lang-cn">企业内部业务流程和交易的数字化实现</span></div>
+                </div>
+            </div>
+            <div id="match-message" style="margin-top: 20px; font-weight: bold; text-align: center; min-height: 28px;"></div>
+        </div>
+
+        <!-- MCQ Practice Quiz -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Knowledge Check Practice</span>
+                <span class="lang-cn">知识自测练习</span>
+            </h2>
+            <form id="quiz-form">
+                
+            <div class="quiz-q">
+                <p><b>1. 
+                    <span class="lang-en">Which of the following is a unique feature of Electronic Commerce (E-commerce)?</span>
+                    <span class="lang-cn">以下哪项是电子商务（E-commerce）的独特特征？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="0"> A. 
+                    <span class="lang-en">Cost</span>
+                    <span class="lang-cn">成本</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="1"> B. 
+                    <span class="lang-en">Speed</span>
+                    <span class="lang-cn">速度</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="2"> C. 
+                    <span class="lang-en">Reach</span>
+                    <span class="lang-cn">触达</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="3"> D. 
+                    <span class="lang-en">Ubiquity</span>
+                    <span class="lang-cn">无处不在</span>
+                </label>
+                <div class="explanation" id="exp-0">
+                    <span class="lang-en">Explanation: Ubiquity is one of the eight unique features of e-commerce technology. It refers to its availability everywhere at all times.</span>
+                    <span class="lang-cn">解析：“无处不在”是电子商务技术的八大独特特征之一。它指的是其随时随地可用。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>2. 
+                    <span class="lang-en">What is the primary difference between E-commerce and E-business?</span>
+                    <span class="lang-cn">电子商务与电子业务之间的主要区别是什么？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="0"> A. 
+                    <span class="lang-en">E-commerce is slower</span>
+                    <span class="lang-cn">电子商务速度较慢</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="1"> B. 
+                    <span class="lang-en">E-commerce involves transactions across firm boundaries</span>
+                    <span class="lang-cn">电子商务涉及跨越企业边界的交易</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="2"> C. 
+                    <span class="lang-en">E-business is purely external</span>
+                    <span class="lang-cn">电子业务完全是外部的</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="3"> D. 
+                    <span class="lang-en">There is no difference</span>
+                    <span class="lang-cn">没有区别</span>
+                </label>
+                <div class="explanation" id="exp-1">
+                    <span class="lang-en">Explanation: E-commerce focuses on transactions that cross organizational boundaries, whereas E-business is the digital enablement of internal processes.</span>
+                    <span class="lang-cn">解析：电子商务专注于跨越组织边界的交易，而电子业务是内部流程的数字化实现。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>3. 
+                    <span class="lang-en">Which feature of e-commerce technology refers to the total amount and quality of information available to all market participants?</span>
+                    <span class="lang-cn">电子商务技术的哪项特征是指所有市场参与者可获得的信息总量和质量？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="0"> A. 
+                    <span class="lang-en">Global Reach</span>
+                    <span class="lang-cn">全球触达</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="1"> B. 
+                    <span class="lang-en">Information Density</span>
+                    <span class="lang-cn">信息密度</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="2"> C. 
+                    <span class="lang-en">Interactivity</span>
+                    <span class="lang-cn">交互性</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="3"> D. 
+                    <span class="lang-en">Personalization</span>
+                    <span class="lang-cn">个性化</span>
+                </label>
+                <div class="explanation" id="exp-2">
+                    <span class="lang-en">Explanation: Information density refers to the total amount and quality of information available to all market participants, consumers and merchants alike.</span>
+                    <span class="lang-cn">解析：信息密度是指所有市场参与者（消费者和商家）均可获得的信息总量和质量。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>4. 
+                    <span class="lang-en">M-commerce (Mobile Commerce) involves the use of which device?</span>
+                    <span class="lang-cn">移动商务（M-commerce）涉及使用哪种设备？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="0"> A. 
+                    <span class="lang-en">Televisions</span>
+                    <span class="lang-cn">电视</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="1"> B. 
+                    <span class="lang-en">Desktop computers</span>
+                    <span class="lang-cn">台式电脑</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="2"> C. 
+                    <span class="lang-en">Radios</span>
+                    <span class="lang-cn">收音机</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="3"> D. 
+                    <span class="lang-en">Mobile devices</span>
+                    <span class="lang-cn">移动设备</span>
+                </label>
+                <div class="explanation" id="exp-3">
+                    <span class="lang-en">Explanation: M-commerce stands for mobile commerce, which involves transactions using mobile wireless devices.</span>
+                    <span class="lang-cn">解析：M-commerce 代表移动商务，指使用移动无线设备进行的交易。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>5. 
+                    <span class="lang-en">Which feature allows merchants to target their marketing messages to specific individuals based on name, interests, and past purchases?</span>
+                    <span class="lang-cn">哪项特征允许商家根据姓名、兴趣和过去的购买记录向特定个人发送有针对性的营销信息？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="0"> A. 
+                    <span class="lang-en">Interactivity</span>
+                    <span class="lang-cn">交互性</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="1"> B. 
+                    <span class="lang-en">Ubiquity</span>
+                    <span class="lang-cn">无处不在</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="2"> C. 
+                    <span class="lang-en">Personalization</span>
+                    <span class="lang-cn">个性化</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="3"> D. 
+                    <span class="lang-en">Universal Standards</span>
+                    <span class="lang-cn">通用标准</span>
+                </label>
+                <div class="explanation" id="exp-4">
+                    <span class="lang-en">Explanation: Personalization allows merchants to target marketing messages to specific individuals based on demographic, behavioral, or other data.</span>
+                    <span class="lang-cn">解析：个性化允许商家根据人口统计学、行为或其他数据将营销信息定位到特定个人。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>6. 
+                    <span class="lang-en">Universal standards in e-commerce refer to the fact that:</span>
+                    <span class="lang-cn">电子商务中的通用标准是指以下事实：</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="0"> A. 
+                    <span class="lang-en">Prices are standard worldwide</span>
+                    <span class="lang-cn">全球价格是标准的</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="1"> B. 
+                    <span class="lang-en">The technical standards of the Internet are shared by all nations</span>
+                    <span class="lang-cn">互联网的技术标准由所有国家共享</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="2"> C. 
+                    <span class="lang-en">Only one company sets all standard rules</span>
+                    <span class="lang-cn">只有一家公司制定所有标准规则</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="3"> D. 
+                    <span class="lang-en">Product designs are identical</span>
+                    <span class="lang-cn">产品设计完全相同</span>
+                </label>
+                <div class="explanation" id="exp-5">
+                    <span class="lang-en">Explanation: Universal standards mean the technical standards of the Internet and e-commerce are shared by all nations, lowering market entry costs.</span>
+                    <span class="lang-cn">解析：通用标准意味着互联网和电子商务的技术标准由所有国家共享，降低了市场准入门槛。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>7. 
+                    <span class="lang-en">What is the term used to describe the ability of consumers to discover the actual costs merchants pay for products?</span>
+                    <span class="lang-cn">用什么术语来描述消费者发现商家为产品支付的实际成本的能力？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="0"> A. 
+                    <span class="lang-en">Cost Transparency</span>
+                    <span class="lang-cn">成本透明度</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="1"> B. 
+                    <span class="lang-en">Price Transparency</span>
+                    <span class="lang-cn">价格透明度</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="2"> C. 
+                    <span class="lang-en">Information Symmetry</span>
+                    <span class="lang-cn">信息对称性</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="3"> D. 
+                    <span class="lang-en">Information Asymmetry</span>
+                    <span class="lang-cn">信息不对称性</span>
+                </label>
+                <div class="explanation" id="exp-6">
+                    <span class="lang-en">Explanation: Cost transparency refers to the ability of consumers to find out the actual costs merchants pay for products, which is enhanced by e-commerce.</span>
+                    <span class="lang-cn">解析：成本透明度是指消费者找出商家为产品支付的实际成本的能力，这在电子商务中得到了增强。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>8. 
+                    <span class="lang-en">Which academic discipline concerned with e-commerce focuses on consumer behavior and brand building?</span>
+                    <span class="lang-cn">涉及电子商务的哪门学术学科侧重于消费者行为和品牌建设？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="0"> A. 
+                    <span class="lang-en">Computer Science</span>
+                    <span class="lang-cn">计算机科学</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="1"> B. 
+                    <span class="lang-en">Marketing</span>
+                    <span class="lang-cn">市场营销</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="2"> C. 
+                    <span class="lang-en">Economics</span>
+                    <span class="lang-cn">经济学</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="3"> D. 
+                    <span class="lang-en">Management</span>
+                    <span class="lang-cn">管理学</span>
+                </label>
+                <div class="explanation" id="exp-7">
+                    <span class="lang-en">Explanation: Marketing is a business/behavioral discipline concerned with consumer behavior, market segmenting, and brand positioning in e-commerce.</span>
+                    <span class="lang-cn">解析：市场营销是一门与电子商务中的消费者行为、市场细分和品牌定位相关的商业/行为学科。</span>
+                </div>
+            </div>
+            </form>
+            <button class="btn" type="button" onclick="checkQuiz()">
+                <span class="lang-en">Submit & Grade Answers</span>
+                <span class="lang-cn">提交并评定答案</span>
+            </button>
+            <div id="quiz-result" style="margin-top: 20px; font-weight: bold; min-height: 30px;"></div>
+        </div>
+
+        <!-- Review Q&A Section (Hidden QP answers) -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Revision Review Q&A</span>
+                <span class="lang-cn">课程复习问答</span>
+            </h2>
+            
+            <div class="qa-block" id="qa-WK1-0">
+                <div class="qa-header" onclick="toggleQA('WK1-0')">
+                    <span>
+                        <span class="lang-en">Review Exercise 1</span>
+                        <span class="lang-cn">复习练习题 1</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Compare E-commerce and E-business in detail. Identify the primary boundary line between them.</span>
+                        <span class="lang-cn">详细对比电子商务与电子业务。指出它们之间的主要界限。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en"><strong>1. E-commerce (电子商务):</strong> Primarily involves commercial transactions conducted electronically across organizational boundaries. It includes exchange of value (transactions) between a firm and its customers, suppliers, or payment networks.<br><strong>2. E-business (电子业务):</strong> Primarily involves the digital enablement of transactions and business processes within a firm (e.g. inventory control, intranet communications, processing of internal files).<br><strong>Primary Boundary (边界线):</strong> The boundary line is the <strong>firm boundary</strong>. E-commerce transactions cross organization lines (outward-facing), while E-business processes are internally focused (inward-facing).</span>
+                        <span class="lang-cn"><strong>1. 电子商务 (E-commerce)：</strong>主要涉及跨越组织边界以电子方式进行的商业交易。它包括企业与其客户、供应商或支付网络之间的价值交换（交易）。<br><strong>2. 电子业务 (E-business)：</strong>主要指企业内部交易和业务流程的数字化实现（如库存控制、内联网通信、内部文件处理）。<br><strong>主要界限：</strong>分界线是<strong>企业边界</strong>。电子商务交易跨越组织边界（面向外部），而电子业务流程则聚焦于内部（面向内部）。</span>
+                    </div>
+                </div>
+            </div>
+            <div class="qa-block" id="qa-WK1-1">
+                <div class="qa-header" onclick="toggleQA('WK1-1')">
+                    <span>
+                        <span class="lang-en">Review Exercise 2</span>
+                        <span class="lang-cn">复习练习题 2</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Explain how Information Density and Price Transparency affect the competitive landscape in an e-commerce market.</span>
+                        <span class="lang-cn">解释信息密度和价格透明度如何影响电子商务市场中的竞争格局。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en"><strong>1. Information Density:</strong> E-commerce increases the total volume, quality, and accuracy of information available to all market participants. This reduces search costs and makes transaction information symmetric.<br><strong>2. Price Transparency:</strong> It allows consumers to immediately view and compare prices across multiple competing online merchants.<br><strong>Effect on Competition:</strong> High price transparency reduces merchants' ability to hide true costs and charge high markups based on consumer ignorance, intensifying price competition and driving down profit margins on commodity products.</span>
+                        <span class="lang-cn"><strong>1. 信息密度：</strong>电子商务增加了所有市场参与者可获得的信息总量、质量和准确性。这降低了搜索成本，使交易信息变得对称。<br><strong>2. 价格透明度：</strong>允许消费者立即查看和比较多个竞争性在线商家的价格。<br><strong>对竞争的影响：</strong>高价格透明度降低了商家隐瞒真实成本并利用消费者无知收取高额加价的能力，从而加剧了价格竞争并压低了商品化产品的利润率。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            document.body.classList.toggle('cn-active');
+        }
+
+        function showCodeAns(id) {
+            const el = document.getElementById('code-ans-' + id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleQA(id) {
+            const el = document.getElementById('qa-' + id);
+            el.classList.toggle('open');
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            const total = 8;
+            const answers = [3, 1, 1, 3, 2, 1, 0, 1];
+            
+            // Highlight options
+            for (let qIdx = 0; qIdx < total; qIdx++) {
+                const checkedOpt = document.querySelector(`input[name="q${qIdx}"]:checked`);
+                const expEl = document.getElementById(`exp-${qIdx}`);
+                if (expEl) {
+                    expEl.style.display = 'block';
+                }
+                
+                if (checkedOpt) {
+                    const val = parseInt(checkedOpt.value);
+                    if (val === answers[qIdx]) {
+                        score++;
+                    }
+                }
+            }
+            
+            const resEl = document.getElementById('quiz-result');
+            resEl.innerHTML = `<span class='correct-ans'>
+                <span class="lang-en">You scored: ${score} / ${total}</span>
+                <span class="lang-cn">您的得分：${score} / ${total}</span>
+            </span>`;
+        }
+
+        // Matching Game JS Logic
+        let selectedTerm = null;
+        let selectedDef = null;
+
+        document.querySelectorAll('.match-term').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-term').forEach(t => t.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedTerm = item;
+                checkMatch();
+            });
+        });
+
+        document.querySelectorAll('.match-def').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-def').forEach(d => d.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedDef = item;
+                checkMatch();
+            });
+        });
+
+        function checkMatch() {
+            if (selectedTerm && selectedDef) {
+                const termKey = selectedTerm.getAttribute('data-key');
+                const defKey = selectedDef.getAttribute('data-key');
+                const msgEl = document.getElementById('match-message');
+                
+                if (termKey === defKey) {
+                    selectedTerm.classList.add('matched');
+                    selectedDef.classList.add('matched');
+                    selectedTerm.classList.remove('selected');
+                    selectedDef.classList.remove('selected');
+                    selectedTerm = null;
+                    selectedDef = null;
+                    
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132;">
+                            <span class="lang-en">✓ Correct Match!</span>
+                            <span class="lang-cn">✓ 配对正确！</span>
+                        </span>`;
+                    }
+                    
+                    const unmatched = document.querySelectorAll('.match-term:not(.matched)');
+                    if (unmatched.length === 0 && msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132; font-size: 1.2rem; font-weight: bold;">
+                            <span class="lang-en">🎉 Congratulations! You matched all terms correctly!</span>
+                            <span class="lang-cn">🎉 恭喜！您已成功配对所有词汇！</span>
+                        </span>`;
+                    }
+                } else {
+                    selectedTerm.classList.add('error');
+                    selectedDef.classList.add('error');
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #842029;">
+                            <span class="lang-en">✗ Incorrect Match! Try again.</span>
+                            <span class="lang-cn">✗ 配对错误！请再试一次。</span>
+                        </span>`;
+                    }
+                    const t = selectedTerm;
+                    const d = selectedDef;
+                    setTimeout(() => {
+                        t.classList.remove('error', 'selected');
+                        d.classList.remove('error', 'selected');
+                    }, 400);
+                    selectedTerm = null;
+                    selectedDef = null;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

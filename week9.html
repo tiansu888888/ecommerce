@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week WK9: Online Retail and Services (Part 1) - DBEC2653</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Macaron Palette */
+            --pastel-pink: #FFD1DC;
+            --pastel-mint: #B0EACD;
+            --pastel-blue: #AEC6CF;
+            --pastel-lavender: #C3B1E1;
+            --pastel-yellow: #FDFD96;
+            
+            --ink: #111111;
+            --ink-muted: #333333;
+            
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            --radius-lg: 32px;
+            --radius-md: 16px;
+            
+            --spring: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender), var(--pastel-blue), var(--pastel-mint));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Auras */
+        body::before {
+            content: ''; position: fixed; top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, var(--pastel-yellow) 0%, transparent 70%);
+            filter: blur(80px); opacity: 0.6; z-index: -1;
+            animation: floatAura 20s ease-in-out infinite alternate;
+        }
+        body::after {
+            content: ''; position: fixed; bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, var(--pastel-pink) 0%, transparent 70%);
+            filter: blur(100px); opacity: 0.5; z-index: -1;
+            animation: floatAura 25s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatAura {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: var(--ink); }
+        
+        .header { text-align: center; padding: 40px 20px 20px; position: relative; }
+        .header h1 { font-size: 2.3rem; margin-top: 20px; font-weight: 800; color: var(--ink); }
+        .nav-link { color: var(--ink-muted); text-decoration: none; font-weight: 700; display: inline-block; transition: all 0.4s var(--spring); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--glass-bg); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--glass-border); }
+        .nav-link:hover { color: var(--ink); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: rgba(255,255,255,0.7); }
+        
+        .lang-btn {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .container { max-width: 900px; margin: 20px auto 40px; padding: 0 20px; position: relative; z-index: 1; }
+        
+        .card { 
+            background: var(--glass-bg); 
+            border-radius: var(--radius-lg); 
+            padding: 40px; 
+            box-shadow: var(--glass-shadow); 
+            margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            transition: all 0.5s var(--spring);
+        }
+        .card h2 { border-bottom: 2px solid rgba(255,255,255,0.5); padding-bottom: 15px; margin-top: 0; font-size: 1.8rem;}
+        
+        .step { background: rgba(255,255,255,0.3); padding: 20px; margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .step h3 { margin-top: 0; font-size: 1.3rem; }
+        
+        .btn { 
+            background: linear-gradient(135deg, var(--pastel-lavender), var(--pastel-pink));
+            color: var(--ink); 
+            padding: 12px 28px; 
+            border: 2px solid rgba(255,255,255,0.8); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.4s var(--spring);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(195, 177, 225, 0.4); background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender)); }
+        
+        /* Quiz */
+        .quiz-q { margin-bottom: 25px; background: rgba(255,255,255,0.2); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .quiz-label { display: block; padding: 10px 16px; cursor: pointer; transition: all 0.4s var(--spring); border-radius: 12px; border: 1px solid transparent; font-weight: 600; font-size: 1.1rem;}
+        .quiz-label:hover { background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); transform: translateX(5px);}
+        .explanation { display: none; margin-top: 10px; padding: 10px 16px; background: rgba(255,255,255,0.6); border-radius: 8px; font-weight: 600; border-left: 4px solid var(--pastel-blue); }
+        
+        /* Coding */
+        .code-editor { background: rgba(0,0,0,0.85); color: #F8F9FA; padding: 20px; border-radius: var(--radius-md); font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-top: 10px; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); white-space: pre-wrap; }
+        .correct-ans { color: #0f5132; font-weight: 700; margin-top: 15px; display: inline-block; padding: 10px 16px; background: rgba(176, 234, 205, 0.6); border-radius: 12px; border: 1px solid var(--pastel-mint);}
+        
+        /* Table Styles (Bilingual High Contrast) */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(255,255,255,0.2); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--glass-border); }
+        .data-table th, .data-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--glass-border); font-size: 1.1rem; }
+        .data-table th { background: rgba(255,255,255,0.6); font-weight: 800; font-family: 'Orbitron', sans-serif; }
+        .data-table tr:last-child td { border-bottom: none; }
+        
+        /* SVG Tweaks for Macaron Glassmorphism & High Contrast */
+        svg { background: transparent !important; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05)); margin: 10px auto; display: block; max-width: 100%; }
+        svg text { font-family: 'Arial', sans-serif !important; font-weight: bold !important; fill: #000000 !important; }
+        svg [fill="url(#blueGrad)"], svg [fill="url(#purpleGrad)"], svg [fill="url(#mintGrad)"], svg [fill="url(#pinkGrad)"], svg [fill="url(#yellowGrad)"] { fill-opacity: 0.8 !important; stroke: #000000 !important; stroke-width: 2px !important; }
+        svg [fill="#FFF"], svg [fill="#ffffff"], svg [fill="none"] { stroke: #000000 !important; }
+        
+        /* Vocabulary Matching Game Styles */
+        .match-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .match-col { width: 48%; display: flex; flex-direction: column; gap: 10px; }
+        .match-btn {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s var(--spring);
+            user-select: none;
+            text-align: left;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+        .match-btn:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(3px);
+        }
+        .match-btn.selected {
+            background: var(--pastel-yellow) !important;
+            border: 2px solid var(--ink);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .match-btn.matched {
+            background: var(--pastel-mint) !important;
+            border: 1px solid var(--pastel-mint);
+            opacity: 0.6;
+            cursor: default;
+            pointer-events: none;
+            transform: none !important;
+        }
+        .match-btn.error {
+            background: var(--pastel-pink) !important;
+            border: 1px solid var(--pastel-pink);
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Collapsible Q&A Review style */
+        .qa-block { margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); background: rgba(255,255,255,0.25); overflow: hidden; }
+        .qa-header { padding: 18px 24px; font-weight: 700; cursor: pointer; background: rgba(255,255,255,0.4); display: flex; justify-content: space-between; align-items: center; font-size: 1.15rem; }
+        .qa-body { padding: 20px 24px; display: none; border-top: 1px solid var(--glass-border); background: rgba(255,255,255,0.5); font-size: 1.1rem; line-height: 1.7; }
+        .qa-icon { transition: transform 0.3s; font-weight: bold; }
+        .qa-block.open .qa-body { display: block; }
+        .qa-block.open .qa-icon { transform: rotate(90deg); }
+
+        /* Translation CSS Rules */
+        .lang-cn { display: none !important; }
+        body.cn-active .lang-en { display: none !important; }
+        body.cn-active .lang-cn { display: block !important; }
+        
+        span.lang-cn { display: none !important; }
+        body.cn-active span.lang-en { display: none !important; }
+        body.cn-active span.lang-cn { display: inline !important; }
+
+        @media (max-width: 768px) {
+            .lang-btn {
+                position: static;
+                margin-top: 15px;
+            }
+            .match-col { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="nav-link">
+            <span class="lang-en">← Back to Hub</span>
+            <span class="lang-cn">← 返回主页</span>
+        </a>
+        <h1>
+            <span class="lang-en">Week 9: Online Retail and Services (Part 1)</span>
+            <span class="lang-cn">第 9 周：在线零售与服务（第一部分）</span>
+        </h1>
+        <button class="btn lang-btn" onclick="toggleLanguage()">🌐 EN / 中文</button>
+    </div>
+
+    <div class="container">
+        <!-- Objectives Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-lavender);">
+            <h2>
+                <span class="lang-en">Learning Objectives</span>
+                <span class="lang-cn">学习目标</span>
+            </h2>
+            <div class="lang-en">
+                <ul>
+                    <li>Explain online retail models and analyzing firm financial viability (CLO3).</li><li>Evaluate structural changes and viability of online retailing firms.</li><li>Compare different e-tailing models (virtual merchants, omni-channel).</li>
+                </ul>
+            </div>
+            <div class="lang-cn">
+                <ul>
+                    <li>解释在线零售模式并分析企业财务可行性 (CLO3)。</li><li>评估在线零售企业的结构变化和可行性。</li><li>对比不同的电子零售模式（虚拟零售商、全渠道）。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sample Company / Case Study Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Bustiness Case Context</span>
+                <span class="lang-cn">商业案例情境</span>
+            </h2>
+            <div class="lang-en">
+                <p><strong>Kompas Virtual Merchants:</strong> A pure-play online retail store that sells specialty apparel. The firm operates with zero physical brick-and-mortar storefronts, utilizing automated dropshipping inventory interfaces. To evaluate success, the firm monitors gross margins, cost of goods sold, and customer acquisition costs.</p>
+            </div>
+            <div class="lang-cn">
+                <p><strong>Kompas 虚拟零售商：</strong>一家销售特色服装的纯在线零售店。该公司在零实体店面的情况下运营，利用自动化的直运（Dropshipping）库存接口。为了评估成功，该公司监控毛利率、销售商品成本和客户获取成本。</p>
+            </div>
+        </div>
+
+        <!-- Comparative Table Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Key Comparison: E-Tailing Business Models</span>
+                <span class="lang-cn">关键对比：电子零售 (E-Tailing) 商业模式</span>
+            </h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th><span class="lang-en">E-Tailing Model</span><span class="lang-cn">电子零售模式</span></th><th><span class="lang-en">Description</span><span class="lang-cn">描述</span></th><th><span class="lang-en">Inventory Strategy</span><span class="lang-cn">库存策略</span></th><th><span class="lang-en">Example</span><span class="lang-cn">示例</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="lang-en">Virtual Merchant</span><span class="lang-cn">虚拟零售商</span></td><td><span class="lang-en">Pure online store with zero physical outlets.</span><span class="lang-cn">零实体网点的纯在线商店。</span></td><td><span class="lang-en">Centralized warehouse or dropshipping from manufacturers.</span><span class="lang-cn">中央仓库或由制造商直接代发货。</span></td><td><span class="lang-en">Amazon, Kompas Basics</span><span class="lang-cn">亚马逊、Kompas 基础</span></td></tr><tr><td><span class="lang-en">Bricks-and-Clicks</span><span class="lang-cn">实体加鼠标</span></td><td><span class="lang-en">Omni-channel merchant with physical and web presence.</span><span class="lang-cn">拥有实体店和网络平台的双渠道（全渠道）零售商。</span></td><td><span class="lang-en">Shared inventory systems across stores and warehouses.</span><span class="lang-cn">商店和仓库之间共享库存系统。</span></td><td><span class="lang-en">Walmart, Target</span><span class="lang-cn">沃尔玛、塔吉特</span></td></tr><tr><td><span class="lang-en">Catalog Merchant</span><span class="lang-cn">邮购目录商</span></td><td><span class="lang-en">Direct mail catalog transitioning to online storefront.</span><span class="lang-cn">直邮目录向在线商店转型。</span></td><td><span class="lang-en">Traditional catalog fulfillment logistics.</span><span class="lang-cn">传统的目录配送物流。</span></td><td><span class="lang-en">L.L. Bean, Lands' End</span><span class="lang-cn">L.L. Bean, Lands' End</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Concept Visualization Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Concept Visualization</span>
+                <span class="lang-cn">概念可视化</span>
+            </h2>
+            <div style="background: rgba(255,255,255,0.5); border-radius: var(--radius-md); padding: 20px; border: 1px solid var(--glass-border);">
+                
+        <svg height="240" viewBox="0 0 600 240" width="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="mintGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stop-color="#B0EACD"></stop>
+                    <stop offset="100%" stop-color="#AEC6CF"></stop>
+                </linearGradient>
+            </defs>
+            <!-- User -->
+            <circle cx="60" cy="120" fill="url(#mintGrad)" r="30" stroke="#111" stroke-width="1.5"></circle>
+            <text fill="#111" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="60" y="123">Consumer</text>
+            
+            <path d="M 90 120 L 220 120" fill="none" id="orderPath" stroke="#111" stroke-width="2"></path>
+            <text fill="#111" font-family="Arial" font-size="9" x="110" y="105">1. Order placed</text>
+            
+            <!-- Virtual Store -->
+            <rect fill="url(#mintGrad)" stroke="#111" stroke-width="1.5" height="60" rx="10" width="120" x="220" y="90"></rect>
+            <text fill="#111" font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="280" y="125">Virtual Merchant</text>
+            
+            <path d="M 340 120 L 470 120" fill="none" id="shipPath" stroke="#D81B60" stroke-width="2"></path>
+            <text fill="#D81B60" font-family="Arial" font-size="9" x="350" y="105">2. Dropship alert</text>
+            
+            <circle fill="#D81B60" r="5">
+                <animateMotion dur="3s" repeatCount="indefinite">
+                    <mpath href="#shipPath"></mpath>
+                </animateMotion>
+            </circle>
+            
+            <!-- Manufacturer -->
+            <rect fill="url(#mintGrad)" stroke="#111" stroke-width="1.5" height="50" rx="5" width="100" x="470" y="95"></rect>
+            <text fill="#111" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="520" y="125">Manufacturer</text>
+        </svg>
+        
+            </div>
+        </div>
+
+        <!-- Practical Exercise Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-mint);">
+            <h2>
+                <span class="lang-en">Practical Exercise: Local WordPress and WooCommerce setup</span>
+                <span class="lang-cn">实践练习：本地 WordPress 和 WooCommerce 设置</span>
+            </h2>
+            <div class="lang-en">
+                <p><b>Steps to complete:</b></p>
+                <ol>
+                    <li>Set up a local PHP/MySQL server stack (e.g. LocalWP or XAMPP).</li><li>Install a fresh WordPress instance and navigate to Plugins -> Add New.</li><li>Search for <strong>WooCommerce</strong>, click Install, and run the basic Setup Wizard configuration (currency, country settings).</li>
+                </ol>
+            </div>
+            <div class="lang-cn">
+                <p><b>操作步骤：</b></p>
+                <ol>
+                    <li>搭建本地 PHP/MySQL 服务器环境（例如 LocalWP 或 XAMPP）。</li><li>安装全新的 WordPress 实例，导航到“插件” -> “安装插件”。</li><li>搜索 <strong>WooCommerce</strong>，点击安装，并运行基本的设置向导配置（货币、国家设置）。</li>
+                </ol>
+            </div>
+            <button class="btn" onclick="showCodeAns('practical')">
+                <span class="lang-en">Show Installation Status Log</span>
+                <span class="lang-cn">显示安装状态日志</span>
+            </button>
+            <div class="code-editor" id="code-ans-practical" style="display:none;">WordPress Core: Version 6.5.x Active\nPlugin WooCommerce: Version 8.8.x Installed successfully\nDatabase Status: WC tables initialized (wp_wc_orders, wp_woocommerce_order_items)\nCurrency Configured: MYR (RMs), Base location: Kuala Lumpur, Malaysia</div>
+        </div>
+
+        <!-- Vocabulary Matching Game -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Vocabulary Connection Game</span>
+                <span class="lang-cn">词汇连线互动游戏</span>
+            </h2>
+            <p>
+                <span class="lang-en">Match the term on the left with its definition on the right. (Click a term, then click its matching definition).</span>
+                <span class="lang-cn">将左侧的术语与右侧的定义进行配对。（点击术语，然后点击匹配的定义）。</span>
+            </p>
+            <div class="match-grid">
+                <!-- Terms Column -->
+                <div class="match-col">
+                    <div class="match-btn match-term" data-key="term_4"><span class="lang-en">Firm Viability</span><span class="lang-cn">企业可行性</span></div><div class="match-btn match-term" data-key="term_1"><span class="lang-en">Virtual Merchant</span><span class="lang-cn">虚拟零售商</span></div><div class="match-btn match-term" data-key="term_0"><span class="lang-en">E-tailer</span><span class="lang-cn">电子零售商</span></div><div class="match-btn match-term" data-key="term_2"><span class="lang-en">Bricks-and-Clicks</span><span class="lang-cn">实体与网络</span></div><div class="match-btn match-term" data-key="term_3"><span class="lang-en">Dropshipping</span><span class="lang-cn">代发货</span></div>
+                </div>
+                <!-- Definitions Column -->
+                <div class="match-col">
+                    <div class="match-btn match-def" data-key="term_0"><span class="lang-en">Online retail storefronts that sell physical or digital products to consumers</span><span class="lang-cn">向消费者销售物理或数字产品的在线零售商店</span></div><div class="match-btn match-def" data-key="term_3"><span class="lang-en">An inventory model where the merchant forwards orders to a manufacturer for shipping</span><span class="lang-cn">商家将订单转发给制造商以进行配送的库存模式</span></div><div class="match-btn match-def" data-key="term_4"><span class="lang-en">The financial health and long-term sustainability of an online business model</span><span class="lang-cn">在线商业模式的财务健康状况和长期可持续性</span></div><div class="match-btn match-def" data-key="term_1"><span class="lang-en">A pure-play e-tailer operating solely online without physical retail stores</span><span class="lang-cn">仅在网上运营而没有实体零售店的纯电商企业</span></div><div class="match-btn match-def" data-key="term_2"><span class="lang-en">Merchants that integrate physical offline stores with online web channels</span><span class="lang-cn">将实体线下商店与在线网络渠道相结合的商家</span></div>
+                </div>
+            </div>
+            <div id="match-message" style="margin-top: 20px; font-weight: bold; text-align: center; min-height: 28px;"></div>
+        </div>
+
+        <!-- MCQ Practice Quiz -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Knowledge Check Practice</span>
+                <span class="lang-cn">知识自测练习</span>
+            </h2>
+            <form id="quiz-form">
+                
+            <div class="quiz-q">
+                <p><b>1. 
+                    <span class="lang-en">A virtual merchant is best described as an e-tailer that __________________.</span>
+                    <span class="lang-cn">虚拟零售商最适合被描述为 __________________ 的电子零售商。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="0"> A. 
+                    <span class="lang-en">Operates both physical stores and web portals</span>
+                    <span class="lang-cn">同时运营实体店和网络门户</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="1"> B. 
+                    <span class="lang-en">Has zero physical storefronts and sells purely online</span>
+                    <span class="lang-cn">没有实体店面，纯在线销售</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="2"> C. 
+                    <span class="lang-en">Only prints direct mail catalogs</span>
+                    <span class="lang-cn">仅打印直邮目录</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="3"> D. 
+                    <span class="lang-en">Builds private B2B networks</span>
+                    <span class="lang-cn">构建私有 B2B 网络</span>
+                </label>
+                <div class="explanation" id="exp-0">
+                    <span class="lang-en">Explanation: Virtual merchants are pure-play online retailers who do not own or run physical brick-and-mortar storefronts.</span>
+                    <span class="lang-cn">解析：虚拟零售商是纯在线零售商，不拥有或运营实体零售店面。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>2. 
+                    <span class="lang-en">Which of the following is a classic bricks-and-clicks retailer?</span>
+                    <span class="lang-cn">以下哪项是经典的实体与网络（Bricks-and-clicks）零售商？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="0"> A. 
+                    <span class="lang-en">Amazon</span>
+                    <span class="lang-cn">亚马逊</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="1"> B. 
+                    <span class="lang-en">eBay</span>
+                    <span class="lang-cn">eBay</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="2"> C. 
+                    <span class="lang-en">Walmart</span>
+                    <span class="lang-cn">沃尔玛</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="3"> D. 
+                    <span class="lang-en">E*Trade</span>
+                    <span class="lang-cn">E*Trade</span>
+                </label>
+                <div class="explanation" id="exp-1">
+                    <span class="lang-en">Explanation: Walmart operates massive physical retail stores alongside a comprehensive online web shop, representing a bricks-and-clicks model.</span>
+                    <span class="lang-cn">解析：沃尔玛在运营大型实体零售店的同时，还拥有一个综合性的在线网络商城，代表了实体与网络相结合的模式。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>3. 
+                    <span class="lang-en">What does a dropshipping inventory strategy involve?</span>
+                    <span class="lang-cn">直运（Dropshipping）库存策略涉及什么？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="0"> A. 
+                    <span class="lang-en">Storing products in local store backrooms</span>
+                    <span class="lang-cn">将产品存储在本地商店的后房</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="1"> B. 
+                    <span class="lang-en">Forwarding customer orders to a manufacturer who ships products directly</span>
+                    <span class="lang-cn">将客户订单转发给直接配送产品的制造商</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="2"> C. 
+                    <span class="lang-en">Building massive regional warehouses</span>
+                    <span class="lang-cn">建造大型区域仓库</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="3"> D. 
+                    <span class="lang-en">Selling digital downloads only</span>
+                    <span class="lang-cn">仅销售数字下载产品</span>
+                </label>
+                <div class="explanation" id="exp-2">
+                    <span class="lang-en">Explanation: Dropshipping allows e-tailers to sell products without holding physical inventory; orders are shipped directly by third-party suppliers.</span>
+                    <span class="lang-cn">解析：直运允许电子零售商在不持有实物库存的情况下销售产品；订单由第三方供应商直接配送。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>4. 
+                    <span class="lang-en">Which financial metric evaluates a firm's total revenue minus cost of goods sold?</span>
+                    <span class="lang-cn">哪项财务指标评估企业的总收入减去所售商品成本？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="0"> A. 
+                    <span class="lang-en">Net margin</span>
+                    <span class="lang-cn">净利润率</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="1"> B. 
+                    <span class="lang-en">Gross profit</span>
+                    <span class="lang-cn">毛利润 (Gross profit)</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="2"> C. 
+                    <span class="lang-en">Acquisition cost</span>
+                    <span class="lang-cn">获取成本</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="3"> D. 
+                    <span class="lang-en">Operating leverage</span>
+                    <span class="lang-cn">运营杠杆</span>
+                </label>
+                <div class="explanation" id="exp-3">
+                    <span class="lang-en">Explanation: Gross profit is calculated by subtracting the cost of goods sold (COGS) from net sales revenue.</span>
+                    <span class="lang-cn">解析：毛利润是通过从净销售收入中减去所售商品成本 (COGS) 计算得出的。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>5. 
+                    <span class="lang-en">E-tailing business models create value primarily by __________________.</span>
+                    <span class="lang-cn">电子零售商业模式主要通过 __________________ 创造价值。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="0"> A. 
+                    <span class="lang-en">Avoiding database server charges</span>
+                    <span class="lang-cn">避免数据库服务器收费</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="1"> B. 
+                    <span class="lang-en">Lowering transaction costs and offering wider selections online</span>
+                    <span class="lang-cn">降低交易成本并在网上提供更广泛的选择</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="2"> C. 
+                    <span class="lang-en">Creating private physical networks</span>
+                    <span class="lang-cn">创建私有物理网络</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="3"> D. 
+                    <span class="lang-en">Hiring external local agents</span>
+                    <span class="lang-cn">雇佣外部本地代理人</span>
+                </label>
+                <div class="explanation" id="exp-4">
+                    <span class="lang-en">Explanation: E-tailers provide value through shopping convenience, lower transaction costs, search tools, and massive catalog selections.</span>
+                    <span class="lang-cn">解析：电子零售商通过购物便利性、更低的交易成本、搜索工具和庞大的目录选择来提供价值。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>6. 
+                    <span class="lang-en">What is the primary objective of WordPress database tables like wp_wc_orders?</span>
+                    <span class="lang-cn">WordPress 数据库表如 wp_wc_orders 的主要目标是什么？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="0"> A. 
+                    <span class="lang-en">To format CSS styling templates</span>
+                    <span class="lang-cn">格式化 CSS 样式模板</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="1"> B. 
+                    <span class="lang-en">To store and log customer order transactions in WooCommerce</span>
+                    <span class="lang-cn">在 WooCommerce 中存储和记录客户订单交易</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="2"> C. 
+                    <span class="lang-en">To route DNS queries to IP hosts</span>
+                    <span class="lang-cn">将 DNS 查询路由到 IP 主机</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="3"> D. 
+                    <span class="lang-en">To load banner images</span>
+                    <span class="lang-cn">加载横幅图像</span>
+                </label>
+                <div class="explanation" id="exp-5">
+                    <span class="lang-en">Explanation: The wp_wc_orders database table stores all purchase order details, customer addresses, and statuses in WooCommerce.</span>
+                    <span class="lang-cn">解析：wp_wc_orders 数据库表存储 WooCommerce 中的所有采购订单详情、客户地址和状态。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>7. 
+                    <span class="lang-en">Analyzing a firm's financial viability involves examining which of the following?</span>
+                    <span class="lang-cn">分析企业的财务可行性涉及检查以下哪项？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="0"> A. 
+                    <span class="lang-en">The layout wireframes</span>
+                    <span class="lang-cn">布局线框图</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="1"> B. 
+                    <span class="lang-en">Symmetric key sizes</span>
+                    <span class="lang-cn">对称密钥大小</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="2"> C. 
+                    <span class="lang-en">Balance sheets, cash flows, and income statements</span>
+                    <span class="lang-cn">资产负债表、现金流量表和损益表</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="3"> D. 
+                    <span class="lang-en">Target keywords</span>
+                    <span class="lang-cn">目标关键词</span>
+                </label>
+                <div class="explanation" id="exp-6">
+                    <span class="lang-en">Explanation: Financial viability analysis audits balance sheets, cash flows, and revenues to verify long-term survivability.</span>
+                    <span class="lang-cn">解析：财务可行性分析对资产负债表、现金流量表和收入进行审计，以验证长期的生存能力。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>8. 
+                    <span class="lang-en">Omni-channel retailing refers to:</span>
+                    <span class="lang-cn">全渠道零售是指：</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="0"> A. 
+                    <span class="lang-en">Selling on one single TV channel</span>
+                    <span class="lang-cn">在单个电视频道上销售</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="1"> B. 
+                    <span class="lang-en">Integrating multiple retail channels (web, mobile, physical store) seamlessly</span>
+                    <span class="lang-cn">无缝整合多个零售渠道（网页、移动端、实体店）</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="2"> C. 
+                    <span class="lang-en">Outsourcing code to different firms</span>
+                    <span class="lang-cn">将代码外包给不同的公司</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="3"> D. 
+                    <span class="lang-en">Using symmetric keys only</span>
+                    <span class="lang-cn">仅使用对称密钥</span>
+                </label>
+                <div class="explanation" id="exp-7">
+                    <span class="lang-en">Explanation: Omni-channel retailing provides a unified customer shopping experience across online web, mobile app, and physical store touchpoints.</span>
+                    <span class="lang-cn">解析：全渠道零售在在线网页、移动应用和实体店触点上为客户提供统一的购物体验。</span>
+                </div>
+            </div>
+            </form>
+            <button class="btn" type="button" onclick="checkQuiz()">
+                <span class="lang-en">Submit & Grade Answers</span>
+                <span class="lang-cn">提交并评定答案</span>
+            </button>
+            <div id="quiz-result" style="margin-top: 20px; font-weight: bold; min-height: 30px;"></div>
+        </div>
+
+        <!-- Review Q&A Section (Hidden QP answers) -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Revision Review Q&A</span>
+                <span class="lang-cn">课程复习问答</span>
+            </h2>
+            
+            <div class="qa-block" id="qa-WK9-0">
+                <div class="qa-header" onclick="toggleQA('WK9-0')">
+                    <span>
+                        <span class="lang-en">Review Exercise 1</span>
+                        <span class="lang-cn">复习练习题 1</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Explain how virtual merchants differ from bricks-and-clicks merchants in terms of cost structure and operational risk.</span>
+                        <span class="lang-cn">解释虚拟零售商与实体加鼠标（双渠道）零售商在成本结构和运营风险方面的差异。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en"><strong>1. Cost Structure (成本结构):</strong> Virtual merchants have low capital expenditures since they require no brick-and-mortar storefronts, lowering lease and offline staff costs. However, they face high digital customer acquisition costs (CPC marketing). Bricks-and-clicks merchants face high fixed overhead costs (physical leases, utilities, instore inventory management).<br><strong>2. Operational Risk (运营风险):</strong> Virtual merchants face inventory challenges (relying on third-party dropshippers) and low barriers to entry from competitors. Bricks-and-clicks face inventory obsolescence risks and channel conflict (web sales competing with franchise store sales).</span>
+                        <span class="lang-cn"><strong>1. 成本结构：</strong>虚拟零售商的资本支出较低，因为他们不需要实体店面，从而降低了租金和线下员工成本。然而，他们面临高昂的数字客户获取成本（CPC 营销）。实体加鼠标零售商面临高昂的固定间接成本（物理租赁、公用事业、店内库存管理）。<br><strong>2. 运营风险：</strong>虚拟零售商面临库存挑战（依赖第三方代发货商）和竞争对手的低准入门槛。实体加鼠标零售商面临库存过时风险和渠道冲突（网络销售与加盟店销售竞争）。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            document.body.classList.toggle('cn-active');
+        }
+
+        function showCodeAns(id) {
+            const el = document.getElementById('code-ans-' + id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleQA(id) {
+            const el = document.getElementById('qa-' + id);
+            el.classList.toggle('open');
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            const total = 8;
+            const answers = [1, 2, 1, 1, 1, 1, 2, 1];
+            
+            // Highlight options
+            for (let qIdx = 0; qIdx < total; qIdx++) {
+                const checkedOpt = document.querySelector(`input[name="q${qIdx}"]:checked`);
+                const expEl = document.getElementById(`exp-${qIdx}`);
+                if (expEl) {
+                    expEl.style.display = 'block';
+                }
+                
+                if (checkedOpt) {
+                    const val = parseInt(checkedOpt.value);
+                    if (val === answers[qIdx]) {
+                        score++;
+                    }
+                }
+            }
+            
+            const resEl = document.getElementById('quiz-result');
+            resEl.innerHTML = `<span class='correct-ans'>
+                <span class="lang-en">You scored: ${score} / ${total}</span>
+                <span class="lang-cn">您的得分：${score} / ${total}</span>
+            </span>`;
+        }
+
+        // Matching Game JS Logic
+        let selectedTerm = null;
+        let selectedDef = null;
+
+        document.querySelectorAll('.match-term').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-term').forEach(t => t.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedTerm = item;
+                checkMatch();
+            });
+        });
+
+        document.querySelectorAll('.match-def').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-def').forEach(d => d.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedDef = item;
+                checkMatch();
+            });
+        });
+
+        function checkMatch() {
+            if (selectedTerm && selectedDef) {
+                const termKey = selectedTerm.getAttribute('data-key');
+                const defKey = selectedDef.getAttribute('data-key');
+                const msgEl = document.getElementById('match-message');
+                
+                if (termKey === defKey) {
+                    selectedTerm.classList.add('matched');
+                    selectedDef.classList.add('matched');
+                    selectedTerm.classList.remove('selected');
+                    selectedDef.classList.remove('selected');
+                    selectedTerm = null;
+                    selectedDef = null;
+                    
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132;">
+                            <span class="lang-en">✓ Correct Match!</span>
+                            <span class="lang-cn">✓ 配对正确！</span>
+                        </span>`;
+                    }
+                    
+                    const unmatched = document.querySelectorAll('.match-term:not(.matched)');
+                    if (unmatched.length === 0 && msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132; font-size: 1.2rem; font-weight: bold;">
+                            <span class="lang-en">🎉 Congratulations! You matched all terms correctly!</span>
+                            <span class="lang-cn">🎉 恭喜！您已成功配对所有词汇！</span>
+                        </span>`;
+                    }
+                } else {
+                    selectedTerm.classList.add('error');
+                    selectedDef.classList.add('error');
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #842029;">
+                            <span class="lang-en">✗ Incorrect Match! Try again.</span>
+                            <span class="lang-cn">✗ 配对错误！请再试一次。</span>
+                        </span>`;
+                    }
+                    const t = selectedTerm;
+                    const d = selectedDef;
+                    setTimeout(() => {
+                        t.classList.remove('error', 'selected');
+                        d.classList.remove('error', 'selected');
+                    }, 400);
+                    selectedTerm = null;
+                    selectedDef = null;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

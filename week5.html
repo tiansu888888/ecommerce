@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week WK5: E-commerce Security and Payment Systems - DBEC2653</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Macaron Palette */
+            --pastel-pink: #FFD1DC;
+            --pastel-mint: #B0EACD;
+            --pastel-blue: #AEC6CF;
+            --pastel-lavender: #C3B1E1;
+            --pastel-yellow: #FDFD96;
+            
+            --ink: #111111;
+            --ink-muted: #333333;
+            
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            --radius-lg: 32px;
+            --radius-md: 16px;
+            
+            --spring: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender), var(--pastel-blue), var(--pastel-mint));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Auras */
+        body::before {
+            content: ''; position: fixed; top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, var(--pastel-yellow) 0%, transparent 70%);
+            filter: blur(80px); opacity: 0.6; z-index: -1;
+            animation: floatAura 20s ease-in-out infinite alternate;
+        }
+        body::after {
+            content: ''; position: fixed; bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, var(--pastel-pink) 0%, transparent 70%);
+            filter: blur(100px); opacity: 0.5; z-index: -1;
+            animation: floatAura 25s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatAura {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: var(--ink); }
+        
+        .header { text-align: center; padding: 40px 20px 20px; position: relative; }
+        .header h1 { font-size: 2.3rem; margin-top: 20px; font-weight: 800; color: var(--ink); }
+        .nav-link { color: var(--ink-muted); text-decoration: none; font-weight: 700; display: inline-block; transition: all 0.4s var(--spring); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--glass-bg); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--glass-border); }
+        .nav-link:hover { color: var(--ink); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: rgba(255,255,255,0.7); }
+        
+        .lang-btn {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .container { max-width: 900px; margin: 20px auto 40px; padding: 0 20px; position: relative; z-index: 1; }
+        
+        .card { 
+            background: var(--glass-bg); 
+            border-radius: var(--radius-lg); 
+            padding: 40px; 
+            box-shadow: var(--glass-shadow); 
+            margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            transition: all 0.5s var(--spring);
+        }
+        .card h2 { border-bottom: 2px solid rgba(255,255,255,0.5); padding-bottom: 15px; margin-top: 0; font-size: 1.8rem;}
+        
+        .step { background: rgba(255,255,255,0.3); padding: 20px; margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .step h3 { margin-top: 0; font-size: 1.3rem; }
+        
+        .btn { 
+            background: linear-gradient(135deg, var(--pastel-lavender), var(--pastel-pink));
+            color: var(--ink); 
+            padding: 12px 28px; 
+            border: 2px solid rgba(255,255,255,0.8); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.4s var(--spring);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(195, 177, 225, 0.4); background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender)); }
+        
+        /* Quiz */
+        .quiz-q { margin-bottom: 25px; background: rgba(255,255,255,0.2); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .quiz-label { display: block; padding: 10px 16px; cursor: pointer; transition: all 0.4s var(--spring); border-radius: 12px; border: 1px solid transparent; font-weight: 600; font-size: 1.1rem;}
+        .quiz-label:hover { background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); transform: translateX(5px);}
+        .explanation { display: none; margin-top: 10px; padding: 10px 16px; background: rgba(255,255,255,0.6); border-radius: 8px; font-weight: 600; border-left: 4px solid var(--pastel-blue); }
+        
+        /* Coding */
+        .code-editor { background: rgba(0,0,0,0.85); color: #F8F9FA; padding: 20px; border-radius: var(--radius-md); font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-top: 10px; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); white-space: pre-wrap; }
+        .correct-ans { color: #0f5132; font-weight: 700; margin-top: 15px; display: inline-block; padding: 10px 16px; background: rgba(176, 234, 205, 0.6); border-radius: 12px; border: 1px solid var(--pastel-mint);}
+        
+        /* Table Styles (Bilingual High Contrast) */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(255,255,255,0.2); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--glass-border); }
+        .data-table th, .data-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--glass-border); font-size: 1.1rem; }
+        .data-table th { background: rgba(255,255,255,0.6); font-weight: 800; font-family: 'Orbitron', sans-serif; }
+        .data-table tr:last-child td { border-bottom: none; }
+        
+        /* SVG Tweaks for Macaron Glassmorphism & High Contrast */
+        svg { background: transparent !important; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05)); margin: 10px auto; display: block; max-width: 100%; }
+        svg text { font-family: 'Arial', sans-serif !important; font-weight: bold !important; fill: #000000 !important; }
+        svg [fill="url(#blueGrad)"], svg [fill="url(#purpleGrad)"], svg [fill="url(#mintGrad)"], svg [fill="url(#pinkGrad)"], svg [fill="url(#yellowGrad)"] { fill-opacity: 0.8 !important; stroke: #000000 !important; stroke-width: 2px !important; }
+        svg [fill="#FFF"], svg [fill="#ffffff"], svg [fill="none"] { stroke: #000000 !important; }
+        
+        /* Vocabulary Matching Game Styles */
+        .match-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .match-col { width: 48%; display: flex; flex-direction: column; gap: 10px; }
+        .match-btn {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s var(--spring);
+            user-select: none;
+            text-align: left;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+        .match-btn:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(3px);
+        }
+        .match-btn.selected {
+            background: var(--pastel-yellow) !important;
+            border: 2px solid var(--ink);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .match-btn.matched {
+            background: var(--pastel-mint) !important;
+            border: 1px solid var(--pastel-mint);
+            opacity: 0.6;
+            cursor: default;
+            pointer-events: none;
+            transform: none !important;
+        }
+        .match-btn.error {
+            background: var(--pastel-pink) !important;
+            border: 1px solid var(--pastel-pink);
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Collapsible Q&A Review style */
+        .qa-block { margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); background: rgba(255,255,255,0.25); overflow: hidden; }
+        .qa-header { padding: 18px 24px; font-weight: 700; cursor: pointer; background: rgba(255,255,255,0.4); display: flex; justify-content: space-between; align-items: center; font-size: 1.15rem; }
+        .qa-body { padding: 20px 24px; display: none; border-top: 1px solid var(--glass-border); background: rgba(255,255,255,0.5); font-size: 1.1rem; line-height: 1.7; }
+        .qa-icon { transition: transform 0.3s; font-weight: bold; }
+        .qa-block.open .qa-body { display: block; }
+        .qa-block.open .qa-icon { transform: rotate(90deg); }
+
+        /* Translation CSS Rules */
+        .lang-cn { display: none !important; }
+        body.cn-active .lang-en { display: none !important; }
+        body.cn-active .lang-cn { display: block !important; }
+        
+        span.lang-cn { display: none !important; }
+        body.cn-active span.lang-en { display: none !important; }
+        body.cn-active span.lang-cn { display: inline !important; }
+
+        @media (max-width: 768px) {
+            .lang-btn {
+                position: static;
+                margin-top: 15px;
+            }
+            .match-col { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="nav-link">
+            <span class="lang-en">← Back to Hub</span>
+            <span class="lang-cn">← 返回主页</span>
+        </a>
+        <h1>
+            <span class="lang-en">Week 5: E-commerce Security and Payment Systems</span>
+            <span class="lang-cn">第 5 周：电子商务安全与支付系统</span>
+        </h1>
+        <button class="btn lang-btn" onclick="toggleLanguage()">🌐 EN / 中文</button>
+    </div>
+
+    <div class="container">
+        <!-- Objectives Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-lavender);">
+            <h2>
+                <span class="lang-en">Learning Objectives</span>
+                <span class="lang-cn">学习目标</span>
+            </h2>
+            <div class="lang-en">
+                <ul>
+                    <li>Identify major security threats in the e-commerce environment (CLO1).</li><li>Explain technical solutions for e-commerce security (encryption, SSL/TLS, firewalls).</li><li>Describe key e-commerce payment methods and payment gateway processing.</li>
+                </ul>
+            </div>
+            <div class="lang-cn">
+                <ul>
+                    <li>识别电子商务环境中的主要安全威胁 (CLO1)。</li><li>解释电子商务安全的技术解决方案（加密、SSL/TLS、防火墙）。</li><li>描述关键的电子商务支付方式和支付网关处理。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sample Company / Case Study Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Bustiness Case Context</span>
+                <span class="lang-cn">商业案例情境</span>
+            </h2>
+            <div class="lang-en">
+                <p><strong>KompasPay Gateway:</strong> A highly secure payment gateway provider processing transactions for online firms. The company enforces strict SSL/TLS handshake protocols and utilizes public-key cryptography to prevent MitM interceptors from accessing customer credit card numbers during transmission.</p>
+            </div>
+            <div class="lang-cn">
+                <p><strong>KompasPay 支付网关：</strong>一家为在线企业处理交易的高安全性支付网关服务商。该公司实施严格的 SSL/TLS 握手协议，并利用公钥密码学来防止中间人（MitM）拦截者在传输过程中获取客户的信用卡号。</p>
+            </div>
+        </div>
+
+        <!-- Comparative Table Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Key Comparison: Symmetric vs. Asymmetric Cryptography Systems</span>
+                <span class="lang-cn">关键对比：对称加密与非对称加密系统</span>
+            </h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th><span class="lang-en">Feature / Dimension</span><span class="lang-cn">特征 / 维度</span></th><th><span class="lang-en">Symmetric Cryptography</span><span class="lang-cn">对称加密 (Symmetric)</span></th><th><span class="lang-en">Asymmetric Cryptography</span><span class="lang-cn">非对称加密 (Asymmetric)</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="lang-en">Keys Used</span><span class="lang-cn">所用密钥</span></td><td><span class="lang-en">Single shared secret key for encryption and decryption.</span><span class="lang-cn">用于加密和解密的单个共享密钥。</span></td><td><span class="lang-en">Two mathematically related keys: Public (shared) and Private (secret).</span><span class="lang-cn">两个数学相关的密钥：公钥（公开）和私钥（保密）。</span></td></tr><tr><td><span class="lang-en">Computational Speed</span><span class="lang-cn">计算速度</span></td><td><span class="lang-en">Extremely fast, low CPU consumption.</span><span class="lang-cn">极快，CPU 消耗低。</span></td><td><span class="lang-en">Computationally slow and resource intensive.</span><span class="lang-cn">计算慢且耗资源。</span></td></tr><tr><td><span class="lang-en">Key Distribution</span><span class="lang-cn">密钥分发</span></td><td><span class="lang-en">High risk: must transmit the shared key securely to receiver.</span><span class="lang-cn">高风险：必须安全地将共享密钥传输给接收方。</span></td><td><span class="lang-en">No key sharing: public key is open, private key remains on owner device.</span><span class="lang-cn">无需密钥分发：公钥公开，私钥保留在所有者设备上。</span></td></tr><tr><td><span class="lang-en">Usage Scenario</span><span class="lang-cn">使用场景</span></td><td><span class="lang-en">Bulk data encryption (e.g. file storage).</span><span class="lang-cn">批量数据加密（如文件存储）。</span></td><td><span class="lang-en">Key exchange (SSL handshake) and digital signatures.</span><span class="lang-cn">密钥交换（SSL 握手）和数字签名。</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Concept Visualization Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Concept Visualization</span>
+                <span class="lang-cn">概念可视化</span>
+            </h2>
+            <div style="background: rgba(255,255,255,0.5); border-radius: var(--radius-md); padding: 20px; border: 1px solid var(--glass-border);">
+                
+        <svg height="240" viewBox="0 0 600 240" width="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="purpleGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stop-color="#C3B1E1"></stop>
+                    <stop offset="100%" stop-color="#FFD1DC"></stop>
+                </linearGradient>
+            </defs>
+            <!-- Sender -->
+            <rect fill="url(#purpleGrad)" stroke="#111" stroke-width="1.5" height="50" rx="10" width="100" x="20" y="95"></rect>
+            <text fill="#111" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="70" y="125">Sender</text>
+            
+            <!-- Receiver -->
+            <rect fill="url(#purpleGrad)" stroke="#111" stroke-width="1.5" height="50" rx="10" width="100" x="480" y="95"></rect>
+            <text fill="#111" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="530" y="125">Receiver</text>
+            
+            <!-- Encryption Process -->
+            <line x1="120" y1="120" x2="200" y2="120" stroke="#111" stroke-width="2"></line>
+            <rect fill="#B0EACD" stroke="#111" stroke-width="1.5" height="55" rx="5" width="100" x="200" y="92"></rect>
+            <text fill="#111" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="250" y="115">1. Encrypt with</text>
+            <text fill="#D81B60" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="250" y="135">Receiver Public Key</text>
+            
+            <path d="M 300 120 L 380 120" fill="none" id="cipherPath" stroke="#D81B60" stroke-width="3" stroke-dasharray="5,5"></path>
+            <circle fill="#D81B60" r="5">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                    <mpath href="#cipherPath"></mpath>
+                </animateMotion>
+            </circle>
+            
+            <rect fill="#FDFD96" stroke="#111" stroke-width="1.5" height="55" rx="5" width="100" x="380" y="92"></rect>
+            <text fill="#111" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="430" y="115">2. Decrypt with</text>
+            <text fill="#111" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="430" y="135">Receiver Private Key</text>
+            
+            <line x1="480" y1="120" x2="445" y2="120" stroke="#111" stroke-width="2"></line>
+        </svg>
+        
+            </div>
+        </div>
+
+        <!-- Practical Exercise Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-mint);">
+            <h2>
+                <span class="lang-en">Practical Exercise: SSL Certificate Audit</span>
+                <span class="lang-cn">实践练习：SSL 证书审计</span>
+            </h2>
+            <div class="lang-en">
+                <p><b>Steps to complete:</b></p>
+                <ol>
+                    <li>Open your browser and navigate to a secure shopping platform (e.g. Shopee).</li><li>Click on the padlock icon in the browser URL address bar and view certificate details.</li><li>Identify the Certificate Authority (e.g. DigiCert) and verify the expiration dates and cryptographic algorithms.</li>
+                </ol>
+            </div>
+            <div class="lang-cn">
+                <p><b>操作步骤：</b></p>
+                <ol>
+                    <li>打开您的浏览器，并导航到一个安全的购物平台（如 Shopee）。</li><li>点击浏览器 URL 地址栏中的挂锁图标，然后查看证书详细信息。</li><li>识别证书颁发机构 (CA)（如 DigiCert），并验证其到期日期和加密算法。</li>
+                </ol>
+            </div>
+            <button class="btn" onclick="showCodeAns('practical')">
+                <span class="lang-en">Show Parsed SSL Parameters</span>
+                <span class="lang-cn">显示解析的 SSL 参数</span>
+            </button>
+            <div class="code-editor" id="code-ans-practical" style="display:none;">Certificate Issuer: DigiCert SHA2 Extended Validation Server CA\nValidation Status: Confirmed Valid\nKey Exchange: ECDHE_RSA with P-256\nCipher Suite: AES_128_GCM (128-bit key strength)</div>
+        </div>
+
+        <!-- Vocabulary Matching Game -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Vocabulary Connection Game</span>
+                <span class="lang-cn">词汇连线互动游戏</span>
+            </h2>
+            <p>
+                <span class="lang-en">Match the term on the left with its definition on the right. (Click a term, then click its matching definition).</span>
+                <span class="lang-cn">将左侧的术语与右侧的定义进行配对。（点击术语，然后点击匹配的定义）。</span>
+            </p>
+            <div class="match-grid">
+                <!-- Terms Column -->
+                <div class="match-col">
+                    <div class="match-btn match-term" data-key="term_4"><span class="lang-en">Digital Certificate</span><span class="lang-cn">数字证书</span></div><div class="match-btn match-term" data-key="term_3"><span class="lang-en">SQL Injection</span><span class="lang-cn">SQL 注入</span></div><div class="match-btn match-term" data-key="term_0"><span class="lang-en">Firewall</span><span class="lang-cn">防火墙</span></div><div class="match-btn match-term" data-key="term_2"><span class="lang-en">Pharming</span><span class="lang-cn">域名劫持</span></div><div class="match-btn match-term" data-key="term_1"><span class="lang-en">Phishing</span><span class="lang-cn">网络钓鱼</span></div>
+                </div>
+                <!-- Definitions Column -->
+                <div class="match-col">
+                    <div class="match-btn match-def" data-key="term_4"><span class="lang-en">A document issued by a trusted third party verifying a website's identity</span><span class="lang-cn">由受信任第三方签发，用于验证网站身份的电子文档</span></div><div class="match-btn match-def" data-key="term_2"><span class="lang-en">Redirecting users to spoofed fake websites by poisoning DNS records</span><span class="lang-cn">通过毒化 DNS 记录将用户重定向到虚假网站的攻击方式</span></div><div class="match-btn match-def" data-key="term_1"><span class="lang-en">Using deceptive emails to trick consumers into revealing passwords or credit data</span><span class="lang-cn">利用欺骗性电子邮件引诱消费者透露密码或信用数据的社会工程方式</span></div><div class="match-btn match-def" data-key="term_0"><span class="lang-en">Software or hardware that filters incoming and outgoing network traffic based on rules</span><span class="lang-cn">根据规则对进出网络流量进行过滤的软件或硬件</span></div><div class="match-btn match-def" data-key="term_3"><span class="lang-en">Attacker inserts malicious database queries into website input fields to steal data</span><span class="lang-cn">攻击者在网站输入框中插入恶意数据库查询以盗取数据的攻击方式</span></div>
+                </div>
+            </div>
+            <div id="match-message" style="margin-top: 20px; font-weight: bold; text-align: center; min-height: 28px;"></div>
+        </div>
+
+        <!-- MCQ Practice Quiz -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Knowledge Check Practice</span>
+                <span class="lang-cn">知识自测练习</span>
+            </h2>
+            <form id="quiz-form">
+                
+            <div class="quiz-q">
+                <p><b>1. 
+                    <span class="lang-en">Which security dimension ensures that data is NOT altered during transmission?</span>
+                    <span class="lang-cn">哪个安全维度确保数据在传输过程中不被篡改？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="0"> A. 
+                    <span class="lang-en">Confidentiality</span>
+                    <span class="lang-cn">机密性</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="1"> B. 
+                    <span class="lang-en">Integrity</span>
+                    <span class="lang-cn">完整性</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="2"> C. 
+                    <span class="lang-en">Availability</span>
+                    <span class="lang-cn">可用性</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="3"> D. 
+                    <span class="lang-en">Non-repudiation</span>
+                    <span class="lang-cn">不可否认性</span>
+                </label>
+                <div class="explanation" id="exp-0">
+                    <span class="lang-en">Explanation: Integrity ensures that data is unaltered during transit from sender to receiver.</span>
+                    <span class="lang-cn">解析：完整性确保数据在从发送方到接收方的传输过程中不被篡改。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>2. 
+                    <span class="lang-en">Non-repudiation in e-commerce security prevents which of the following?</span>
+                    <span class="lang-cn">电子商务安全中的不可否认性可防止以下哪种情况？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="0"> A. 
+                    <span class="lang-en">User from logging in</span>
+                    <span class="lang-cn">用户登录</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="1"> B. 
+                    <span class="lang-en">Participants from denying their online actions or orders</span>
+                    <span class="lang-cn">参与者否认其在线操作或订单</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="2"> C. 
+                    <span class="lang-en">Credit card processing failures</span>
+                    <span class="lang-cn">信用卡处理失败</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="3"> D. 
+                    <span class="lang-en">SQL injection attacks</span>
+                    <span class="lang-cn">SQL 注入攻击</span>
+                </label>
+                <div class="explanation" id="exp-1">
+                    <span class="lang-en">Explanation: Non-repudiation prevents a user from denying they placed an order or made a transaction.</span>
+                    <span class="lang-cn">解析：不可否认性可防止用户否认他们下过订单或进行过交易。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>3. 
+                    <span class="lang-en">Which security threat redirects users to spoofed fake websites by hijacking or poisoning DNS records?</span>
+                    <span class="lang-cn">哪种安全威胁通过劫持或毒化 DNS 记录将用户重定向到虚假网站？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="0"> A. 
+                    <span class="lang-en">Phishing</span>
+                    <span class="lang-cn">网络钓鱼</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="1"> B. 
+                    <span class="lang-en">Pharming</span>
+                    <span class="lang-cn">域名劫持 (Pharming)</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="2"> C. 
+                    <span class="lang-en">Ransomware</span>
+                    <span class="lang-cn">勒索软件</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="3"> D. 
+                    <span class="lang-en">SQL Injection</span>
+                    <span class="lang-cn">SQL 注入</span>
+                </label>
+                <div class="explanation" id="exp-2">
+                    <span class="lang-en">Explanation: Pharming redirects traffic to fake websites by poisoning DNS servers (manipulating hostname IP mappings).</span>
+                    <span class="lang-cn">解析：域名劫持（Pharming）通过毒化 DNS 服务器（篡改域名 IP 映射）将流量重定向到假网站。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>4. 
+                    <span class="lang-en">A symmetric key cryptography system uses how many keys?</span>
+                    <span class="lang-cn">对称密钥密码系统使用多少个密钥？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="0"> A. 
+                    <span class="lang-en">No key</span>
+                    <span class="lang-cn">无密钥</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="1"> B. 
+                    <span class="lang-en">One shared key for both encryption and decryption</span>
+                    <span class="lang-cn">用于加密和解密的一个共享密钥</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="2"> C. 
+                    <span class="lang-en">Two different keys</span>
+                    <span class="lang-cn">两个不同的密钥</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="3"> D. 
+                    <span class="lang-en">Four math related keys</span>
+                    <span class="lang-cn">四个数学相关的密钥</span>
+                </label>
+                <div class="explanation" id="exp-3">
+                    <span class="lang-en">Explanation: Symmetric key cryptography uses a single key shared between sender and receiver for both encryption and decryption.</span>
+                    <span class="lang-cn">解析：对称密钥密码学使用发送方和接收方之间共享的单个密钥进行加密和解密。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>5. 
+                    <span class="lang-en">An asymmetric (public-key) cryptography system uses __________________.</span>
+                    <span class="lang-cn">非对称（公钥）密码系统使用 __________________。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="0"> A. 
+                    <span class="lang-en">One shared key only</span>
+                    <span class="lang-cn">仅一个共享密钥</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="1"> B. 
+                    <span class="lang-en">No keys at all</span>
+                    <span class="lang-cn">完全没有密钥</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="2"> C. 
+                    <span class="lang-en">Two mathematically related keys: public and private</span>
+                    <span class="lang-cn">两个数学相关的密钥：公钥和私钥</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="3"> D. 
+                    <span class="lang-en">Ten random password files</span>
+                    <span class="lang-cn">十个随机密码文件</span>
+                </label>
+                <div class="explanation" id="exp-4">
+                    <span class="lang-en">Explanation: Asymmetric encryption utilizes a public key (shared globally) and a private key (kept secret by the owner).</span>
+                    <span class="lang-cn">解析：非对称加密使用公钥（全局共享）和私钥（由所有者保密）。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>6. 
+                    <span class="lang-en">What is the function of a Digital Certificate in SSL/TLS?</span>
+                    <span class="lang-cn">SSL/TLS 中的数字证书有什么功能？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="0"> A. 
+                    <span class="lang-en">It calculates the product price</span>
+                    <span class="lang-cn">计算产品价格</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="1"> B. 
+                    <span class="lang-en">It validates website identity and enables secure encrypted connections</span>
+                    <span class="lang-cn">验证网站身份并实现安全加密连接</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="2"> C. 
+                    <span class="lang-en">It stores consumer purchase history</span>
+                    <span class="lang-cn">存储消费者的购买历史记录</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="3"> D. 
+                    <span class="lang-en">It blocks marketing emails</span>
+                    <span class="lang-cn">阻止营销电子邮件</span>
+                </label>
+                <div class="explanation" id="exp-5">
+                    <span class="lang-en">Explanation: A digital certificate issued by a CA validates website identity and supplies the public key for SSL/TLS connections.</span>
+                    <span class="lang-cn">解析：CA 签发的数字证书可验证网站身份并为 SSL/TLS 连接提供公钥。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>7. 
+                    <span class="lang-en">Which of the following is a network security tool designed to filter incoming traffic based on predefined rules?</span>
+                    <span class="lang-cn">以下哪项是旨在根据预定义规则过滤传入流量的网络安全工具？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="0"> A. 
+                    <span class="lang-en">CMS</span>
+                    <span class="lang-cn">CMS</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="1"> B. 
+                    <span class="lang-en">DNS</span>
+                    <span class="lang-cn">DNS</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="2"> C. 
+                    <span class="lang-en">Firewall</span>
+                    <span class="lang-cn">防火墙</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="3"> D. 
+                    <span class="lang-en">URL</span>
+                    <span class="lang-cn">URL</span>
+                </label>
+                <div class="explanation" id="exp-6">
+                    <span class="lang-en">Explanation: A firewall filters inbound and outbound network packet traffic based on access rules.</span>
+                    <span class="lang-cn">解析：防火墙根据访问规则过滤进出网络数据包的流量。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>8. 
+                    <span class="lang-en">Which security threat inserts malicious database queries into website input forms to steal records?</span>
+                    <span class="lang-cn">哪种安全威胁将恶意数据库查询插入网站输入表单以窃取记录？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="0"> A. 
+                    <span class="lang-en">Pharming</span>
+                    <span class="lang-cn">域名劫持</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="1"> B. 
+                    <span class="lang-en">Phishing</span>
+                    <span class="lang-cn">网络钓鱼</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="2"> C. 
+                    <span class="lang-en">Ransomware</span>
+                    <span class="lang-cn">勒索软件</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="3"> D. 
+                    <span class="lang-en">SQL Injection</span>
+                    <span class="lang-cn">SQL 注入</span>
+                </label>
+                <div class="explanation" id="exp-7">
+                    <span class="lang-en">Explanation: SQL Injection inserts malicious SQL command syntax into vulnerable web input forms to hijack backend databases.</span>
+                    <span class="lang-cn">解析：SQL 注入将恶意 SQL 命令语法插入有漏洞的 Web 输入表单中以劫持后端数据库。</span>
+                </div>
+            </div>
+            </form>
+            <button class="btn" type="button" onclick="checkQuiz()">
+                <span class="lang-en">Submit & Grade Answers</span>
+                <span class="lang-cn">提交并评定答案</span>
+            </button>
+            <div id="quiz-result" style="margin-top: 20px; font-weight: bold; min-height: 30px;"></div>
+        </div>
+
+        <!-- Review Q&A Section (Hidden QP answers) -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Revision Review Q&A</span>
+                <span class="lang-cn">课程复习问答</span>
+            </h2>
+            
+            <div class="qa-block" id="qa-WK5-0">
+                <div class="qa-header" onclick="toggleQA('WK5-0')">
+                    <span>
+                        <span class="lang-en">Review Exercise 1</span>
+                        <span class="lang-cn">复习练习题 1</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Describe the function of a Digital Certificate and outline the step-by-step process of how a website obtains one.</span>
+                        <span class="lang-cn">描述数字证书（Digital Certificate）的功能，并概述网站如何获取证书的分步过程。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en"><strong>1. Function (功能):</strong> A digital document issued by a trusted third party (Certificate Authority) (1 Mark) that authenticates the website's identity to browsers and enables SSL/TLS encryption (1 Mark).<br><strong>2. Obtaining Process (获取过程):</strong> <br>Step 1: Website owner generates a private key and a Certificate Signing Request (CSR) (1 Mark).<br>Step 2: Owner submits the CSR along with proof of organization identity to a trusted Certificate Authority (1 Mark).<br>Step 3: The CA validates the owner's identity and organization ownership.<br>Step 4: Once confirmed, the CA signs and issues the digital certificate containing the owner's public key (1 Mark).</span>
+                        <span class="lang-cn"><strong>1. 功能：</strong>由受信任第三方（证书颁发机构 CA）签发的电子文档（1分），用于向浏览器认证网站身份并启用 SSL/TLS 加密（1分）。<br><strong>2. 获取过程：</strong><br>步骤 1：网站所有者生成私钥和证书签名请求 (CSR)（1分）。<br>步骤 2：所有者向受信任的证书颁发机构提交 CSR 以及组织身份证明（1分）。<br>步骤 3：CA 验证所有者的身份和组织所有权。<br>步骤 4：确认后，CA 签发并颁发包含所有者公钥的数字证书（1分）。</span>
+                    </div>
+                </div>
+            </div>
+            <div class="qa-block" id="qa-WK5-1">
+                <div class="qa-header" onclick="toggleQA('WK5-1')">
+                    <span>
+                        <span class="lang-en">Review Exercise 2</span>
+                        <span class="lang-cn">复习练习题 2</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Explain how Public Key Cryptography systems protect data confidentiality during transit. Contrast Symmetric and Asymmetric systems.</span>
+                        <span class="lang-cn">解释公钥密码系统如何保护传输中的数据机密性。对比对称和非对称系统。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en"><strong>1. Confidentiality Protection (机密性保护):</strong> Asymmetric cryptography uses a mathematically related Public Key and Private Key (1 Mark). The sender encrypts plaintext data using the receiver's public key. Once encrypted, the ciphertext can ONLY be decrypted using the receiver's private key (1 Mark). Even if intercepted, the message remains unreadable (confidential) without the secret private key.<br><strong>2. Contrast (对比):</strong> <br>Symmetric encryption uses a single shared key for both encrypting and decrypting bulk data (1 Mark). It is fast but has key distribution vulnerability. Asymmetric encryption uses two keys, solving the key distribution problem, but is computationally slow (1 Mark).</span>
+                        <span class="lang-cn"><strong>1. 机密性保护：</strong>非对称密码学使用数学相关的公钥和私钥（1分）。发送方使用接收方的公钥对明文数据进行加密。加密后，密文只能使用接收方的私钥进行解密（1分）。即使被拦截，在没有保密私钥的情况下，消息仍无法阅读（保持机密）。<br><strong>2. 对比：</strong><br>对称加密使用单个共享密钥来加密和解密批量数据（1分）。它速度快，但存在密钥分发漏洞。非对称加密使用两个密钥，解决了密钥分发问题，但计算慢（1分）。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            document.body.classList.toggle('cn-active');
+        }
+
+        function showCodeAns(id) {
+            const el = document.getElementById('code-ans-' + id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleQA(id) {
+            const el = document.getElementById('qa-' + id);
+            el.classList.toggle('open');
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            const total = 8;
+            const answers = [1, 1, 1, 1, 2, 1, 2, 3];
+            
+            // Highlight options
+            for (let qIdx = 0; qIdx < total; qIdx++) {
+                const checkedOpt = document.querySelector(`input[name="q${qIdx}"]:checked`);
+                const expEl = document.getElementById(`exp-${qIdx}`);
+                if (expEl) {
+                    expEl.style.display = 'block';
+                }
+                
+                if (checkedOpt) {
+                    const val = parseInt(checkedOpt.value);
+                    if (val === answers[qIdx]) {
+                        score++;
+                    }
+                }
+            }
+            
+            const resEl = document.getElementById('quiz-result');
+            resEl.innerHTML = `<span class='correct-ans'>
+                <span class="lang-en">You scored: ${score} / ${total}</span>
+                <span class="lang-cn">您的得分：${score} / ${total}</span>
+            </span>`;
+        }
+
+        // Matching Game JS Logic
+        let selectedTerm = null;
+        let selectedDef = null;
+
+        document.querySelectorAll('.match-term').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-term').forEach(t => t.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedTerm = item;
+                checkMatch();
+            });
+        });
+
+        document.querySelectorAll('.match-def').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-def').forEach(d => d.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedDef = item;
+                checkMatch();
+            });
+        });
+
+        function checkMatch() {
+            if (selectedTerm && selectedDef) {
+                const termKey = selectedTerm.getAttribute('data-key');
+                const defKey = selectedDef.getAttribute('data-key');
+                const msgEl = document.getElementById('match-message');
+                
+                if (termKey === defKey) {
+                    selectedTerm.classList.add('matched');
+                    selectedDef.classList.add('matched');
+                    selectedTerm.classList.remove('selected');
+                    selectedDef.classList.remove('selected');
+                    selectedTerm = null;
+                    selectedDef = null;
+                    
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132;">
+                            <span class="lang-en">✓ Correct Match!</span>
+                            <span class="lang-cn">✓ 配对正确！</span>
+                        </span>`;
+                    }
+                    
+                    const unmatched = document.querySelectorAll('.match-term:not(.matched)');
+                    if (unmatched.length === 0 && msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132; font-size: 1.2rem; font-weight: bold;">
+                            <span class="lang-en">🎉 Congratulations! You matched all terms correctly!</span>
+                            <span class="lang-cn">🎉 恭喜！您已成功配对所有词汇！</span>
+                        </span>`;
+                    }
+                } else {
+                    selectedTerm.classList.add('error');
+                    selectedDef.classList.add('error');
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #842029;">
+                            <span class="lang-en">✗ Incorrect Match! Try again.</span>
+                            <span class="lang-cn">✗ 配对错误！请再试一次。</span>
+                        </span>`;
+                    }
+                    const t = selectedTerm;
+                    const d = selectedDef;
+                    setTimeout(() => {
+                        t.classList.remove('error', 'selected');
+                        d.classList.remove('error', 'selected');
+                    }, 400);
+                    selectedTerm = null;
+                    selectedDef = null;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

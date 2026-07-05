@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week WK7: Social, Mobile, and Local Marketing - DBEC2653</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Macaron Palette */
+            --pastel-pink: #FFD1DC;
+            --pastel-mint: #B0EACD;
+            --pastel-blue: #AEC6CF;
+            --pastel-lavender: #C3B1E1;
+            --pastel-yellow: #FDFD96;
+            
+            --ink: #111111;
+            --ink-muted: #333333;
+            
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            --radius-lg: 32px;
+            --radius-md: 16px;
+            
+            --spring: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender), var(--pastel-blue), var(--pastel-mint));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Auras */
+        body::before {
+            content: ''; position: fixed; top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, var(--pastel-yellow) 0%, transparent 70%);
+            filter: blur(80px); opacity: 0.6; z-index: -1;
+            animation: floatAura 20s ease-in-out infinite alternate;
+        }
+        body::after {
+            content: ''; position: fixed; bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, var(--pastel-pink) 0%, transparent 70%);
+            filter: blur(100px); opacity: 0.5; z-index: -1;
+            animation: floatAura 25s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatAura {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: var(--ink); }
+        
+        .header { text-align: center; padding: 40px 20px 20px; position: relative; }
+        .header h1 { font-size: 2.3rem; margin-top: 20px; font-weight: 800; color: var(--ink); }
+        .nav-link { color: var(--ink-muted); text-decoration: none; font-weight: 700; display: inline-block; transition: all 0.4s var(--spring); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--glass-bg); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--glass-border); }
+        .nav-link:hover { color: var(--ink); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: rgba(255,255,255,0.7); }
+        
+        .lang-btn {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .container { max-width: 900px; margin: 20px auto 40px; padding: 0 20px; position: relative; z-index: 1; }
+        
+        .card { 
+            background: var(--glass-bg); 
+            border-radius: var(--radius-lg); 
+            padding: 40px; 
+            box-shadow: var(--glass-shadow); 
+            margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            transition: all 0.5s var(--spring);
+        }
+        .card h2 { border-bottom: 2px solid rgba(255,255,255,0.5); padding-bottom: 15px; margin-top: 0; font-size: 1.8rem;}
+        
+        .step { background: rgba(255,255,255,0.3); padding: 20px; margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .step h3 { margin-top: 0; font-size: 1.3rem; }
+        
+        .btn { 
+            background: linear-gradient(135deg, var(--pastel-lavender), var(--pastel-pink));
+            color: var(--ink); 
+            padding: 12px 28px; 
+            border: 2px solid rgba(255,255,255,0.8); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.4s var(--spring);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(195, 177, 225, 0.4); background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender)); }
+        
+        /* Quiz */
+        .quiz-q { margin-bottom: 25px; background: rgba(255,255,255,0.2); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .quiz-label { display: block; padding: 10px 16px; cursor: pointer; transition: all 0.4s var(--spring); border-radius: 12px; border: 1px solid transparent; font-weight: 600; font-size: 1.1rem;}
+        .quiz-label:hover { background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); transform: translateX(5px);}
+        .explanation { display: none; margin-top: 10px; padding: 10px 16px; background: rgba(255,255,255,0.6); border-radius: 8px; font-weight: 600; border-left: 4px solid var(--pastel-blue); }
+        
+        /* Coding */
+        .code-editor { background: rgba(0,0,0,0.85); color: #F8F9FA; padding: 20px; border-radius: var(--radius-md); font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-top: 10px; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); white-space: pre-wrap; }
+        .correct-ans { color: #0f5132; font-weight: 700; margin-top: 15px; display: inline-block; padding: 10px 16px; background: rgba(176, 234, 205, 0.6); border-radius: 12px; border: 1px solid var(--pastel-mint);}
+        
+        /* Table Styles (Bilingual High Contrast) */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(255,255,255,0.2); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--glass-border); }
+        .data-table th, .data-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--glass-border); font-size: 1.1rem; }
+        .data-table th { background: rgba(255,255,255,0.6); font-weight: 800; font-family: 'Orbitron', sans-serif; }
+        .data-table tr:last-child td { border-bottom: none; }
+        
+        /* SVG Tweaks for Macaron Glassmorphism & High Contrast */
+        svg { background: transparent !important; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05)); margin: 10px auto; display: block; max-width: 100%; }
+        svg text { font-family: 'Arial', sans-serif !important; font-weight: bold !important; fill: #000000 !important; }
+        svg [fill="url(#blueGrad)"], svg [fill="url(#purpleGrad)"], svg [fill="url(#mintGrad)"], svg [fill="url(#pinkGrad)"], svg [fill="url(#yellowGrad)"] { fill-opacity: 0.8 !important; stroke: #000000 !important; stroke-width: 2px !important; }
+        svg [fill="#FFF"], svg [fill="#ffffff"], svg [fill="none"] { stroke: #000000 !important; }
+        
+        /* Vocabulary Matching Game Styles */
+        .match-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .match-col { width: 48%; display: flex; flex-direction: column; gap: 10px; }
+        .match-btn {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s var(--spring);
+            user-select: none;
+            text-align: left;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+        .match-btn:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(3px);
+        }
+        .match-btn.selected {
+            background: var(--pastel-yellow) !important;
+            border: 2px solid var(--ink);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .match-btn.matched {
+            background: var(--pastel-mint) !important;
+            border: 1px solid var(--pastel-mint);
+            opacity: 0.6;
+            cursor: default;
+            pointer-events: none;
+            transform: none !important;
+        }
+        .match-btn.error {
+            background: var(--pastel-pink) !important;
+            border: 1px solid var(--pastel-pink);
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Collapsible Q&A Review style */
+        .qa-block { margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); background: rgba(255,255,255,0.25); overflow: hidden; }
+        .qa-header { padding: 18px 24px; font-weight: 700; cursor: pointer; background: rgba(255,255,255,0.4); display: flex; justify-content: space-between; align-items: center; font-size: 1.15rem; }
+        .qa-body { padding: 20px 24px; display: none; border-top: 1px solid var(--glass-border); background: rgba(255,255,255,0.5); font-size: 1.1rem; line-height: 1.7; }
+        .qa-icon { transition: transform 0.3s; font-weight: bold; }
+        .qa-block.open .qa-body { display: block; }
+        .qa-block.open .qa-icon { transform: rotate(90deg); }
+
+        /* Translation CSS Rules */
+        .lang-cn { display: none !important; }
+        body.cn-active .lang-en { display: none !important; }
+        body.cn-active .lang-cn { display: block !important; }
+        
+        span.lang-cn { display: none !important; }
+        body.cn-active span.lang-en { display: none !important; }
+        body.cn-active span.lang-cn { display: inline !important; }
+
+        @media (max-width: 768px) {
+            .lang-btn {
+                position: static;
+                margin-top: 15px;
+            }
+            .match-col { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="nav-link">
+            <span class="lang-en">← Back to Hub</span>
+            <span class="lang-cn">← 返回主页</span>
+        </a>
+        <h1>
+            <span class="lang-en">Week 7: Social, Mobile, and Local Marketing</span>
+            <span class="lang-cn">第 7 周：社交、移动与本地营销</span>
+        </h1>
+        <button class="btn lang-btn" onclick="toggleLanguage()">🌐 EN / 中文</button>
+    </div>
+
+    <div class="container">
+        <!-- Objectives Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-lavender);">
+            <h2>
+                <span class="lang-en">Learning Objectives</span>
+                <span class="lang-cn">学习目标</span>
+            </h2>
+            <div class="lang-en">
+                <ul>
+                    <li>Apply social, mobile, and local marketing strategies to e-commerce (CLO3).</li><li>Explain the social marketing process and campaign metrics.</li><li>Identify location-based and local advertising methods for mobile commerce.</li>
+                </ul>
+            </div>
+            <div class="lang-cn">
+                <ul>
+                    <li>将社交、移动和本地营销策略应用于电子商务 (CLO3)。</li><li>解释社交营销流程和广告系列指标。</li><li>识别移动商务的本地和基于位置的广告方法。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sample Company / Case Study Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Bustiness Case Context</span>
+                <span class="lang-cn">商业案例情境</span>
+            </h2>
+            <div class="lang-en">
+                <p><strong>Kompas Influencers:</strong> A localized promotion network managing social-commerce marketing campaigns. The platform runs targeted mobile ads for brick-and-mortar storefronts, triggering location-based geofencing coupon alerts on customer smartphones as they enter target commercial zones.</p>
+            </div>
+            <div class="lang-cn">
+                <p><strong>Kompas 联属达人：</strong>一个管理本地化社交电商营销活动的推广网络。该平台为实体店投放针对性的移动广告，在客户进入目标商业区时在其智能手机上触发基于位置的地理围栏优惠券提醒。</p>
+            </div>
+        </div>
+
+        <!-- Comparative Table Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Key Comparison: Social vs. Mobile vs. Local Marketing</span>
+                <span class="lang-cn">关键对比：社交营销、移动营销与本地营销</span>
+            </h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th><span class="lang-en">Dimension</span><span class="lang-cn">维度</span></th><th><span class="lang-en">Social Marketing</span><span class="lang-cn">社交营销 (Social)</span></th><th><span class="lang-en">Mobile Marketing</span><span class="lang-cn">移动营销 (Mobile)</span></th><th><span class="lang-en">Local Marketing</span><span class="lang-cn">本地营销 (Local)</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="lang-en">Primary Channel</span><span class="lang-cn">主要渠道</span></td><td><span class="lang-en">Social media platforms (Facebook, Instagram, TikTok).</span><span class="lang-cn">社交媒体平台（Facebook、Instagram、TikTok）。</span></td><td><span class="lang-en">Smartphones, tablets, and dedicated application alerts.</span><span class="lang-cn">智能手机、平板电脑和专用应用程序提醒。</span></td><td><span class="lang-en">Geographic searches, mapping directories, local ads.</span><span class="lang-cn">地理搜索、地图目录、本地广告。</span></td></tr><tr><td><span class="lang-en">Core Technology</span><span class="lang-cn">核心技术</span></td><td><span class="lang-en">Sharing networks, social graphs, user feeds.</span><span class="lang-cn">分享网络、社交图谱、用户提要。</span></td><td><span class="lang-en">Responsive UI, location tracking, SMS/push services.</span><span class="lang-cn">响应式 UI、位置追踪、SMS/推送服务。</span></td><td><span class="lang-en">GPS coordinates, geofencing parameters, IP mapping.</span><span class="lang-cn">GPS 坐标、地理围栏参数、IP 映射。</span></td></tr><tr><td><span class="lang-en">Success Metric</span><span class="lang-cn">成功指标</span></td><td><span class="lang-en">Engagement rates, sharing, impressions, comments.</span><span class="lang-cn">互动率、分享数、展示量、评论数。</span></td><td><span class="lang-en">App downloads, CTR, click-to-call conversions.</span><span class="lang-cn">App 下载量、CTR、点击拨号转化次数。</span></td><td><span class="lang-en">Store foot traffic, local coupon redemptions.</span><span class="lang-cn">实体店客流量、本地优惠券兑换数。</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Concept Visualization Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Concept Visualization</span>
+                <span class="lang-cn">概念可视化</span>
+            </h2>
+            <div style="background: rgba(255,255,255,0.5); border-radius: var(--radius-md); padding: 20px; border: 1px solid var(--glass-border);">
+                
+        <svg height="240" viewBox="0 0 600 240" width="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="blueGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stop-color="#AEC6CF"></stop>
+                    <stop offset="100%" stop-color="#C3B1E1"></stop>
+                </linearGradient>
+            </defs>
+            <!-- Target Store -->
+            <rect fill="url(#blueGrad)" stroke="#111" stroke-width="1.5" height="50" rx="5" width="100" x="250" y="95"></rect>
+            <text fill="#111" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="300" y="125">Kompas Shop</text>
+            
+            <!-- Geofence Boundary -->
+            <circle cx="300" cy="120" fill="none" r="80" stroke="#D81B60" stroke-width="2" stroke-dasharray="5,5"></circle>
+            <text fill="#D81B60" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="300" y="55">Geofence boundary (80m)</text>
+            
+            <!-- User Device -->
+            <path d="M 120 120 L 220 120" fill="none" id="userPath" stroke="#111" stroke-width="1.5"></path>
+            <circle fill="#111" r="6">
+                <animateMotion dur="4s" repeatCount="indefinite">
+                    <mpath href="#userPath"></mpath>
+                </animateMotion>
+            </circle>
+            <text fill="#111" font-family="Arial" font-size="10" x="120" y="105">User enters zone</text>
+            
+            <rect fill="#B0EACD" stroke="#111" stroke-width="1" height="40" rx="3" width="90" x="420" y="100"></rect>
+            <text fill="#111" font-family="Arial" font-size="9" text-anchor="middle" x="465" y="118">Push Alert:</text>
+            <text fill="#111" font-family="Arial" font-size="9" font-weight="bold" text-anchor="middle" x="465" y="132">10% Off Coupon!</text>
+        </svg>
+        
+            </div>
+        </div>
+
+        <!-- Practical Exercise Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-mint);">
+            <h2>
+                <span class="lang-en">Practical Exercise: Mock Facebook Targeting Design</span>
+                <span class="lang-cn">实践练习：设计 Facebook 模拟定位广告</span>
+            </h2>
+            <div class="lang-en">
+                <p><b>Steps to complete:</b></p>
+                <ol>
+                    <li>Define target demographics (e.g. location, age range 18-25, interests: eco-friendly fashion).</li><li>Set a geofencing radius of 5km around the target storefront.</li><li>Write a sample text ad with a Call-To-Action (CTA) encouraging immediate instore check-ins.</li>
+                </ol>
+            </div>
+            <div class="lang-cn">
+                <p><b>操作步骤：</b></p>
+                <ol>
+                    <li>定义目标人群（例如：位置、年龄段 18-25、兴趣：环保时尚）。</li><li>在目标店面周围设置 5 公里的地理围栏半径。</li><li>撰写一条带有呼吁行动 (CTA) 按钮的示例广告，鼓励顾客立即到店打卡。</li>
+                </ol>
+            </div>
+            <button class="btn" onclick="showCodeAns('practical')">
+                <span class="lang-en">Show Campaign Targeting Profile</span>
+                <span class="lang-cn">显示广告系列定位档案</span>
+            </button>
+            <div class="code-editor" id="code-ans-practical" style="display:none;">Demographics: Ages 18-25, Gender: All, Location: 5km radius of store storefront.
+Keywords: Sustainable fashion, organic fabrics, local boutique shopping.
+Ad Copy: 'Locally sourced sustainable clothing. Visit us today and check-in on the Kompas app to get a free reusable tote bag!'</div>
+        </div>
+
+        <!-- Vocabulary Matching Game -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Vocabulary Connection Game</span>
+                <span class="lang-cn">词汇连线互动游戏</span>
+            </h2>
+            <p>
+                <span class="lang-en">Match the term on the left with its definition on the right. (Click a term, then click its matching definition).</span>
+                <span class="lang-cn">将左侧的术语与右侧的定义进行配对。（点击术语，然后点击匹配的定义）。</span>
+            </p>
+            <div class="match-grid">
+                <!-- Terms Column -->
+                <div class="match-col">
+                    <div class="match-btn match-term" data-key="term_0"><span class="lang-en">Social Graph</span><span class="lang-cn">社交图谱</span></div><div class="match-btn match-term" data-key="term_1"><span class="lang-en">Geofencing</span><span class="lang-cn">地理围栏</span></div><div class="match-btn match-term" data-key="term_3"><span class="lang-en">Engagement</span><span class="lang-cn">互动参与</span></div><div class="match-btn match-term" data-key="term_2"><span class="lang-en">Local Marketing</span><span class="lang-cn">本地营销</span></div><div class="match-btn match-term" data-key="term_4"><span class="lang-en">Organic Reach</span><span class="lang-cn">自然触达</span></div>
+                </div>
+                <!-- Definitions Column -->
+                <div class="match-col">
+                    <div class="match-btn match-def" data-key="term_3"><span class="lang-en">Social media metrics measuring likes, shares, retweets, and comments</span><span class="lang-cn">测量点赞、分享、转发和评论的社交媒体指标</span></div><div class="match-btn match-def" data-key="term_0"><span class="lang-en">A digital map showing social relations and links among digital platform users</span><span class="lang-cn">显示数字平台用户之间社交关系和联系的数字图谱</span></div><div class="match-btn match-def" data-key="term_2"><span class="lang-en">Marketing messages targeted to consumers based on their current physical location</span><span class="lang-cn">根据消费者当前所处的物理位置向其发送有针对性的营销信息</span></div><div class="match-btn match-def" data-key="term_1"><span class="lang-en">Defining a virtual boundary around a physical location to trigger smartphone alerts</span><span class="lang-cn">在物理位置周围定义虚拟边界以触发智能手机警报的技术</span></div><div class="match-btn match-def" data-key="term_4"><span class="lang-en">The number of users who see website content without paid advertisement placement</span><span class="lang-cn">在没有付费广告投放的情况下看到网站内容的用户数量</span></div>
+                </div>
+            </div>
+            <div id="match-message" style="margin-top: 20px; font-weight: bold; text-align: center; min-height: 28px;"></div>
+        </div>
+
+        <!-- MCQ Practice Quiz -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Knowledge Check Practice</span>
+                <span class="lang-cn">知识自测练习</span>
+            </h2>
+            <form id="quiz-form">
+                
+            <div class="quiz-q">
+                <p><b>1. 
+                    <span class="lang-en">Geofencing triggers smartphone advertising alerts based on which technology?</span>
+                    <span class="lang-cn">地理围栏（Geofencing）基于哪种技术触发智能手机广告警报？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="0"> A. 
+                    <span class="lang-en">Plain CSS media queries</span>
+                    <span class="lang-cn">普通的 CSS 媒体查询</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="1"> B. 
+                    <span class="lang-en">GPS and virtual boundaries around physical locations</span>
+                    <span class="lang-cn">GPS 以及物理位置周围的虚拟边界</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="2"> C. 
+                    <span class="lang-en">SQL injection scripts</span>
+                    <span class="lang-cn">SQL 注入脚本</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="3"> D. 
+                    <span class="lang-en">SMTP email servers</span>
+                    <span class="lang-cn">SMTP 邮件服务器</span>
+                </label>
+                <div class="explanation" id="exp-0">
+                    <span class="lang-en">Explanation: Geofencing defines a virtual perimeter around a physical location using GPS coordinates, triggering alerts when devices cross it.</span>
+                    <span class="lang-cn">解析：地理围栏使用 GPS 坐标在物理位置周围定义虚拟边界，在设备越过边界时触发警报。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>2. 
+                    <span class="lang-en">Which of the following is a primary metric of engagement in social marketing?</span>
+                    <span class="lang-cn">以下哪项是社交营销中互动参与（Engagement）的主要指标？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="0"> A. 
+                    <span class="lang-en">Domain name length</span>
+                    <span class="lang-cn">域名长度</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="1"> B. 
+                    <span class="lang-en">Likes, shares, comments, and retweets</span>
+                    <span class="lang-cn">点赞、分享、评论和转发</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="2"> C. 
+                    <span class="lang-en">Server processing CPU latency</span>
+                    <span class="lang-cn">服务器处理 CPU 时延</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="3"> D. 
+                    <span class="lang-en">Number of database tables</span>
+                    <span class="lang-cn">数据库表的数量</span>
+                </label>
+                <div class="explanation" id="exp-1">
+                    <span class="lang-en">Explanation: Engagement measures the active social interactions (likes, shares, comments) users have with brand content.</span>
+                    <span class="lang-cn">解析：互动参与度测量用户与品牌内容的主动社交互动（点赞、分享、评论）。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>3. 
+                    <span class="lang-en">Local marketing primarily targets consumers based on __________________.</span>
+                    <span class="lang-cn">本地营销主要根据 __________________ 锁定消费者。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="0"> A. 
+                    <span class="lang-en">Salary parameters</span>
+                    <span class="lang-cn">薪资参数</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="1"> B. 
+                    <span class="lang-en">Current physical location</span>
+                    <span class="lang-cn">当前物理位置</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="2"> C. 
+                    <span class="lang-en">Browser preferences</span>
+                    <span class="lang-cn">浏览器偏好</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="3"> D. 
+                    <span class="lang-en">Outsourcing vendor choices</span>
+                    <span class="lang-cn">外包商的选择</span>
+                </label>
+                <div class="explanation" id="exp-2">
+                    <span class="lang-en">Explanation: Local marketing is targeted to consumers in a specific geographical area or near their current physical location.</span>
+                    <span class="lang-cn">解析：本地营销针对特定地理区域或当前物理位置附近的消费者进行定位。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>4. 
+                    <span class="lang-en">Mobile marketing is critical in e-commerce because __________________.</span>
+                    <span class="lang-cn">移动营销在电子商务中至关重要，因为 __________________。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="0"> A. 
+                    <span class="lang-en">Smartphones have no firewall limits</span>
+                    <span class="lang-cn">智能手机没有防火墙限制</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="1"> B. 
+                    <span class="lang-en">Mobile screens display code output better</span>
+                    <span class="lang-cn">手机屏幕可以更好地显示代码输出</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="2"> C. 
+                    <span class="lang-en">Consumers carry mobile devices with them at all times</span>
+                    <span class="lang-cn">消费者随时随地随身携带移动设备</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="3"> D. 
+                    <span class="lang-en">Mobile traffic is completely free</span>
+                    <span class="lang-cn">移动流量是完全免费的</span>
+                </label>
+                <div class="explanation" id="exp-3">
+                    <span class="lang-en">Explanation: Mobile marketing leverages the ubiquitous nature of smartphones, allowing real-time context-specific targeting.</span>
+                    <span class="lang-cn">解析：移动营销利用了智能手机无处不在的特性，允许进行实时的、基于特定上下文的定位。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>5. 
+                    <span class="lang-en">The social graph is a digital map of __________________.</span>
+                    <span class="lang-cn">社交图谱是 __________________ 的数字图谱。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="0"> A. 
+                    <span class="lang-en">Network switches and routing paths</span>
+                    <span class="lang-cn">网络交换机和路由路径</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="1"> B. 
+                    <span class="lang-en">Server room layouts</span>
+                    <span class="lang-cn">服务器机房布局</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="2"> C. 
+                    <span class="lang-en">People's relationships and connections on social networks</span>
+                    <span class="lang-cn">社交网络上人们的关系和联系</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="3"> D. 
+                    <span class="lang-en">Product price histories</span>
+                    <span class="lang-cn">产品价格历史记录</span>
+                </label>
+                <div class="explanation" id="exp-4">
+                    <span class="lang-en">Explanation: The social graph represents the social connections and relationships between users on internet platforms.</span>
+                    <span class="lang-cn">解析：社交图谱表示互联网平台上用户之间的社交连接和关系。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>6. 
+                    <span class="lang-en">What is location-based marketing?</span>
+                    <span class="lang-cn">什么是基于位置的营销？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="0"> A. 
+                    <span class="lang-en">Selling properties online</span>
+                    <span class="lang-cn">在线销售房产</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="1"> B. 
+                    <span class="lang-en">Targeting users with ads specific to their current geographic coordinates</span>
+                    <span class="lang-cn">向用户投放针对其当前地理坐标的广告</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="2"> C. 
+                    <span class="lang-en">Moving database servers to different countries</span>
+                    <span class="lang-cn">将数据库服务器搬迁到不同的国家</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="3"> D. 
+                    <span class="lang-en">Hiring designers from specific cities</span>
+                    <span class="lang-cn">从特定城市招聘设计师</span>
+                </label>
+                <div class="explanation" id="exp-5">
+                    <span class="lang-en">Explanation: Location-based marketing relies on geolocational data (GPS/Wi-Fi) to target customers within physical proximity.</span>
+                    <span class="lang-cn">解析：基于位置的营销依赖地理位置数据（GPS/Wi-Fi）来针对物理上邻近的客户。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>7. 
+                    <span class="lang-en">Organic reach in social media refers to content shown to users __________________.</span>
+                    <span class="lang-cn">社交媒体中的自然触达（Organic reach）是指向用户显示的内容 __________________。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="0"> A. 
+                    <span class="lang-en">Through paid sponsor placement</span>
+                    <span class="lang-cn">通过付费赞助商投放</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="1"> B. 
+                    <span class="lang-en">Without paid boosting or advertisement funding</span>
+                    <span class="lang-cn">在没有付费提升或广告资金的情况下</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="2"> C. 
+                    <span class="lang-en">Only on desktop devices</span>
+                    <span class="lang-cn">仅在桌面设备上</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="3"> D. 
+                    <span class="lang-en">By database script queries</span>
+                    <span class="lang-cn">通过数据库脚本查询</span>
+                </label>
+                <div class="explanation" id="exp-6">
+                    <span class="lang-en">Explanation: Organic reach is the number of unique users who see your posts without any paid promotion or ads.</span>
+                    <span class="lang-cn">解析：自然触达是指在没有任何付费推广或广告的情况下看到您帖子的唯一用户数。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>8. 
+                    <span class="lang-en">Which mobile marketing format targets customers based on local directory searches?</span>
+                    <span class="lang-cn">哪种移动营销格式根据本地目录搜索来针对客户？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="0"> A. 
+                    <span class="lang-en">Geofencing alerts</span>
+                    <span class="lang-cn">地理围栏警报</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="1"> B. 
+                    <span class="lang-en">Local search ads and map placements</span>
+                    <span class="lang-cn">本地搜索广告和地图展示</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="2"> C. 
+                    <span class="lang-en">Symmetric encryption keys</span>
+                    <span class="lang-cn">对称加密密钥</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="3"> D. 
+                    <span class="lang-en">Banner ads on general portals</span>
+                    <span class="lang-cn">通用门户网站上的横幅广告</span>
+                </label>
+                <div class="explanation" id="exp-7">
+                    <span class="lang-en">Explanation: Local search ads show up when users look for local business services on search tools (like Google Maps).</span>
+                    <span class="lang-cn">解析：当用户在搜索工具（如谷歌地图）上寻找本地商业服务时，会显示本地搜索广告。</span>
+                </div>
+            </div>
+            </form>
+            <button class="btn" type="button" onclick="checkQuiz()">
+                <span class="lang-en">Submit & Grade Answers</span>
+                <span class="lang-cn">提交并评定答案</span>
+            </button>
+            <div id="quiz-result" style="margin-top: 20px; font-weight: bold; min-height: 30px;"></div>
+        </div>
+
+        <!-- Review Q&A Section (Hidden QP answers) -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Revision Review Q&A</span>
+                <span class="lang-cn">课程复习问答</span>
+            </h2>
+            
+            <div class="qa-block" id="qa-WK7-0">
+                <div class="qa-header" onclick="toggleQA('WK7-0')">
+                    <span>
+                        <span class="lang-en">Review Exercise 1</span>
+                        <span class="lang-cn">复习练习题 1</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Describe the Social Marketing process and identify key metrics used to measure Facebook campaign performance.</span>
+                        <span class="lang-cn">描述社交营销（Social Marketing）流程，并指出用于衡量 Facebook 广告系列表现的关键指标。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en"><strong>1. Social Marketing Process:</strong> Follows five key steps: Fan Acquisition (attracting users), Engagement (getting interaction), Amplification (sharing content), Community building (forums/pages), and Brand Strength (conversions/sales).<br><strong>2. Performance Metrics (表现指标):</strong> <br>- <em>Fan Acquisition:</em> Number of page likes, followers, and organic impressions.<br>- <em>Engagement:</em> Likes, shares, comment counts, and Click-Through Rate (CTR) on posts.<br>- <em>Amplification:</em> Number of retweets, shares, and referrals driven by users.</span>
+                        <span class="lang-cn"><strong>1. 社交营销流程：</strong>遵循五个关键步骤：粉丝获取（吸引用户）、互动参与（进行互动）、放大传播（共享内容）、社区建设（论坛/主页）和品牌实力（转化/销售）。<br><strong>2. 表现指标：</strong><br>- <em>粉丝获取：</em>主页点赞数、关注者和自然展示次数。<br>- <em>互动参与：</em>帖子上的点赞数、分享数、评论数以及点击率 (CTR)。<br>- <em>放大传播：</em>用户带来的转发、分享和推介次数。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            document.body.classList.toggle('cn-active');
+        }
+
+        function showCodeAns(id) {
+            const el = document.getElementById('code-ans-' + id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleQA(id) {
+            const el = document.getElementById('qa-' + id);
+            el.classList.toggle('open');
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            const total = 8;
+            const answers = [1, 1, 1, 2, 2, 1, 1, 1];
+            
+            // Highlight options
+            for (let qIdx = 0; qIdx < total; qIdx++) {
+                const checkedOpt = document.querySelector(`input[name="q${qIdx}"]:checked`);
+                const expEl = document.getElementById(`exp-${qIdx}`);
+                if (expEl) {
+                    expEl.style.display = 'block';
+                }
+                
+                if (checkedOpt) {
+                    const val = parseInt(checkedOpt.value);
+                    if (val === answers[qIdx]) {
+                        score++;
+                    }
+                }
+            }
+            
+            const resEl = document.getElementById('quiz-result');
+            resEl.innerHTML = `<span class='correct-ans'>
+                <span class="lang-en">You scored: ${score} / ${total}</span>
+                <span class="lang-cn">您的得分：${score} / ${total}</span>
+            </span>`;
+        }
+
+        // Matching Game JS Logic
+        let selectedTerm = null;
+        let selectedDef = null;
+
+        document.querySelectorAll('.match-term').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-term').forEach(t => t.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedTerm = item;
+                checkMatch();
+            });
+        });
+
+        document.querySelectorAll('.match-def').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-def').forEach(d => d.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedDef = item;
+                checkMatch();
+            });
+        });
+
+        function checkMatch() {
+            if (selectedTerm && selectedDef) {
+                const termKey = selectedTerm.getAttribute('data-key');
+                const defKey = selectedDef.getAttribute('data-key');
+                const msgEl = document.getElementById('match-message');
+                
+                if (termKey === defKey) {
+                    selectedTerm.classList.add('matched');
+                    selectedDef.classList.add('matched');
+                    selectedTerm.classList.remove('selected');
+                    selectedDef.classList.remove('selected');
+                    selectedTerm = null;
+                    selectedDef = null;
+                    
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132;">
+                            <span class="lang-en">✓ Correct Match!</span>
+                            <span class="lang-cn">✓ 配对正确！</span>
+                        </span>`;
+                    }
+                    
+                    const unmatched = document.querySelectorAll('.match-term:not(.matched)');
+                    if (unmatched.length === 0 && msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132; font-size: 1.2rem; font-weight: bold;">
+                            <span class="lang-en">🎉 Congratulations! You matched all terms correctly!</span>
+                            <span class="lang-cn">🎉 恭喜！您已成功配对所有词汇！</span>
+                        </span>`;
+                    }
+                } else {
+                    selectedTerm.classList.add('error');
+                    selectedDef.classList.add('error');
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #842029;">
+                            <span class="lang-en">✗ Incorrect Match! Try again.</span>
+                            <span class="lang-cn">✗ 配对错误！请再试一次。</span>
+                        </span>`;
+                    }
+                    const t = selectedTerm;
+                    const d = selectedDef;
+                    setTimeout(() => {
+                        t.classList.remove('error', 'selected');
+                        d.classList.remove('error', 'selected');
+                    }, 400);
+                    selectedTerm = null;
+                    selectedDef = null;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

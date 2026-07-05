@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week WK3: E-commerce Infrastructure - DBEC2653</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Macaron Palette */
+            --pastel-pink: #FFD1DC;
+            --pastel-mint: #B0EACD;
+            --pastel-blue: #AEC6CF;
+            --pastel-lavender: #C3B1E1;
+            --pastel-yellow: #FDFD96;
+            
+            --ink: #111111;
+            --ink-muted: #333333;
+            
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            --radius-lg: 32px;
+            --radius-md: 16px;
+            
+            --spring: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender), var(--pastel-blue), var(--pastel-mint));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Auras */
+        body::before {
+            content: ''; position: fixed; top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, var(--pastel-yellow) 0%, transparent 70%);
+            filter: blur(80px); opacity: 0.6; z-index: -1;
+            animation: floatAura 20s ease-in-out infinite alternate;
+        }
+        body::after {
+            content: ''; position: fixed; bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, var(--pastel-pink) 0%, transparent 70%);
+            filter: blur(100px); opacity: 0.5; z-index: -1;
+            animation: floatAura 25s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatAura {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: var(--ink); }
+        
+        .header { text-align: center; padding: 40px 20px 20px; position: relative; }
+        .header h1 { font-size: 2.3rem; margin-top: 20px; font-weight: 800; color: var(--ink); }
+        .nav-link { color: var(--ink-muted); text-decoration: none; font-weight: 700; display: inline-block; transition: all 0.4s var(--spring); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--glass-bg); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--glass-border); }
+        .nav-link:hover { color: var(--ink); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: rgba(255,255,255,0.7); }
+        
+        .lang-btn {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .container { max-width: 900px; margin: 20px auto 40px; padding: 0 20px; position: relative; z-index: 1; }
+        
+        .card { 
+            background: var(--glass-bg); 
+            border-radius: var(--radius-lg); 
+            padding: 40px; 
+            box-shadow: var(--glass-shadow); 
+            margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            transition: all 0.5s var(--spring);
+        }
+        .card h2 { border-bottom: 2px solid rgba(255,255,255,0.5); padding-bottom: 15px; margin-top: 0; font-size: 1.8rem;}
+        
+        .step { background: rgba(255,255,255,0.3); padding: 20px; margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .step h3 { margin-top: 0; font-size: 1.3rem; }
+        
+        .btn { 
+            background: linear-gradient(135deg, var(--pastel-lavender), var(--pastel-pink));
+            color: var(--ink); 
+            padding: 12px 28px; 
+            border: 2px solid rgba(255,255,255,0.8); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.4s var(--spring);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(195, 177, 225, 0.4); background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender)); }
+        
+        /* Quiz */
+        .quiz-q { margin-bottom: 25px; background: rgba(255,255,255,0.2); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .quiz-label { display: block; padding: 10px 16px; cursor: pointer; transition: all 0.4s var(--spring); border-radius: 12px; border: 1px solid transparent; font-weight: 600; font-size: 1.1rem;}
+        .quiz-label:hover { background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); transform: translateX(5px);}
+        .explanation { display: none; margin-top: 10px; padding: 10px 16px; background: rgba(255,255,255,0.6); border-radius: 8px; font-weight: 600; border-left: 4px solid var(--pastel-blue); }
+        
+        /* Coding */
+        .code-editor { background: rgba(0,0,0,0.85); color: #F8F9FA; padding: 20px; border-radius: var(--radius-md); font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-top: 10px; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); white-space: pre-wrap; }
+        .correct-ans { color: #0f5132; font-weight: 700; margin-top: 15px; display: inline-block; padding: 10px 16px; background: rgba(176, 234, 205, 0.6); border-radius: 12px; border: 1px solid var(--pastel-mint);}
+        
+        /* Table Styles (Bilingual High Contrast) */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(255,255,255,0.2); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--glass-border); }
+        .data-table th, .data-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--glass-border); font-size: 1.1rem; }
+        .data-table th { background: rgba(255,255,255,0.6); font-weight: 800; font-family: 'Orbitron', sans-serif; }
+        .data-table tr:last-child td { border-bottom: none; }
+        
+        /* SVG Tweaks for Macaron Glassmorphism & High Contrast */
+        svg { background: transparent !important; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05)); margin: 10px auto; display: block; max-width: 100%; }
+        svg text { font-family: 'Arial', sans-serif !important; font-weight: bold !important; fill: #000000 !important; }
+        svg [fill="url(#blueGrad)"], svg [fill="url(#purpleGrad)"], svg [fill="url(#mintGrad)"], svg [fill="url(#pinkGrad)"], svg [fill="url(#yellowGrad)"] { fill-opacity: 0.8 !important; stroke: #000000 !important; stroke-width: 2px !important; }
+        svg [fill="#FFF"], svg [fill="#ffffff"], svg [fill="none"] { stroke: #000000 !important; }
+        
+        /* Vocabulary Matching Game Styles */
+        .match-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .match-col { width: 48%; display: flex; flex-direction: column; gap: 10px; }
+        .match-btn {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s var(--spring);
+            user-select: none;
+            text-align: left;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+        .match-btn:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(3px);
+        }
+        .match-btn.selected {
+            background: var(--pastel-yellow) !important;
+            border: 2px solid var(--ink);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .match-btn.matched {
+            background: var(--pastel-mint) !important;
+            border: 1px solid var(--pastel-mint);
+            opacity: 0.6;
+            cursor: default;
+            pointer-events: none;
+            transform: none !important;
+        }
+        .match-btn.error {
+            background: var(--pastel-pink) !important;
+            border: 1px solid var(--pastel-pink);
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Collapsible Q&A Review style */
+        .qa-block { margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); background: rgba(255,255,255,0.25); overflow: hidden; }
+        .qa-header { padding: 18px 24px; font-weight: 700; cursor: pointer; background: rgba(255,255,255,0.4); display: flex; justify-content: space-between; align-items: center; font-size: 1.15rem; }
+        .qa-body { padding: 20px 24px; display: none; border-top: 1px solid var(--glass-border); background: rgba(255,255,255,0.5); font-size: 1.1rem; line-height: 1.7; }
+        .qa-icon { transition: transform 0.3s; font-weight: bold; }
+        .qa-block.open .qa-body { display: block; }
+        .qa-block.open .qa-icon { transform: rotate(90deg); }
+
+        /* Translation CSS Rules */
+        .lang-cn { display: none !important; }
+        body.cn-active .lang-en { display: none !important; }
+        body.cn-active .lang-cn { display: block !important; }
+        
+        span.lang-cn { display: none !important; }
+        body.cn-active span.lang-en { display: none !important; }
+        body.cn-active span.lang-cn { display: inline !important; }
+
+        @media (max-width: 768px) {
+            .lang-btn {
+                position: static;
+                margin-top: 15px;
+            }
+            .match-col { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="nav-link">
+            <span class="lang-en">← Back to Hub</span>
+            <span class="lang-cn">← 返回主页</span>
+        </a>
+        <h1>
+            <span class="lang-en">Week 3: E-commerce Infrastructure</span>
+            <span class="lang-cn">第 3 周：电子商务基础设施</span>
+        </h1>
+        <button class="btn lang-btn" onclick="toggleLanguage()">🌐 EN / 中文</button>
+    </div>
+
+    <div class="container">
+        <!-- Objectives Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-lavender);">
+            <h2>
+                <span class="lang-en">Learning Objectives</span>
+                <span class="lang-cn">学习目标</span>
+            </h2>
+            <div class="lang-en">
+                <ul>
+                    <li>Explain the technological foundation of the Internet and the Web (CLO1).</li><li>Describe the role of mobile apps in modern e-commerce infrastructure.</li><li>Describe key Internet and Web services utilized in e-commerce.</li>
+                </ul>
+            </div>
+            <div class="lang-cn">
+                <ul>
+                    <li>解释互联网和 Web 的技术基础 (CLO1)。</li><li>描述移动应用程序在现代电子商务基础设施中的作用。</li><li>描述电子商务中使用的关键互联网和 Web 服务。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sample Company / Case Study Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Bustiness Case Context</span>
+                <span class="lang-cn">商业案例情境</span>
+            </h2>
+            <div class="lang-en">
+                <p><strong>Kompas DNS & Routing:</strong> A specialty online service provider that audits domain mapping configurations. When moving client domains to new secure hosts, Kompas DNS maps logical domain URLs to physical numeric IP addresses globally and sets up HTTPS server keys to secure customer traffic against routing leaks.</p>
+            </div>
+            <div class="lang-cn">
+                <p><strong>Kompas 域名解析与路由：</strong>一家审计域名映射配置的专业在线服务商。在将客户端域名迁移到新的安全主机时，Kompas 域名解析在全球范围内将逻辑域名 URL 映射到物理数字 IP 地址，并设置 HTTPS 服务器密钥以防路由泄露，确保客户流量的安全。</p>
+            </div>
+        </div>
+
+        <!-- Comparative Table Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Key Comparison: HTTP vs. HTTPS Protocols</span>
+                <span class="lang-cn">关键对比：HTTP 与 HTTPS 协议</span>
+            </h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th><span class="lang-en">Feature / Dimension</span><span class="lang-cn">特征 / 维度</span></th><th><span class="lang-en">HTTP Protocol</span><span class="lang-cn">HTTP 协议</span></th><th><span class="lang-en">HTTPS Protocol</span><span class="lang-cn">HTTPS 协议</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="lang-en">Default Port</span><span class="lang-cn">默认端口</span></td><td><span class="lang-en">Port 80</span><span class="lang-cn">端口 80</span></td><td><span class="lang-en">Port 443</span><span class="lang-cn">端口 443</span></td></tr><tr><td><span class="lang-en">Data Transmission</span><span class="lang-cn">数据传输</span></td><td><span class="lang-en">Transmitted in plaintext (readable by sniffers)</span><span class="lang-cn">以明文传输（可被嗅探器读取）</span></td><td><span class="lang-en">Encrypted via SSL/TLS secure tunnels</span><span class="lang-cn">通过 SSL/TLS 安全通道进行加密</span></td></tr><tr><td><span class="lang-en">Security Impact</span><span class="lang-cn">安全影响</span></td><td><span class="lang-en">Vulnerable to wiretapping and credentials theft</span><span class="lang-cn">易受窃听和凭证窃取攻击</span></td><td><span class="lang-en">Protects sensitive data from eavesdropping and tampering</span><span class="lang-cn">保护敏感数据免受窃听和篡改</span></td></tr><tr><td><span class="lang-en">Website Verification</span><span class="lang-cn">网站验证</span></td><td><span class="lang-en">No verification of website identity</span><span class="lang-cn">不验证网站身份</span></td><td><span class="lang-en">Authenticates identity using Digital Certificates</span><span class="lang-cn">使用数字证书对身份进行验证</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Concept Visualization Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Concept Visualization</span>
+                <span class="lang-cn">概念可视化</span>
+            </h2>
+            <div style="background: rgba(255,255,255,0.5); border-radius: var(--radius-md); padding: 20px; border: 1px solid var(--glass-border);">
+                
+        <svg height="240" viewBox="0 0 600 240" width="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="blueGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stop-color="#AEC6CF"></stop>
+                    <stop offset="100%" stop-color="#C3B1E1"></stop>
+                </linearGradient>
+            </defs>
+            <!-- Flow nodes -->
+            <rect fill="url(#blueGrad)" stroke="#111" stroke-width="1.5" height="50" rx="10" width="110" x="20" y="95"></rect>
+            <text fill="#111" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="75" y="125">Client PC</text>
+            
+            <rect fill="url(#blueGrad)" stroke="#111" stroke-width="1.5" height="50" rx="10" width="110" x="200" y="95"></rect>
+            <text fill="#111" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="255" y="125">DNS Resolver</text>
+            
+            <rect fill="url(#blueGrad)" stroke="#111" stroke-width="1.5" height="50" rx="10" width="110" x="420" y="30"></rect>
+            <text fill="#111" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="475" y="60">Root Server</text>
+            
+            <rect fill="url(#blueGrad)" stroke="#111" stroke-width="1.5" height="50" rx="10" width="110" x="420" y="150"></rect>
+            <text fill="#111" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="475" y="180">TLD Server</text>
+            
+            <!-- Connection lines -->
+            <line x1="130" y1="120" x2="200" y2="120" stroke="#111" stroke-width="2"></line>
+            <path d="M 310 110 L 420 55" fill="none" id="rootPath" stroke="#D81B60" stroke-width="2"></path>
+            <path d="M 310 130 L 420 175" fill="none" id="tldPath" stroke="#111" stroke-width="2"></path>
+            
+            <circle fill="#D81B60" r="5">
+                <animateMotion dur="2.5s" repeatCount="indefinite">
+                    <mpath href="#rootPath"></mpath>
+                </animateMotion>
+            </circle>
+            
+            <text fill="#333" font-family="Arial" font-size="11" x="140" y="110">1. Query</text>
+            <text fill="#D81B60" font-family="Arial" font-size="11" x="330" y="70">2. Root Ask</text>
+        </svg>
+        
+            </div>
+        </div>
+
+        <!-- Practical Exercise Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-mint);">
+            <h2>
+                <span class="lang-en">Practical Exercise: Wireshark Packet Inspection</span>
+                <span class="lang-cn">实践练习：Wireshark 数据包检查</span>
+            </h2>
+            <div class="lang-en">
+                <p><b>Steps to complete:</b></p>
+                <ol>
+                    <li>Open Wireshark on your device and select the active network card interface.</li><li>Run display filter <code>dns</code> and enter search query in your browser to inspect DNS query and response transactions.</li><li>Switch the display filter to <code>http</code>, load website `http://neverssl.com`, and double-click the GET request packet to view plain text HTTP headers.</li>
+                </ol>
+            </div>
+            <div class="lang-cn">
+                <p><b>操作步骤：</b></p>
+                <ol>
+                    <li>在您的设备上打开 Wireshark，并选择活动的网卡接口。</li><li>运行显示过滤器 <code>dns</code> 并在此期间在浏览器中进行网页访问，以检查 DNS 查询和响应交互。</li><li>将显示过滤器切换为 <code>http</code>，加载网页 `http://neverssl.com`，双击 GET 请求包查看明文 HTTP 首部信息。</li>
+                </ol>
+            </div>
+            <button class="btn" onclick="showCodeAns('practical')">
+                <span class="lang-en">Show Parsed HTTP Header Data</span>
+                <span class="lang-cn">显示解析的 HTTP 首部数据</span>
+            </button>
+            <div class="code-editor" id="code-ans-practical" style="display:none;">GET / HTTP/1.1\r\nHost: neverssl.com\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\r\nAccept: text/html,application/xhtml+xml\r\n\r\n[Decoded Plaintext payload visible to network monitors]</div>
+        </div>
+
+        <!-- Vocabulary Matching Game -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Vocabulary Connection Game</span>
+                <span class="lang-cn">词汇连线互动游戏</span>
+            </h2>
+            <p>
+                <span class="lang-en">Match the term on the left with its definition on the right. (Click a term, then click its matching definition).</span>
+                <span class="lang-cn">将左侧的术语与右侧的定义进行配对。（点击术语，然后点击匹配的定义）。</span>
+            </p>
+            <div class="match-grid">
+                <!-- Terms Column -->
+                <div class="match-col">
+                    <div class="match-btn match-term" data-key="term_4"><span class="lang-en">Latency</span><span class="lang-cn">时延</span></div><div class="match-btn match-term" data-key="term_3"><span class="lang-en">URL</span><span class="lang-cn">统一资源定位符</span></div><div class="match-btn match-term" data-key="term_2"><span class="lang-en">TCP/IP</span><span class="lang-cn">传输控制协议/网际协议</span></div><div class="match-btn match-term" data-key="term_0"><span class="lang-en">Packet Switching</span><span class="lang-cn">分组交换</span></div><div class="match-btn match-term" data-key="term_1"><span class="lang-en">DNS</span><span class="lang-cn">域名系统</span></div>
+                </div>
+                <!-- Definitions Column -->
+                <div class="match-col">
+                    <div class="match-btn match-def" data-key="term_2"><span class="lang-en">Protocol suite that governs data communications on the Internet</span><span class="lang-cn">管理互联网上数据通信的协议族</span></div><div class="match-btn match-def" data-key="term_1"><span class="lang-en">Translates human-friendly domain URLs into numeric IP addresses</span><span class="lang-cn">将人类友好的域名 URL 翻译为数字 IP 地址的系统</span></div><div class="match-btn match-def" data-key="term_0"><span class="lang-en">Slicing digital messages into packets, sending them along communication paths, and reassembling them</span><span class="lang-cn">将数字消息切成数据包，沿不同通信路径发送并在目的地重新组装的过程</span></div><div class="match-btn match-def" data-key="term_3"><span class="lang-en">The global address of documents and other resources on the World Wide Web</span><span class="lang-cn">万维网上文档和其他资源的全球地址</span></div><div class="match-btn match-def" data-key="term_4"><span class="lang-en">The time delay experienced in system data communications</span><span class="lang-cn">系统数据通信中所经历的时间延迟</span></div>
+                </div>
+            </div>
+            <div id="match-message" style="margin-top: 20px; font-weight: bold; text-align: center; min-height: 28px;"></div>
+        </div>
+
+        <!-- MCQ Practice Quiz -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Knowledge Check Practice</span>
+                <span class="lang-cn">知识自测练习</span>
+            </h2>
+            <form id="quiz-form">
+                
+            <div class="quiz-q">
+                <p><b>1. 
+                    <span class="lang-en">What is the primary technical concept behind internet packet switching?</span>
+                    <span class="lang-cn">互联网分组交换背后的主要技术概念是什么？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="0"> A. 
+                    <span class="lang-en">Reserving a dedicated circuit for communications</span>
+                    <span class="lang-cn">为通信预留专用电路</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="1"> B. 
+                    <span class="lang-en">Slicing messages into packets and routing them dynamically</span>
+                    <span class="lang-cn">将消息切成数据包并动态路由</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="2"> C. 
+                    <span class="lang-en">Sending continuous analogue waves</span>
+                    <span class="lang-cn">发送连续的模拟波</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="3"> D. 
+                    <span class="lang-en">Using satellites only</span>
+                    <span class="lang-cn">仅使用卫星</span>
+                </label>
+                <div class="explanation" id="exp-0">
+                    <span class="lang-en">Explanation: Packet switching slices digital messages into packets, routes them dynamically along different paths, and reassembles them at the destination.</span>
+                    <span class="lang-cn">解析：分组交换将数字消息切成数据包，沿不同路径动态路由，并在目的地重新组装。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>2. 
+                    <span class="lang-en">The Domain Name System (DNS) translates __________________.</span>
+                    <span class="lang-cn">域名系统（DNS）翻译 __________________。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="0"> A. 
+                    <span class="lang-en">Plain text into ciphertext</span>
+                    <span class="lang-cn">明文为密文</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="1"> B. 
+                    <span class="lang-en">Domain URLs into numeric IP addresses</span>
+                    <span class="lang-cn">域名 URL 为数字 IP 地址</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="2"> C. 
+                    <span class="lang-en">HTML code into web layouts</span>
+                    <span class="lang-cn">HTML 代码为网页布局</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="3"> D. 
+                    <span class="lang-en">Email headers into databases</span>
+                    <span class="lang-cn">邮件首部为数据库</span>
+                </label>
+                <div class="explanation" id="exp-1">
+                    <span class="lang-en">Explanation: DNS is a hierarchical database that translates human-readable domain names (e.g. www.google.com) into IP addresses.</span>
+                    <span class="lang-cn">解析：DNS 是一个分层数据库，用于将人类可读的域名（例如 www.google.com）翻译为 IP 地址。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>3. 
+                    <span class="lang-en">Why is HTTPS critical for securing e-commerce transactions compared to HTTP?</span>
+                    <span class="lang-cn">与 HTTP 相比，为什么 HTTPS 对保障电子商务交易安全至关重要？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="0"> A. 
+                    <span class="lang-en">It displays high-resolution graphics</span>
+                    <span class="lang-cn">它显示高分辨率图形</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="1"> B. 
+                    <span class="lang-en">It encrypts data transit to prevent snooping and credit card theft</span>
+                    <span class="lang-cn">它对传输中的数据进行加密以防窃听和信用卡盗窃</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="2"> C. 
+                    <span class="lang-en">It provides faster loading speeds</span>
+                    <span class="lang-cn">它提供更快的加载速度</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="3"> D. 
+                    <span class="lang-en">It links domains to social networks</span>
+                    <span class="lang-cn">它将域名链接到社交网络</span>
+                </label>
+                <div class="explanation" id="exp-2">
+                    <span class="lang-en">Explanation: HTTPS encrypts the data transport layer via SSL/TLS protocols, protecting sensitive user data from eavesdropping.</span>
+                    <span class="lang-cn">解析：HTTPS 通过 SSL/TLS 协议对数据传输层进行加密，保护敏感的用户数据免受窃听。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>4. 
+                    <span class="lang-en">IPv4 (Internet Protocol version 4) addresses utilize how many bits?</span>
+                    <span class="lang-cn">IPv4（互联网协议第 4 版）地址使用多少位？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="0"> A. 
+                    <span class="lang-en">8-bit</span>
+                    <span class="lang-cn">8 位</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="1"> B. 
+                    <span class="lang-en">16-bit</span>
+                    <span class="lang-cn">16 位</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="2"> C. 
+                    <span class="lang-en">32-bit</span>
+                    <span class="lang-cn">32 位</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="3"> D. 
+                    <span class="lang-en">128-bit</span>
+                    <span class="lang-cn">128 位</span>
+                </label>
+                <div class="explanation" id="exp-3">
+                    <span class="lang-en">Explanation: IPv4 addresses use a 32-bit structure represented as four decimal bytes separated by periods.</span>
+                    <span class="lang-cn">解析：IPv4 地址采用 32 位结构，表示为由点分隔的四个十进制字节。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>5. 
+                    <span class="lang-en">Which protocol is used to transfer web pages from servers to client browsers?</span>
+                    <span class="lang-cn">哪种协议用于将网页从服务器传输到客户端浏览器？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="0"> A. 
+                    <span class="lang-en">FTP</span>
+                    <span class="lang-cn">FTP</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="1"> B. 
+                    <span class="lang-en">SMTP</span>
+                    <span class="lang-cn">SMTP</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="2"> C. 
+                    <span class="lang-en">HTTP</span>
+                    <span class="lang-cn">HTTP</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="3"> D. 
+                    <span class="lang-en">IMAP</span>
+                    <span class="lang-cn">IMAP</span>
+                </label>
+                <div class="explanation" id="exp-4">
+                    <span class="lang-en">Explanation: HTTP (Hypertext Transfer Protocol) is the protocol used to request and transmit web content.</span>
+                    <span class="lang-cn">解析：HTTP（超文本传输协议）是用于请求和传输网页内容的协议。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>6. 
+                    <span class="lang-en">Which layer of the TCP/IP protocol suite is responsible for routing packets across networks?</span>
+                    <span class="lang-cn">TCP/IP 协议族的哪一层负责跨网络路由数据包？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="0"> A. 
+                    <span class="lang-en">Network Interface Layer</span>
+                    <span class="lang-cn">网络接口层</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="1"> B. 
+                    <span class="lang-en">Internet Layer</span>
+                    <span class="lang-cn">网际网络层</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="2"> C. 
+                    <span class="lang-en">Transport Layer</span>
+                    <span class="lang-cn">传输层</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="3"> D. 
+                    <span class="lang-en">Application Layer</span>
+                    <span class="lang-cn">应用层</span>
+                </label>
+                <div class="explanation" id="exp-5">
+                    <span class="lang-en">Explanation: The Internet layer of TCP/IP (such as the IP protocol) handles routing of data packets across network boundaries.</span>
+                    <span class="lang-cn">解析：TCP/IP 的网际网络层（例如 IP 协议）处理跨网络边界的数据包路由。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>7. 
+                    <span class="lang-en">The Web runs on top of which infrastructure?</span>
+                    <span class="lang-cn">Web 运行在哪个基础设施之上？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="0"> A. 
+                    <span class="lang-en">The Internet</span>
+                    <span class="lang-cn">互联网</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="1"> B. 
+                    <span class="lang-en">Local Area Networks only</span>
+                    <span class="lang-cn">仅限局域网</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="2"> C. 
+                    <span class="lang-en">Satellite systems exclusively</span>
+                    <span class="lang-cn">排他性的卫星系统</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="3"> D. 
+                    <span class="lang-en">SQL databases</span>
+                    <span class="lang-cn">SQL 数据库</span>
+                </label>
+                <div class="explanation" id="exp-6">
+                    <span class="lang-en">Explanation: The Web is an information service that runs on top of the physical network infrastructure of the Internet.</span>
+                    <span class="lang-cn">解析：Web 是一种信息服务，运行在互联网的物理网络基础设施之上。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>8. 
+                    <span class="lang-en">What does latency refer to in network communication?</span>
+                    <span class="lang-cn">网络通信中的时延是指什么？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="0"> A. 
+                    <span class="lang-en">The cost of bandwidth</span>
+                    <span class="lang-cn">带宽成本</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="1"> B. 
+                    <span class="lang-en">The size of a data file</span>
+                    <span class="lang-cn">数据文件的大小</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="2"> C. 
+                    <span class="lang-en">The time delay experienced during data transit</span>
+                    <span class="lang-cn">数据传输过程中发生的时间延迟</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="3"> D. 
+                    <span class="lang-en">The number of users online</span>
+                    <span class="lang-cn">在线用户数量</span>
+                </label>
+                <div class="explanation" id="exp-7">
+                    <span class="lang-en">Explanation: Latency is the delay or round-trip time it takes for a packet of data to travel from source to destination.</span>
+                    <span class="lang-cn">解析：时延是数据包从源传输到目的地所花费的延迟或往返时间。</span>
+                </div>
+            </div>
+            </form>
+            <button class="btn" type="button" onclick="checkQuiz()">
+                <span class="lang-en">Submit & Grade Answers</span>
+                <span class="lang-cn">提交并评定答案</span>
+            </button>
+            <div id="quiz-result" style="margin-top: 20px; font-weight: bold; min-height: 30px;"></div>
+        </div>
+
+        <!-- Review Q&A Section (Hidden QP answers) -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Revision Review Q&A</span>
+                <span class="lang-cn">课程复习问答</span>
+            </h2>
+            
+            <div class="qa-block" id="qa-WK3-0">
+                <div class="qa-header" onclick="toggleQA('WK3-0')">
+                    <span>
+                        <span class="lang-en">Review Exercise 1</span>
+                        <span class="lang-cn">复习练习题 1</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Describe the Packet Switching concept and explain why it is more efficient than circuit-switched networks.</span>
+                        <span class="lang-cn">描述分组交换（Packet Switching）概念，并解释为什么它比电路交换网络更高效。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en"><strong>1. Packet Switching Concept (分组交换概念):</strong> Slices digital messages into packets (1 Mark), sends them along different communication paths (1 Mark), and reassembles them at the destination (1 Mark).<br><strong>2. Efficiency (高效性):</strong> It avoids dedicated circuits. It allows multiple users to share lines (1 Mark), dynamically routes around busy nodes (1 Mark), and maximizes bandwidth utilization (1 Mark) by only consuming capacity when data is actively sent.</span>
+                        <span class="lang-cn"><strong>1. 分组交换概念：</strong>将数字消息切成数据包（1分），沿不同的通信路径发送它们（1分），并在目的地重新组装它们（1分）。<br><strong>2. 高效性：</strong>它避免了专用电路。它允许多个用户共享线路（1分），动态绕过繁忙节点路由（1分），并且仅在主动发送数据时才消耗容量，从而最大化带宽利用率（1分）。</span>
+                    </div>
+                </div>
+            </div>
+            <div class="qa-block" id="qa-WK3-1">
+                <div class="qa-header" onclick="toggleQA('WK3-1')">
+                    <span>
+                        <span class="lang-en">Review Exercise 2</span>
+                        <span class="lang-cn">复习练习题 2</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Explain the Domain Name System (DNS) functions, specifically domain resolution and database management.</span>
+                        <span class="lang-cn">解释域名系统（DNS）的功能，特别是域名解析和数据库管理。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en"><strong>1. Domain Resolution (域名解析):</strong> DNS translates human-friendly domain URLs (e.g. www.google.com) into numeric IP addresses (e.g. 172.217.7.14) that routers need to forward packets.<br><strong>2. Distributed Database Management (分布式数据库管理):</strong> DNS operates as a hierarchical, distributed database system. No single server holds all mappings; instead, root, TLD, and authoritative name servers coordinate globally to manage and resolve addresses.</span>
+                        <span class="lang-cn"><strong>1. 域名解析：</strong>DNS 将人类易记的域名 URL（例如 www.google.com）翻译成路由器转发数据包所需的数字 IP 地址（例如 172.217.7.14）。<br><strong>2. 分布式数据库管理：</strong>DNS 作为一个分层的分布式数据库系统运行。没有单个服务器保存所有映射；相反，根、TLD 和权威域名服务器在全球范围内协调以管理和解析地址。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            document.body.classList.toggle('cn-active');
+        }
+
+        function showCodeAns(id) {
+            const el = document.getElementById('code-ans-' + id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleQA(id) {
+            const el = document.getElementById('qa-' + id);
+            el.classList.toggle('open');
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            const total = 8;
+            const answers = [1, 1, 1, 2, 2, 1, 0, 2];
+            
+            // Highlight options
+            for (let qIdx = 0; qIdx < total; qIdx++) {
+                const checkedOpt = document.querySelector(`input[name="q${qIdx}"]:checked`);
+                const expEl = document.getElementById(`exp-${qIdx}`);
+                if (expEl) {
+                    expEl.style.display = 'block';
+                }
+                
+                if (checkedOpt) {
+                    const val = parseInt(checkedOpt.value);
+                    if (val === answers[qIdx]) {
+                        score++;
+                    }
+                }
+            }
+            
+            const resEl = document.getElementById('quiz-result');
+            resEl.innerHTML = `<span class='correct-ans'>
+                <span class="lang-en">You scored: ${score} / ${total}</span>
+                <span class="lang-cn">您的得分：${score} / ${total}</span>
+            </span>`;
+        }
+
+        // Matching Game JS Logic
+        let selectedTerm = null;
+        let selectedDef = null;
+
+        document.querySelectorAll('.match-term').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-term').forEach(t => t.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedTerm = item;
+                checkMatch();
+            });
+        });
+
+        document.querySelectorAll('.match-def').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-def').forEach(d => d.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedDef = item;
+                checkMatch();
+            });
+        });
+
+        function checkMatch() {
+            if (selectedTerm && selectedDef) {
+                const termKey = selectedTerm.getAttribute('data-key');
+                const defKey = selectedDef.getAttribute('data-key');
+                const msgEl = document.getElementById('match-message');
+                
+                if (termKey === defKey) {
+                    selectedTerm.classList.add('matched');
+                    selectedDef.classList.add('matched');
+                    selectedTerm.classList.remove('selected');
+                    selectedDef.classList.remove('selected');
+                    selectedTerm = null;
+                    selectedDef = null;
+                    
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132;">
+                            <span class="lang-en">✓ Correct Match!</span>
+                            <span class="lang-cn">✓ 配对正确！</span>
+                        </span>`;
+                    }
+                    
+                    const unmatched = document.querySelectorAll('.match-term:not(.matched)');
+                    if (unmatched.length === 0 && msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132; font-size: 1.2rem; font-weight: bold;">
+                            <span class="lang-en">🎉 Congratulations! You matched all terms correctly!</span>
+                            <span class="lang-cn">🎉 恭喜！您已成功配对所有词汇！</span>
+                        </span>`;
+                    }
+                } else {
+                    selectedTerm.classList.add('error');
+                    selectedDef.classList.add('error');
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #842029;">
+                            <span class="lang-en">✗ Incorrect Match! Try again.</span>
+                            <span class="lang-cn">✗ 配对错误！请再试一次。</span>
+                        </span>`;
+                    }
+                    const t = selectedTerm;
+                    const d = selectedDef;
+                    setTimeout(() => {
+                        t.classList.remove('error', 'selected');
+                        d.classList.remove('error', 'selected');
+                    }, 400);
+                    selectedTerm = null;
+                    selectedDef = null;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

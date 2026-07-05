@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week WK12: Social Networks, Auctions, and Portals - DBEC2653</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Macaron Palette */
+            --pastel-pink: #FFD1DC;
+            --pastel-mint: #B0EACD;
+            --pastel-blue: #AEC6CF;
+            --pastel-lavender: #C3B1E1;
+            --pastel-yellow: #FDFD96;
+            
+            --ink: #111111;
+            --ink-muted: #333333;
+            
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            --radius-lg: 32px;
+            --radius-md: 16px;
+            
+            --spring: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender), var(--pastel-blue), var(--pastel-mint));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Auras */
+        body::before {
+            content: ''; position: fixed; top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, var(--pastel-yellow) 0%, transparent 70%);
+            filter: blur(80px); opacity: 0.6; z-index: -1;
+            animation: floatAura 20s ease-in-out infinite alternate;
+        }
+        body::after {
+            content: ''; position: fixed; bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, var(--pastel-pink) 0%, transparent 70%);
+            filter: blur(100px); opacity: 0.5; z-index: -1;
+            animation: floatAura 25s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatAura {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: var(--ink); }
+        
+        .header { text-align: center; padding: 40px 20px 20px; position: relative; }
+        .header h1 { font-size: 2.3rem; margin-top: 20px; font-weight: 800; color: var(--ink); }
+        .nav-link { color: var(--ink-muted); text-decoration: none; font-weight: 700; display: inline-block; transition: all 0.4s var(--spring); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--glass-bg); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--glass-border); }
+        .nav-link:hover { color: var(--ink); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: rgba(255,255,255,0.7); }
+        
+        .lang-btn {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .container { max-width: 900px; margin: 20px auto 40px; padding: 0 20px; position: relative; z-index: 1; }
+        
+        .card { 
+            background: var(--glass-bg); 
+            border-radius: var(--radius-lg); 
+            padding: 40px; 
+            box-shadow: var(--glass-shadow); 
+            margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            transition: all 0.5s var(--spring);
+        }
+        .card h2 { border-bottom: 2px solid rgba(255,255,255,0.5); padding-bottom: 15px; margin-top: 0; font-size: 1.8rem;}
+        
+        .step { background: rgba(255,255,255,0.3); padding: 20px; margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .step h3 { margin-top: 0; font-size: 1.3rem; }
+        
+        .btn { 
+            background: linear-gradient(135deg, var(--pastel-lavender), var(--pastel-pink));
+            color: var(--ink); 
+            padding: 12px 28px; 
+            border: 2px solid rgba(255,255,255,0.8); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.4s var(--spring);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(195, 177, 225, 0.4); background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender)); }
+        
+        /* Quiz */
+        .quiz-q { margin-bottom: 25px; background: rgba(255,255,255,0.2); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .quiz-label { display: block; padding: 10px 16px; cursor: pointer; transition: all 0.4s var(--spring); border-radius: 12px; border: 1px solid transparent; font-weight: 600; font-size: 1.1rem;}
+        .quiz-label:hover { background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); transform: translateX(5px);}
+        .explanation { display: none; margin-top: 10px; padding: 10px 16px; background: rgba(255,255,255,0.6); border-radius: 8px; font-weight: 600; border-left: 4px solid var(--pastel-blue); }
+        
+        /* Coding */
+        .code-editor { background: rgba(0,0,0,0.85); color: #F8F9FA; padding: 20px; border-radius: var(--radius-md); font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-top: 10px; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); white-space: pre-wrap; }
+        .correct-ans { color: #0f5132; font-weight: 700; margin-top: 15px; display: inline-block; padding: 10px 16px; background: rgba(176, 234, 205, 0.6); border-radius: 12px; border: 1px solid var(--pastel-mint);}
+        
+        /* Table Styles (Bilingual High Contrast) */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(255,255,255,0.2); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--glass-border); }
+        .data-table th, .data-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--glass-border); font-size: 1.1rem; }
+        .data-table th { background: rgba(255,255,255,0.6); font-weight: 800; font-family: 'Orbitron', sans-serif; }
+        .data-table tr:last-child td { border-bottom: none; }
+        
+        /* SVG Tweaks for Macaron Glassmorphism & High Contrast */
+        svg { background: transparent !important; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05)); margin: 10px auto; display: block; max-width: 100%; }
+        svg text { font-family: 'Arial', sans-serif !important; font-weight: bold !important; fill: #000000 !important; }
+        svg [fill="url(#blueGrad)"], svg [fill="url(#purpleGrad)"], svg [fill="url(#mintGrad)"], svg [fill="url(#pinkGrad)"], svg [fill="url(#yellowGrad)"] { fill-opacity: 0.8 !important; stroke: #000000 !important; stroke-width: 2px !important; }
+        svg [fill="#FFF"], svg [fill="#ffffff"], svg [fill="none"] { stroke: #000000 !important; }
+        
+        /* Vocabulary Matching Game Styles */
+        .match-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .match-col { width: 48%; display: flex; flex-direction: column; gap: 10px; }
+        .match-btn {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s var(--spring);
+            user-select: none;
+            text-align: left;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+        .match-btn:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(3px);
+        }
+        .match-btn.selected {
+            background: var(--pastel-yellow) !important;
+            border: 2px solid var(--ink);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .match-btn.matched {
+            background: var(--pastel-mint) !important;
+            border: 1px solid var(--pastel-mint);
+            opacity: 0.6;
+            cursor: default;
+            pointer-events: none;
+            transform: none !important;
+        }
+        .match-btn.error {
+            background: var(--pastel-pink) !important;
+            border: 1px solid var(--pastel-pink);
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Collapsible Q&A Review style */
+        .qa-block { margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); background: rgba(255,255,255,0.25); overflow: hidden; }
+        .qa-header { padding: 18px 24px; font-weight: 700; cursor: pointer; background: rgba(255,255,255,0.4); display: flex; justify-content: space-between; align-items: center; font-size: 1.15rem; }
+        .qa-body { padding: 20px 24px; display: none; border-top: 1px solid var(--glass-border); background: rgba(255,255,255,0.5); font-size: 1.1rem; line-height: 1.7; }
+        .qa-icon { transition: transform 0.3s; font-weight: bold; }
+        .qa-block.open .qa-body { display: block; }
+        .qa-block.open .qa-icon { transform: rotate(90deg); }
+
+        /* Translation CSS Rules */
+        .lang-cn { display: none !important; }
+        body.cn-active .lang-en { display: none !important; }
+        body.cn-active .lang-cn { display: block !important; }
+        
+        span.lang-cn { display: none !important; }
+        body.cn-active span.lang-en { display: none !important; }
+        body.cn-active span.lang-cn { display: inline !important; }
+
+        @media (max-width: 768px) {
+            .lang-btn {
+                position: static;
+                margin-top: 15px;
+            }
+            .match-col { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="nav-link">
+            <span class="lang-en">← Back to Hub</span>
+            <span class="lang-cn">← 返回主页</span>
+        </a>
+        <h1>
+            <span class="lang-en">Week 12: Social Networks, Auctions, and Portals</span>
+            <span class="lang-cn">第 12 周：社交网络、拍卖与门户网站</span>
+        </h1>
+        <button class="btn lang-btn" onclick="toggleLanguage()">🌐 EN / 中文</button>
+    </div>
+
+    <div class="container">
+        <!-- Objectives Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-lavender);">
+            <h2>
+                <span class="lang-en">Learning Objectives</span>
+                <span class="lang-cn">学习目标</span>
+            </h2>
+            <div class="lang-en">
+                <ul>
+                    <li>Apply social network and portal concepts to e-commerce projects (CLO3).</li><li>Describe online auction models, auction rules, and auction fraud.</li><li>Identify the business models and revenue generation of e-commerce portals.</li>
+                </ul>
+            </div>
+            <div class="lang-cn">
+                <ul>
+                    <li>将社交网络和门户概念应用于电子商务项目 (CLO3)。</li><li>描述在线拍卖模式、拍卖规则和拍卖欺诈。</li><li>识别电子商务门户网站的商业模式和收入产生。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sample Company / Case Study Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Bustiness Case Context</span>
+                <span class="lang-cn">商业案例情境</span>
+            </h2>
+            <div class="lang-en">
+                <p><strong>Kompas Auction Portal:</strong> An online portal that hosts consumer-to-consumer auctions. The site implements strict bidding validation rules to protect users against bid-rigging fraud and fake customer profiles.</p>
+            </div>
+            <div class="lang-cn">
+                <p><strong>Kompas 拍卖门户：</strong>一个托管消费者对消费者（C2C）拍卖的在线门户。该网站实施严格的竞价验证规则，以保护用户免受围标（Bid-rigging）欺诈和虚假客户档案的侵害。</p>
+            </div>
+        </div>
+
+        <!-- Comparative Table Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Key Comparison: Social Network vs. Online Auction vs. E-Commerce Portal</span>
+                <span class="lang-cn">关键对比：社交网络、在线拍卖与电商门户</span>
+            </h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th><span class="lang-en">Dimension / Model</span><span class="lang-cn">维度 / 模式</span></th><th><span class="lang-en">Social Network</span><span class="lang-cn">社交网络 (Social)</span></th><th><span class="lang-en">Online Auction Portal</span><span class="lang-cn">在线拍卖门户 (Auction)</span></th><th><span class="lang-en">E-Commerce Portal</span><span class="lang-cn">电商门户 (Portal)</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="lang-en">Primary Value</span><span class="lang-cn">主要价值</span></td><td><span class="lang-en">User interaction, community building, sharing feeds.</span><span class="lang-cn">用户互动、社区建设、分享提要。</span></td><td><span class="lang-en">Bidding marketspace, dynamic pricing of goods.</span><span class="lang-cn">竞价市场、商品的动态定价。</span></td><td><span class="lang-en">Entry point, search directories, aggregate news.</span><span class="lang-cn">入口点、搜索目录、汇总新闻。</span></td></tr><tr><td><span class="lang-en">Revenue Stream</span><span class="lang-cn">收入来源</span></td><td><span class="lang-en">Targeted advertising, premium subscriptions.</span><span class="lang-cn">针对性的广告、高级订阅。</span></td><td><span class="lang-en">Transaction fees (seller listing fee, final commission).</span><span class="lang-cn">交易费（卖家发布费、最终佣金）。</span></td><td><span class="lang-en">Display advertising, affiliate referral fees.</span><span class="lang-cn">展示广告、联属引流费。</span></td></tr><tr><td><span class="lang-en">Key Risk</span><span class="lang-cn">主要风险</span></td><td><span class="lang-en">User privacy violations, data leaks.</span><span class="lang-cn">侵犯用户隐私、数据泄露。</span></td><td><span class="lang-en">Bid rigging, auction fraud, shill bidding.</span><span class="lang-cn">围标、拍卖欺诈、托儿竞价（Shill bidding）。</span></td><td><span class="lang-en">User abandonment, loss of search dominance.</span><span class="lang-cn">用户流失、失去搜索主导地位。</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Concept Visualization Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Concept Visualization</span>
+                <span class="lang-cn">概念可视化</span>
+            </h2>
+            <div style="background: rgba(255,255,255,0.5); border-radius: var(--radius-md); padding: 20px; border: 1px solid var(--glass-border);">
+                
+        <svg height="240" viewBox="0 0 600 240" width="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="blueGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stop-color="#AEC6CF"></stop>
+                    <stop offset="100%" stop-color="#C3B1E1"></stop>
+                </linearGradient>
+            </defs>
+            <!-- Seller -->
+            <rect fill="url(#blueGrad)" stroke="#111" stroke-width="1.5" height="50" rx="5" width="90" x="20" y="95"></rect>
+            <text fill="#111" font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="65" y="125">Seller (卖家)</text>
+            
+            <path d="M 110 120 L 220 120" fill="none" id="listPath" stroke="#111" stroke-width="2"></path>
+            <text fill="#111" font-family="Arial" font-size="9" x="120" y="105">1. Lists Item ($10)</text>
+            
+            <!-- Auction Server -->
+            <rect fill="url(#blueGrad)" stroke="#111" stroke-width="1.5" height="60" rx="10" width="130" x="220" y="90"></rect>
+            <text fill="#111" font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="285" y="125">Auction Server</text>
+            
+            <path d="M 480 120 L 350 120" fill="none" id="bidPath" stroke="#D81B60" stroke-width="2"></path>
+            <text fill="#D81B60" font-family="Arial" font-size="9" x="380" y="105">2. Places Bid ($15)</text>
+            
+            <circle fill="#D81B60" r="5">
+                <animateMotion dur="3s" repeatCount="indefinite">
+                    <mpath href="#bidPath"></mpath>
+                </animateMotion>
+            </circle>
+            
+            <!-- Bidder -->
+            <circle cx="510" cy="120" fill="url(#blueGrad)" r="30" stroke="#111" stroke-width="1.5"></circle>
+            <text fill="#111" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="510" y="123">Bidder</text>
+        </svg>
+        
+            </div>
+        </div>
+
+        <!-- Practical Exercise Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-mint);">
+            <h2>
+                <span class="lang-en">Practical Exercise: Configuring Reviews and Ratings</span>
+                <span class="lang-cn">实践练习：配置评价与评分</span>
+            </h2>
+            <div class="lang-en">
+                <p><b>Steps to complete:</b></p>
+                <ol>
+                    <li>Log in to the WooCommerce dashboard and go to Settings -> Products.</li><li>Tick the checkboxes for <strong>Enable product reviews</strong> and <strong>Show 'verified owner' label</strong>.</li><li>Save settings, navigate to a product page, and submit a test review with a 5-star rating.</li>
+                </ol>
+            </div>
+            <div class="lang-cn">
+                <p><b>操作步骤：</b></p>
+                <ol>
+                    <li>登录 WooCommerce 控制台，转到“设置” -> “产品”。</li><li>勾选<strong>启用产品评价</strong>和<strong>显示“已验证的所有者”标签</strong>复选框。</li><li>保存设置，导航到产品页面，并提交包含 5 星评分的测试评价。</li>
+                </ol>
+            </div>
+            <button class="btn" onclick="showCodeAns('practical')">
+                <span class="lang-en">Show Review Configuration Status</span>
+                <span class="lang-cn">显示评价配置状态</span>
+            </button>
+            <div class="code-editor" id="code-ans-practical" style="display:none;">Reviews Status: Enabled\nVerified Owner Label: Active (requires completed order history)\nStar Ratings: Enabled (required to submit review)\nDatabase Logging: wp_comments updated with rating metadata (meta_key: rating, meta_value: 5)</div>
+        </div>
+
+        <!-- Vocabulary Matching Game -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Vocabulary Connection Game</span>
+                <span class="lang-cn">词汇连线互动游戏</span>
+            </h2>
+            <p>
+                <span class="lang-en">Match the term on the left with its definition on the right. (Click a term, then click its matching definition).</span>
+                <span class="lang-cn">将左侧的术语与右侧的定义进行配对。（点击术语，然后点击匹配的定义）。</span>
+            </p>
+            <div class="match-grid">
+                <!-- Terms Column -->
+                <div class="match-col">
+                    <div class="match-btn match-term" data-key="term_1"><span class="lang-en">Auction Portal</span><span class="lang-cn">拍卖门户</span></div><div class="match-btn match-term" data-key="term_4"><span class="lang-en">Marketspace Portal</span><span class="lang-cn">门户网站</span></div><div class="match-btn match-term" data-key="term_0"><span class="lang-en">Online Community</span><span class="lang-cn">在线社区</span></div><div class="match-btn match-term" data-key="term_2"><span class="lang-en">Shill Bidding</span><span class="lang-cn">托儿竞价</span></div><div class="match-btn match-term" data-key="term_3"><span class="lang-en">Bid Rigging</span><span class="lang-cn">围标/恶意串通</span></div>
+                </div>
+                <!-- Definitions Column -->
+                <div class="match-col">
+                    <div class="match-btn match-def" data-key="term_3"><span class="lang-en">Collusion among multiple bidders to control the final auction price</span><span class="lang-cn">多个竞标者之间控制最终拍卖价格的串通行为</span></div><div class="match-btn match-def" data-key="term_1"><span class="lang-en">Digital marketplace utilizing dynamic pricing and bidding rules</span><span class="lang-cn">利用动态定价和竞价规则的数字市场</span></div><div class="match-btn match-def" data-key="term_0"><span class="lang-en">An internet area where users share content and communicate around interests</span><span class="lang-cn">用户共享内容并围绕兴趣进行交流的互联网区域</span></div><div class="match-btn match-def" data-key="term_2"><span class="lang-en">Fraudulent practice where sellers bid on their own listings to drive prices up</span><span class="lang-cn">卖家在自己发布商品中竞价以抬高价格的欺诈行为</span></div><div class="match-btn match-def" data-key="term_4"><span class="lang-en">Platforms serving as internet entry points, aggregating search and news</span><span class="lang-cn">充当互联网入口、聚合搜索和新闻的平台</span></div>
+                </div>
+            </div>
+            <div id="match-message" style="margin-top: 20px; font-weight: bold; text-align: center; min-height: 28px;"></div>
+        </div>
+
+        <!-- MCQ Practice Quiz -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Knowledge Check Practice</span>
+                <span class="lang-cn">知识自测练习</span>
+            </h2>
+            <form id="quiz-form">
+                
+            <div class="quiz-q">
+                <p><b>1. 
+                    <span class="lang-en">What is the primary characteristic of an online auction portal?</span>
+                    <span class="lang-cn">在线拍卖门户网站的主要特征是什么？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="0"> A. 
+                    <span class="lang-en">Fixed retail pricing</span>
+                    <span class="lang-cn">固定零售定价</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="1"> B. 
+                    <span class="lang-en">Dynamic pricing established through consumer bidding</span>
+                    <span class="lang-cn">通过消费者竞价确立的动态定价</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="2"> C. 
+                    <span class="lang-en">Free shipping on all items</span>
+                    <span class="lang-cn">所有商品免运费</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="3"> D. 
+                    <span class="lang-en">Symmetric key exchanges</span>
+                    <span class="lang-cn">对称密钥交换</span>
+                </label>
+                <div class="explanation" id="exp-0">
+                    <span class="lang-en">Explanation: Auctions use dynamic pricing, where the final price of an item is established through bidding in the marketspace.</span>
+                    <span class="lang-cn">解析：拍卖采用动态定价，即商品的最终价格是通过在市场空间中竞价确立的。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>2. 
+                    <span class="lang-en">What is shill bidding in online auctions?</span>
+                    <span class="lang-cn">在线拍卖中的“托儿竞价”是指什么？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="0"> A. 
+                    <span class="lang-en">Using crossover network cables</span>
+                    <span class="lang-cn">使用交叉网线</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="1"> B. 
+                    <span class="lang-en">Sellers bidding on their own items to artificially inflate the price</span>
+                    <span class="lang-cn">卖家在自己的商品上竞价以人为抬高价格</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="2"> C. 
+                    <span class="lang-en">Refusing to ship the won item</span>
+                    <span class="lang-cn">拒绝运送赢得的商品</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="3"> D. 
+                    <span class="lang-en">Writing fake product reviews</span>
+                    <span class="lang-cn">撰写虚假产品评价</span>
+                </label>
+                <div class="explanation" id="exp-1">
+                    <span class="lang-en">Explanation: Shill bidding is a type of auction fraud where the seller (or accomplices) places fake bids to drive the price up.</span>
+                    <span class="lang-cn">解析：托儿竞价是一种拍卖欺诈，指卖家（或同伙）投放虚假竞标以抬高价格。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>3. 
+                    <span class="lang-en">Which business model generates revenue primarily through display ads and steering affiliate traffic?</span>
+                    <span class="lang-cn">哪种商业模式主要通过展示广告和引导联属流量来产生收入？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="0"> A. 
+                    <span class="lang-en">E-tailer</span>
+                    <span class="lang-cn">电子零售商</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="1"> B. 
+                    <span class="lang-en">E-Commerce Portal</span>
+                    <span class="lang-cn">电商门户网站</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="2"> C. 
+                    <span class="lang-en">Private Industrial Network</span>
+                    <span class="lang-cn">私有工业网络</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="3"> D. 
+                    <span class="lang-en">Transaction Broker</span>
+                    <span class="lang-cn">交易经纪人</span>
+                </label>
+                <div class="explanation" id="exp-2">
+                    <span class="lang-en">Explanation: Portals aggregate search, directories, and news, monetizing via ad impressions and referral affiliate commissions.</span>
+                    <span class="lang-cn">解析：门户网站聚合搜索、目录和新闻，通过广告展示和推荐联属佣金来实现商业变现。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>4. 
+                    <span class="lang-en">What is bid rigging in auction portals?</span>
+                    <span class="lang-cn">拍卖门户网站中的“围标/恶意串通”是指什么？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="0"> A. 
+                    <span class="lang-en">Poisoning DNS records</span>
+                    <span class="lang-cn">毒化 DNS 记录</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="1"> B. 
+                    <span class="lang-en">Collusion among bidders to artificially depress or control bidding prices</span>
+                    <span class="lang-cn">竞标者之间串通以人为压低或控制竞价价格</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="2"> C. 
+                    <span class="lang-en">Paying with stolen credit cards</span>
+                    <span class="lang-cn">用偷来的信用卡付款</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="3"> D. 
+                    <span class="lang-en">Deleting server database tables</span>
+                    <span class="lang-cn">删除服务器数据库表</span>
+                </label>
+                <div class="explanation" id="exp-3">
+                    <span class="lang-en">Explanation: Bid rigging involves colluding bidders conspiring to limit bidding competition, depressing the final auction price.</span>
+                    <span class="lang-cn">解析：围标涉及串通的竞标者合谋限制竞价竞争，从而压低最终拍卖价格。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>5. 
+                    <span class="lang-en">Which online community type organizes users around shared vocational values or professions?</span>
+                    <span class="lang-cn">哪种在线社区类型将用户围绕共享的职业价值或专业组织起来？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="0"> A. 
+                    <span class="lang-en">Practice networks</span>
+                    <span class="lang-cn">实践网络</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="1"> B. 
+                    <span class="lang-en">Professional communities</span>
+                    <span class="lang-cn">专业社区</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="2"> C. 
+                    <span class="lang-en">Interest-based communities</span>
+                    <span class="lang-cn">基于兴趣的社区</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="3"> D. 
+                    <span class="lang-en">Affiliate groups</span>
+                    <span class="lang-cn">联属团体</span>
+                </label>
+                <div class="explanation" id="exp-4">
+                    <span class="lang-en">Explanation: Professional communities target specific career guilds, vocational interests, and industry collaboration.</span>
+                    <span class="lang-cn">解析：专业社区针对特定的职业协会、行业兴趣和行业协作。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>6. 
+                    <span class="lang-en">Which auction type features a single seller and multiple bidding buyers competing upward?</span>
+                    <span class="lang-cn">哪种拍卖类型的特征是单个卖家和多个竞价买家向上竞争？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="0"> A. 
+                    <span class="lang-en">Dutch auction</span>
+                    <span class="lang-cn">荷兰式拍卖</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="1"> B. 
+                    <span class="lang-en">English auction</span>
+                    <span class="lang-cn">英式拍卖</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="2"> C. 
+                    <span class="lang-en">Symmetric auction</span>
+                    <span class="lang-cn">对称拍卖</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="3"> D. 
+                    <span class="lang-en">Closed-loop consortium</span>
+                    <span class="lang-cn">闭环联盟</span>
+                </label>
+                <div class="explanation" id="exp-5">
+                    <span class="lang-en">Explanation: The English auction is the most common format, where buyers place progressively higher bids until the timer expires.</span>
+                    <span class="lang-cn">解析：英式拍卖是最常见的格式，买家依次报出更高的价格，直至时间截止。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>7. 
+                    <span class="lang-en">An online portal's success relies heavily on user __________________.</span>
+                    <span class="lang-cn">在线门户网站的成功高度依赖用户的 __________________。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="0"> A. 
+                    <span class="lang-en">Symmetric keys</span>
+                    <span class="lang-cn">对称密钥</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="1"> B. 
+                    <span class="lang-en">Stickiness (retention and time spent on site)</span>
+                    <span class="lang-cn">粘性（留存率和网站停留时间）</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="2"> C. 
+                    <span class="lang-en">Outsourcing code</span>
+                    <span class="lang-cn">外包代码</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="3"> D. 
+                    <span class="lang-en">Figma design tools</span>
+                    <span class="lang-cn">Figma 设计工具</span>
+                </label>
+                <div class="explanation" id="exp-6">
+                    <span class="lang-en">Explanation: Stickiness measures the platform's ability to retain visitors, encouraging repeated return visits and higher ad exposures.</span>
+                    <span class="lang-cn">解析：粘性衡量平台留住访问者的能力，鼓励重复访问并提高广告曝光率。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>8. 
+                    <span class="lang-en">Why are 'Verified Owner' labels important in WooCommerce reviews?</span>
+                    <span class="lang-cn">为什么“已验证的所有者”标签在 WooCommerce 评价中很重要？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="0"> A. 
+                    <span class="lang-en">They increase page loading speed</span>
+                    <span class="lang-cn">它们增加了页面加载速度</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="1"> B. 
+                    <span class="lang-en">They prove the reviewer actually bought the product, reducing fake reviews</span>
+                    <span class="lang-cn">它们证明评价者实际购买了该产品，减少虚假评价</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="2"> C. 
+                    <span class="lang-en">They change the background to pink</span>
+                    <span class="lang-cn">它们将背景更改为粉红色</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="3"> D. 
+                    <span class="lang-en">They encrypt comments</span>
+                    <span class="lang-cn">它们对评论进行加密</span>
+                </label>
+                <div class="explanation" id="exp-7">
+                    <span class="lang-en">Explanation: Verified owner labels establish trust by asserting that comment reviewers completed actual transactions for the item.</span>
+                    <span class="lang-cn">解析：“已验证的所有者”标签通过断定评论者完成了该商品的实际交易来建立信任。</span>
+                </div>
+            </div>
+            </form>
+            <button class="btn" type="button" onclick="checkQuiz()">
+                <span class="lang-en">Submit & Grade Answers</span>
+                <span class="lang-cn">提交并评定答案</span>
+            </button>
+            <div id="quiz-result" style="margin-top: 20px; font-weight: bold; min-height: 30px;"></div>
+        </div>
+
+        <!-- Review Q&A Section (Hidden QP answers) -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Revision Review Q&A</span>
+                <span class="lang-cn">课程复习问答</span>
+            </h2>
+            
+            <div class="qa-block" id="qa-WK12-0">
+                <div class="qa-header" onclick="toggleQA('WK12-0')">
+                    <span>
+                        <span class="lang-en">Review Exercise 1</span>
+                        <span class="lang-cn">复习练习题 1</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Describe three common types of auction fraud. Outline rules portals can implement to mitigate these risks.</span>
+                        <span class="lang-cn">描述三种常见的拍卖欺诈类型。概述门户网站可以实施以减轻这些风险的规则。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en"><strong>1. Types of Fraud:</strong> <br>- <em>Shill Bidding:</em> Sellers use fake accounts to bid on their own listings to drive prices up.<br>- <em>Bid Siphoning:</em> Contacting bidders directly to pull them off the portal to transact privately.<br>- <em>Non-Delivery:</em> Collecting winning bid funds but failing to ship the purchased items.<br><strong>2. Mitigation Rules (缓解规则):</strong> <br>- Implement strict identity verification checks (KYC) for sellers.<br>- Block bid entries from matching IP addresses or identical payment profiles as the seller.<br>- Enforce escrow secure payment solutions (e.g. holding funds until the buyer confirms delivery).</span>
+                        <span class="lang-cn"><strong>1. 欺诈类型：</strong><br>- <em>托儿竞价：</em>卖家使用虚假账号在自己发布商品中竞价，以抬高价格。<br>- <em>竞价引流：</em>直接联系竞标者以使其离开门户进行私下交易。<br>- <em>不发货：</em>收取赢得竞标的资金但未能寄送所购商品。<br><strong>2. 缓解规则：</strong><br>- 对卖家实施严格的身份验证检查 (KYC)。<br>- 阻止来自与卖家相匹配的 IP 地址或相同支付方式的竞价输入。<br>- 实施托管安全支付解决方案（如扣留资金直到买家确认送达）。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            document.body.classList.toggle('cn-active');
+        }
+
+        function showCodeAns(id) {
+            const el = document.getElementById('code-ans-' + id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleQA(id) {
+            const el = document.getElementById('qa-' + id);
+            el.classList.toggle('open');
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            const total = 8;
+            const answers = [1, 1, 1, 1, 1, 1, 1, 1];
+            
+            // Highlight options
+            for (let qIdx = 0; qIdx < total; qIdx++) {
+                const checkedOpt = document.querySelector(`input[name="q${qIdx}"]:checked`);
+                const expEl = document.getElementById(`exp-${qIdx}`);
+                if (expEl) {
+                    expEl.style.display = 'block';
+                }
+                
+                if (checkedOpt) {
+                    const val = parseInt(checkedOpt.value);
+                    if (val === answers[qIdx]) {
+                        score++;
+                    }
+                }
+            }
+            
+            const resEl = document.getElementById('quiz-result');
+            resEl.innerHTML = `<span class='correct-ans'>
+                <span class="lang-en">You scored: ${score} / ${total}</span>
+                <span class="lang-cn">您的得分：${score} / ${total}</span>
+            </span>`;
+        }
+
+        // Matching Game JS Logic
+        let selectedTerm = null;
+        let selectedDef = null;
+
+        document.querySelectorAll('.match-term').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-term').forEach(t => t.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedTerm = item;
+                checkMatch();
+            });
+        });
+
+        document.querySelectorAll('.match-def').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-def').forEach(d => d.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedDef = item;
+                checkMatch();
+            });
+        });
+
+        function checkMatch() {
+            if (selectedTerm && selectedDef) {
+                const termKey = selectedTerm.getAttribute('data-key');
+                const defKey = selectedDef.getAttribute('data-key');
+                const msgEl = document.getElementById('match-message');
+                
+                if (termKey === defKey) {
+                    selectedTerm.classList.add('matched');
+                    selectedDef.classList.add('matched');
+                    selectedTerm.classList.remove('selected');
+                    selectedDef.classList.remove('selected');
+                    selectedTerm = null;
+                    selectedDef = null;
+                    
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132;">
+                            <span class="lang-en">✓ Correct Match!</span>
+                            <span class="lang-cn">✓ 配对正确！</span>
+                        </span>`;
+                    }
+                    
+                    const unmatched = document.querySelectorAll('.match-term:not(.matched)');
+                    if (unmatched.length === 0 && msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132; font-size: 1.2rem; font-weight: bold;">
+                            <span class="lang-en">🎉 Congratulations! You matched all terms correctly!</span>
+                            <span class="lang-cn">🎉 恭喜！您已成功配对所有词汇！</span>
+                        </span>`;
+                    }
+                } else {
+                    selectedTerm.classList.add('error');
+                    selectedDef.classList.add('error');
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #842029;">
+                            <span class="lang-en">✗ Incorrect Match! Try again.</span>
+                            <span class="lang-cn">✗ 配对错误！请再试一次。</span>
+                        </span>`;
+                    }
+                    const t = selectedTerm;
+                    const d = selectedDef;
+                    setTimeout(() => {
+                        t.classList.remove('error', 'selected');
+                        d.classList.remove('error', 'selected');
+                    }, 400);
+                    selectedTerm = null;
+                    selectedDef = null;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

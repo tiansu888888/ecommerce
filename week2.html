@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week WK2: E-commerce Business Models and Concepts - DBEC2653</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Macaron Palette */
+            --pastel-pink: #FFD1DC;
+            --pastel-mint: #B0EACD;
+            --pastel-blue: #AEC6CF;
+            --pastel-lavender: #C3B1E1;
+            --pastel-yellow: #FDFD96;
+            
+            --ink: #111111;
+            --ink-muted: #333333;
+            
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            --radius-lg: 32px;
+            --radius-md: 16px;
+            
+            --spring: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender), var(--pastel-blue), var(--pastel-mint));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Auras */
+        body::before {
+            content: ''; position: fixed; top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, var(--pastel-yellow) 0%, transparent 70%);
+            filter: blur(80px); opacity: 0.6; z-index: -1;
+            animation: floatAura 20s ease-in-out infinite alternate;
+        }
+        body::after {
+            content: ''; position: fixed; bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, var(--pastel-pink) 0%, transparent 70%);
+            filter: blur(100px); opacity: 0.5; z-index: -1;
+            animation: floatAura 25s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatAura {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: var(--ink); }
+        
+        .header { text-align: center; padding: 40px 20px 20px; position: relative; }
+        .header h1 { font-size: 2.3rem; margin-top: 20px; font-weight: 800; color: var(--ink); }
+        .nav-link { color: var(--ink-muted); text-decoration: none; font-weight: 700; display: inline-block; transition: all 0.4s var(--spring); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--glass-bg); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--glass-border); }
+        .nav-link:hover { color: var(--ink); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: rgba(255,255,255,0.7); }
+        
+        .lang-btn {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .container { max-width: 900px; margin: 20px auto 40px; padding: 0 20px; position: relative; z-index: 1; }
+        
+        .card { 
+            background: var(--glass-bg); 
+            border-radius: var(--radius-lg); 
+            padding: 40px; 
+            box-shadow: var(--glass-shadow); 
+            margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            transition: all 0.5s var(--spring);
+        }
+        .card h2 { border-bottom: 2px solid rgba(255,255,255,0.5); padding-bottom: 15px; margin-top: 0; font-size: 1.8rem;}
+        
+        .step { background: rgba(255,255,255,0.3); padding: 20px; margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .step h3 { margin-top: 0; font-size: 1.3rem; }
+        
+        .btn { 
+            background: linear-gradient(135deg, var(--pastel-lavender), var(--pastel-pink));
+            color: var(--ink); 
+            padding: 12px 28px; 
+            border: 2px solid rgba(255,255,255,0.8); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.4s var(--spring);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(195, 177, 225, 0.4); background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender)); }
+        
+        /* Quiz */
+        .quiz-q { margin-bottom: 25px; background: rgba(255,255,255,0.2); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .quiz-label { display: block; padding: 10px 16px; cursor: pointer; transition: all 0.4s var(--spring); border-radius: 12px; border: 1px solid transparent; font-weight: 600; font-size: 1.1rem;}
+        .quiz-label:hover { background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); transform: translateX(5px);}
+        .explanation { display: none; margin-top: 10px; padding: 10px 16px; background: rgba(255,255,255,0.6); border-radius: 8px; font-weight: 600; border-left: 4px solid var(--pastel-blue); }
+        
+        /* Coding */
+        .code-editor { background: rgba(0,0,0,0.85); color: #F8F9FA; padding: 20px; border-radius: var(--radius-md); font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-top: 10px; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); white-space: pre-wrap; }
+        .correct-ans { color: #0f5132; font-weight: 700; margin-top: 15px; display: inline-block; padding: 10px 16px; background: rgba(176, 234, 205, 0.6); border-radius: 12px; border: 1px solid var(--pastel-mint);}
+        
+        /* Table Styles (Bilingual High Contrast) */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(255,255,255,0.2); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--glass-border); }
+        .data-table th, .data-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--glass-border); font-size: 1.1rem; }
+        .data-table th { background: rgba(255,255,255,0.6); font-weight: 800; font-family: 'Orbitron', sans-serif; }
+        .data-table tr:last-child td { border-bottom: none; }
+        
+        /* SVG Tweaks for Macaron Glassmorphism & High Contrast */
+        svg { background: transparent !important; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05)); margin: 10px auto; display: block; max-width: 100%; }
+        svg text { font-family: 'Arial', sans-serif !important; font-weight: bold !important; fill: #000000 !important; }
+        svg [fill="url(#blueGrad)"], svg [fill="url(#purpleGrad)"], svg [fill="url(#mintGrad)"], svg [fill="url(#pinkGrad)"], svg [fill="url(#yellowGrad)"] { fill-opacity: 0.8 !important; stroke: #000000 !important; stroke-width: 2px !important; }
+        svg [fill="#FFF"], svg [fill="#ffffff"], svg [fill="none"] { stroke: #000000 !important; }
+        
+        /* Vocabulary Matching Game Styles */
+        .match-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .match-col { width: 48%; display: flex; flex-direction: column; gap: 10px; }
+        .match-btn {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s var(--spring);
+            user-select: none;
+            text-align: left;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+        .match-btn:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(3px);
+        }
+        .match-btn.selected {
+            background: var(--pastel-yellow) !important;
+            border: 2px solid var(--ink);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .match-btn.matched {
+            background: var(--pastel-mint) !important;
+            border: 1px solid var(--pastel-mint);
+            opacity: 0.6;
+            cursor: default;
+            pointer-events: none;
+            transform: none !important;
+        }
+        .match-btn.error {
+            background: var(--pastel-pink) !important;
+            border: 1px solid var(--pastel-pink);
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Collapsible Q&A Review style */
+        .qa-block { margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); background: rgba(255,255,255,0.25); overflow: hidden; }
+        .qa-header { padding: 18px 24px; font-weight: 700; cursor: pointer; background: rgba(255,255,255,0.4); display: flex; justify-content: space-between; align-items: center; font-size: 1.15rem; }
+        .qa-body { padding: 20px 24px; display: none; border-top: 1px solid var(--glass-border); background: rgba(255,255,255,0.5); font-size: 1.1rem; line-height: 1.7; }
+        .qa-icon { transition: transform 0.3s; font-weight: bold; }
+        .qa-block.open .qa-body { display: block; }
+        .qa-block.open .qa-icon { transform: rotate(90deg); }
+
+        /* Translation CSS Rules */
+        .lang-cn { display: none !important; }
+        body.cn-active .lang-en { display: none !important; }
+        body.cn-active .lang-cn { display: block !important; }
+        
+        span.lang-cn { display: none !important; }
+        body.cn-active span.lang-en { display: none !important; }
+        body.cn-active span.lang-cn { display: inline !important; }
+
+        @media (max-width: 768px) {
+            .lang-btn {
+                position: static;
+                margin-top: 15px;
+            }
+            .match-col { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="nav-link">
+            <span class="lang-en">← Back to Hub</span>
+            <span class="lang-cn">← 返回主页</span>
+        </a>
+        <h1>
+            <span class="lang-en">Week 2: E-commerce Business Models and Concepts</span>
+            <span class="lang-cn">第 2 周：电子商务商业模式与概念</span>
+        </h1>
+        <button class="btn lang-btn" onclick="toggleLanguage()">🌐 EN / 中文</button>
+    </div>
+
+    <div class="container">
+        <!-- Objectives Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-lavender);">
+            <h2>
+                <span class="lang-en">Learning Objectives</span>
+                <span class="lang-cn">学习目标</span>
+            </h2>
+            <div class="lang-en">
+                <ul>
+                    <li>Explain the major e-commerce business models (CLO1).</li><li>Distinguish and compare B2C and B2B business models.</li><li>Identify how e-commerce changes business strategy, structure, and process.</li>
+                </ul>
+            </div>
+            <div class="lang-cn">
+                <ul>
+                    <li>解释主要的电子商务商业模式 (CLO1)。</li><li>区分并对比 B2C 和 B2B 商业模式。</li><li>识别电子商务如何改变企业战略、结构和流程。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sample Company / Case Study Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Bustiness Case Context</span>
+                <span class="lang-cn">商业案例情境</span>
+            </h2>
+            <div class="lang-en">
+                <p><strong>KompasVibe Basics:</strong> A premium, social-commerce fashion platform that allows users to co-create designs. The company employs a hybrid revenue model combining direct sales (of their physical basics collection) with an affiliate model (driving traffic to niche designers) and a freemium system (offering free basic digital closets while charging for premium AI styling advice).</p>
+            </div>
+            <div class="lang-cn">
+                <p><strong>KompasVibe 基础：</strong>一个高端社交电商时尚平台，允许用户共同创作设计。该公司采用混合收入模式，将直接销售（其物理基本系列）与联属营销模式（引导流量给小众设计师）以及免费增值系统（提供免费的基本数字衣橱，同时对高级 AI 搭配建议收费）相结合。</p>
+            </div>
+        </div>
+
+        <!-- Comparative Table Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Key Comparison: B2B vs. B2C E-commerce Models</span>
+                <span class="lang-cn">关键对比：B2B 与 B2C 电子商务模式</span>
+            </h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th><span class="lang-en">Parameter</span><span class="lang-cn">参数</span></th><th><span class="lang-en">B2C Model</span><span class="lang-cn">B2C 模式</span></th><th><span class="lang-en">B2B Model</span><span class="lang-cn">B2B 模式</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="lang-en">Target Market</span><span class="lang-cn">目标市场</span></td><td><span class="lang-en">Individual consumers</span><span class="lang-cn">个人消费者</span></td><td><span class="lang-en">Other businesses and procurement networks</span><span class="lang-cn">其他企业和采购网络</span></td></tr><tr><td><span class="lang-en">Transaction Value</span><span class="lang-cn">交易金额</span></td><td><span class="lang-en">Relatively low (per transaction)</span><span class="lang-cn">相对较低（单笔交易）</span></td><td><span class="lang-en">Extremely high transaction volumes/values</span><span class="lang-cn">极高的交易量/交易金额</span></td></tr><tr><td><span class="lang-en">Sales Cycle</span><span class="lang-cn">销售周期</span></td><td><span class="lang-en">Short, impulse-driven purchasing decision</span><span class="lang-cn">较短，冲动驱动的购买决定</span></td><td><span class="lang-en">Long, structured procurement with contract relationships</span><span class="lang-cn">长期、结构化的采购，包含合同关系</span></td></tr><tr><td><span class="lang-en">Payment Terms</span><span class="lang-cn">支付条款</span></td><td><span class="lang-en">Instant checkout (credit cards, digital wallets)</span><span class="lang-cn">即时结账（信用卡、电子钱包）</span></td><td><span class="lang-en">Credit terms, invoices, corporate bank transfers</span><span class="lang-cn">信用条款、发票、企业银行转账</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Concept Visualization Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Concept Visualization</span>
+                <span class="lang-cn">概念可视化</span>
+            </h2>
+            <div style="background: rgba(255,255,255,0.5); border-radius: var(--radius-md); padding: 20px; border: 1px solid var(--glass-border);">
+                
+        <svg height="240" viewBox="0 0 600 240" width="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="purpleGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stop-color="#C3B1E1"></stop>
+                    <stop offset="100%" stop-color="#FFD1DC"></stop>
+                </linearGradient>
+            </defs>
+            <!-- B2C Flow -->
+            <rect fill="url(#purpleGrad)" stroke="#111" stroke-width="1.5" height="70" rx="10" width="120" x="50" y="40"></rect>
+            <text fill="#111" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="110" y="80">B2C Retailer</text>
+            <line x1="170" y1="75" x2="250" y2="75" stroke="#111" stroke-width="2" marker-end="url(#arrow)"></line>
+            <circle cx="280" cy="75" fill="#AEC6CF" r="25"></circle>
+            <text fill="#111" font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="280" y="79">Consumer</text>
+            
+            <!-- B2B Flow -->
+            <rect fill="url(#purpleGrad)" stroke="#111" stroke-width="1.5" height="70" rx="10" width="120" x="50" y="140"></rect>
+            <text fill="#111" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="110" y="180">B2B Supplier</text>
+            <line x1="170" y1="175" x2="250" y2="175" stroke="#111" stroke-width="2"></line>
+            <rect fill="#B0EACD" stroke="#111" stroke-width="1.5" height="50" rx="5" width="100" x="250" y="150"></rect>
+            <text fill="#111" font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="300" y="180">Corporate buyer</text>
+            <line x1="350" y1="175" x2="430" y2="175" stroke="#111" stroke-width="2"></line>
+            <rect fill="#FDFD96" stroke="#111" stroke-width="1.5" height="50" rx="5" width="100" x="430" y="150"></rect>
+            <text fill="#111" font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="480" y="180">Manufacturer</text>
+        </svg>
+        
+            </div>
+        </div>
+
+        <!-- Practical Exercise Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-mint);">
+            <h2>
+                <span class="lang-en">Practical Exercise: Drafting a Value Proposition</span>
+                <span class="lang-cn">实践练习：撰写价值主张</span>
+            </h2>
+            <div class="lang-en">
+                <p><b>Steps to complete:</b></p>
+                <ol>
+                    <li>Identify a target market segment (e.g. busy college students).</li><li>Define the pain point (e.g. no time to shop for fresh groceries).</li><li>Write a 3-sentence <strong>Value Proposition</strong> addressing: What you sell, who it is for, and why it outperforms existing options.</li>
+                </ol>
+            </div>
+            <div class="lang-cn">
+                <p><b>操作步骤：</b></p>
+                <ol>
+                    <li>识别目标市场细分（例如，繁忙的大学生）。</li><li>定义痛点（例如，没时间购买新鲜食品）。</li><li>撰写一份 3 句话的<strong>价值主张 (Value Proposition)</strong>，包含：你卖什么，目标客户是谁，以及为什么它比现有选择更好。</li>
+                </ol>
+            </div>
+            <button class="btn" onclick="showCodeAns('practical')">
+                <span class="lang-en">Show Sample Value Proposition</span>
+                <span class="lang-cn">显示价值主张示例</span>
+            </button>
+            <div class="code-editor" id="code-ans-practical" style="display:none;">Target: Busy college students.
+Solution: FreshExpress - 15-minute delivery of local organic ingredients.
+Value Proposition: We provide premium, pre-chopped organic meal kits delivered within 15 minutes of ordering, saving students meal prep time at prices 20% lower than traditional grocery delivery apps.</div>
+        </div>
+
+        <!-- Vocabulary Matching Game -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Vocabulary Connection Game</span>
+                <span class="lang-cn">词汇连线互动游戏</span>
+            </h2>
+            <p>
+                <span class="lang-en">Match the term on the left with its definition on the right. (Click a term, then click its matching definition).</span>
+                <span class="lang-cn">将左侧的术语与右侧的定义进行配对。（点击术语，然后点击匹配的定义）。</span>
+            </p>
+            <div class="match-grid">
+                <!-- Terms Column -->
+                <div class="match-col">
+                    <div class="match-btn match-term" data-key="term_3"><span class="lang-en">Affiliate Model</span><span class="lang-cn">联属收入模式</span></div><div class="match-btn match-term" data-key="term_1"><span class="lang-en">Value Proposition</span><span class="lang-cn">价值主张</span></div><div class="match-btn match-term" data-key="term_2"><span class="lang-en">Subscription Model</span><span class="lang-cn">订阅收入模式</span></div><div class="match-btn match-term" data-key="term_0"><span class="lang-en">B2B Model</span><span class="lang-cn">B2B 模式</span></div><div class="match-btn match-term" data-key="term_4"><span class="lang-en">Freemium Strategy</span><span class="lang-cn">免费增值战略</span></div>
+                </div>
+                <!-- Definitions Column -->
+                <div class="match-col">
+                    <div class="match-btn match-def" data-key="term_1"><span class="lang-en">Defines why a customer should buy from a business rather than its competitors</span><span class="lang-cn">定义了客户为什么要从一家企业购买，而不是从其竞争对手那里购买</span></div><div class="match-btn match-def" data-key="term_2"><span class="lang-en">Revenue model where users pay a recurring fee (monthly/annually) for content or services</span><span class="lang-cn">用户支付定期费用（按月/按年）以获取内容或服务的收入模式</span></div><div class="match-btn match-def" data-key="term_3"><span class="lang-en">Revenue model where a site steering business to affiliates receives a referral fee</span><span class="lang-cn">将业务引导给联属伙伴的网站并获取推介费的收入模式</span></div><div class="match-btn match-def" data-key="term_4"><span class="lang-en">Offers basic services for free to build an audience, while charging a premium for advanced features</span><span class="lang-cn">免费提供基本服务以建立受众群，同时对高级功能收费的策略</span></div><div class="match-btn match-def" data-key="term_0"><span class="lang-en">Business-to-Business: transactions occurring between two or more business firms</span><span class="lang-cn">企业对企业：发生在两个或更多企业之间的交易</span></div>
+                </div>
+            </div>
+            <div id="match-message" style="margin-top: 20px; font-weight: bold; text-align: center; min-height: 28px;"></div>
+        </div>
+
+        <!-- MCQ Practice Quiz -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Knowledge Check Practice</span>
+                <span class="lang-cn">知识自测练习</span>
+            </h2>
+            <form id="quiz-form">
+                
+            <div class="quiz-q">
+                <p><b>1. 
+                    <span class="lang-en">Which business model builds a digital environment where buyers and sellers can meet, display products, and establish prices?</span>
+                    <span class="lang-cn">哪种商业模式构建了一个买家和卖家可以会面、展示产品和确定价格的数字环境？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="0"> A. 
+                    <span class="lang-en">E-tailer</span>
+                    <span class="lang-cn">电子零售商</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="1"> B. 
+                    <span class="lang-en">Market Creator</span>
+                    <span class="lang-cn">市场创建者</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="2"> C. 
+                    <span class="lang-en">Transaction Broker</span>
+                    <span class="lang-cn">交易经纪人</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="3"> D. 
+                    <span class="lang-en">Service Provider</span>
+                    <span class="lang-cn">服务提供商</span>
+                </label>
+                <div class="explanation" id="exp-0">
+                    <span class="lang-en">Explanation: A market creator builds a digital environment where buyers and sellers meet and execute transactions (e.g. eBay, Etsy).</span>
+                    <span class="lang-cn">解析：市场创建者构建了一个买家和卖家会面并执行交易的数字环境（如 eBay、Etsy）。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>2. 
+                    <span class="lang-en">Facebook relies primarily on which of the following revenue models?</span>
+                    <span class="lang-cn">脸书（Facebook）主要依赖以下哪种收入模式？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="0"> A. 
+                    <span class="lang-en">Sales</span>
+                    <span class="lang-cn">销售</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="1"> B. 
+                    <span class="lang-en">Affiliate</span>
+                    <span class="lang-cn">联属营销</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="2"> C. 
+                    <span class="lang-en">Advertising</span>
+                    <span class="lang-cn">广告</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="3"> D. 
+                    <span class="lang-en">Subscription</span>
+                    <span class="lang-cn">订阅</span>
+                </label>
+                <div class="explanation" id="exp-1">
+                    <span class="lang-en">Explanation: Facebook's primary business revenue comes from showing advertising to its massive user base.</span>
+                    <span class="lang-cn">解析：Facebook 的主要业务收入来自向其庞大的用户群展示广告。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>3. 
+                    <span class="lang-en">What is the key challenge associated with the freemium revenue strategy?</span>
+                    <span class="lang-cn">与免费增值收入战略相关的关键挑战是什么？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="0"> A. 
+                    <span class="lang-en">Attracting initial free users</span>
+                    <span class="lang-cn">吸引初始免费用户</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="1"> B. 
+                    <span class="lang-en">Converting free users into paying subscribers</span>
+                    <span class="lang-cn">将免费用户转化为付费订阅者</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="2"> C. 
+                    <span class="lang-en">Managing site downtime</span>
+                    <span class="lang-cn">管理网站停机时间</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="3"> D. 
+                    <span class="lang-en">Designing the premium interface</span>
+                    <span class="lang-cn">设计高级界面</span>
+                </label>
+                <div class="explanation" id="exp-2">
+                    <span class="lang-en">Explanation: The key challenge of freemium is converting a sufficient percentage of free users to paying ones to cover the costs of the free tier.</span>
+                    <span class="lang-cn">解析：免费增值的关键挑战是将足够比例的免费用户转化为付费用户，以抵消免费层级的成本。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>4. 
+                    <span class="lang-en">Which model involves a business processing transactions for consumers, saving them time and money?</span>
+                    <span class="lang-cn">哪种模式涉及企业为消费者处理交易，从而为他们节省时间和金钱？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="0"> A. 
+                    <span class="lang-en">E-tailer</span>
+                    <span class="lang-cn">电子零售商</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="1"> B. 
+                    <span class="lang-en">Market Creator</span>
+                    <span class="lang-cn">市场创建者</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="2"> C. 
+                    <span class="lang-en">Transaction Broker</span>
+                    <span class="lang-cn">交易经纪人</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="3"> D. 
+                    <span class="lang-en">Community Provider</span>
+                    <span class="lang-cn">社区提供商</span>
+                </label>
+                <div class="explanation" id="exp-3">
+                    <span class="lang-en">Explanation: A transaction broker executes online transactions for consumers (e.g., stock brokerages, travel agents, PayPal), collecting fees.</span>
+                    <span class="lang-cn">解析：交易经纪人为消费者执行在线交易（例如股票经纪、旅行社、PayPal），收取费用。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>5. 
+                    <span class="lang-en">Which B2B business model acts as a digital marketplace connecting many buyers with many sellers?</span>
+                    <span class="lang-cn">哪种 B2B 商业模式充当了连接众多买家与众多卖家的数字市场？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="0"> A. 
+                    <span class="lang-en">Private Industrial Network</span>
+                    <span class="lang-cn">私有工业网络</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="1"> B. 
+                    <span class="lang-en">Net Marketplace</span>
+                    <span class="lang-cn">净市场</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="2"> C. 
+                    <span class="lang-en">Content Provider</span>
+                    <span class="lang-cn">内容提供商</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="3"> D. 
+                    <span class="lang-en">Affiliate Network</span>
+                    <span class="lang-cn">联属网络</span>
+                </label>
+                <div class="explanation" id="exp-4">
+                    <span class="lang-en">Explanation: Net marketplaces (or e-hubs) are B2B digital hubs where multiple buying businesses transact with multiple sellers.</span>
+                    <span class="lang-cn">解析：净市场（或电子枢纽）是 B2B 数字中心，多个买方企业在此与多个卖方进行交易。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>6. 
+                    <span class="lang-en">A value proposition defines:</span>
+                    <span class="lang-cn">价值主张定义了：</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="0"> A. 
+                    <span class="lang-en">The cost structure of the firm</span>
+                    <span class="lang-cn">企业的成本结构</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="1"> B. 
+                    <span class="lang-en">The background of the founders</span>
+                    <span class="lang-cn">创始人的背景</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="2"> C. 
+                    <span class="lang-en">Why a customer should buy from you instead of competitors</span>
+                    <span class="lang-cn">为什么客户应该向你购买而不是向竞争对手购买</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="3"> D. 
+                    <span class="lang-en">The programming language of the platform</span>
+                    <span class="lang-cn">平台的编程语言</span>
+                </label>
+                <div class="explanation" id="exp-5">
+                    <span class="lang-en">Explanation: The value proposition describes how the firm's product solves customer problems and why they should choose your brand.</span>
+                    <span class="lang-cn">解析：价值主张描述了公司的产品如何解决客户问题，以及他们为什么要选择你的品牌。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>7. 
+                    <span class="lang-en">Which of the following is NOT one of the five basic revenue models?</span>
+                    <span class="lang-cn">以下哪项不是五种基本的收入模式之一？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="0"> A. 
+                    <span class="lang-en">Advertising revenue model</span>
+                    <span class="lang-cn">广告收入模式</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="1"> B. 
+                    <span class="lang-en">Transaction fee model</span>
+                    <span class="lang-cn">交易费用模式</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="2"> C. 
+                    <span class="lang-en">Affiliate revenue model</span>
+                    <span class="lang-cn">联属收入模式</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="3"> D. 
+                    <span class="lang-en">Venture capital model</span>
+                    <span class="lang-cn">风险投资模式</span>
+                </label>
+                <div class="explanation" id="exp-6">
+                    <span class="lang-en">Explanation: Venture capital is a source of investment funding, not a recurring customer-facing revenue model.</span>
+                    <span class="lang-cn">解析：风险投资是投资资金来源，而不是面向客户的循环收入模式。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>8. 
+                    <span class="lang-en">What is first-mover advantage?</span>
+                    <span class="lang-cn">什么是先发优势？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="0"> A. 
+                    <span class="lang-en">Moving servers to the cloud first</span>
+                    <span class="lang-cn">首先将服务器迁移到云端</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="1"> B. 
+                    <span class="lang-en">Gaining early market share by being first to market</span>
+                    <span class="lang-cn">通过率先进入市场获得早期市场份额</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="2"> C. 
+                    <span class="lang-en">Being the first to hire software developers</span>
+                    <span class="lang-cn">第一个雇佣软件开发人员</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="3"> D. 
+                    <span class="lang-en">Exiting a failing market first</span>
+                    <span class="lang-cn">率先退出失败的市场</span>
+                </label>
+                <div class="explanation" id="exp-7">
+                    <span class="lang-en">Explanation: First-mover advantage is the competitive advantage gained by the first significant occupant of a market segment.</span>
+                    <span class="lang-cn">解析：先发优势是指细分市场中首个重要进入者所获得的竞争优势。</span>
+                </div>
+            </div>
+            </form>
+            <button class="btn" type="button" onclick="checkQuiz()">
+                <span class="lang-en">Submit & Grade Answers</span>
+                <span class="lang-cn">提交并评定答案</span>
+            </button>
+            <div id="quiz-result" style="margin-top: 20px; font-weight: bold; min-height: 30px;"></div>
+        </div>
+
+        <!-- Review Q&A Section (Hidden QP answers) -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Revision Review Q&A</span>
+                <span class="lang-cn">课程复习问答</span>
+            </h2>
+            
+            <div class="qa-block" id="qa-WK2-0">
+                <div class="qa-header" onclick="toggleQA('WK2-0')">
+                    <span>
+                        <span class="lang-en">Review Exercise 1</span>
+                        <span class="lang-cn">复习练习题 1</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Describe the Affiliate Marketing and Subscription Revenue models, providing real-world business examples.</span>
+                        <span class="lang-cn">描述联属营销和订阅收入模式，并提供真实的商业示例。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en"><strong>1. Affiliate Revenue Model (联属收入模式):</strong> A business steers web traffic to an affiliate's website. In return, the steering site receives a referral fee or a percentage of the revenue from any resulting sales. <br><em>Example:</em> The Amazon Associates program where bloggers link to book listings and earn commissions.<br><strong>2. Subscription Revenue Model (订阅收入模式):</strong> A website offers content or services to users for a recurring, periodic fee (e.g. monthly or annually). <br><em>Example:</em> Netflix charging monthly subscriptions to stream video catalog.</span>
+                        <span class="lang-cn"><strong>1. 联属收入模式：</strong>企业将网络流量引向联属伙伴的网站。作为回报，引流网站将获得推介费或任何交易额的百分比分成。<br><em>示例：</em>亚马逊联属计划 (Amazon Associates)，博主链接到图书页面并赚取佣金。<br><strong>2. 订阅收入模式：</strong>网站向用户提供内容或服务，并收取定期、循环的费用（如按月或按年）。<br><em>示例：</em>Netflix 每月收取订阅费以在线播放视频目录。</span>
+                    </div>
+                </div>
+            </div>
+            <div class="qa-block" id="qa-WK2-1">
+                <div class="qa-header" onclick="toggleQA('WK2-1')">
+                    <span>
+                        <span class="lang-en">Review Exercise 2</span>
+                        <span class="lang-cn">复习练习题 2</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Discuss how e-commerce platforms can establish a Sustainable Competitive Advantage in a crowded digital marketplace.</span>
+                        <span class="lang-cn">讨论电子商务平台如何在拥挤的数字市场中建立可持续的竞争优势。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en">An e-commerce firm can achieve a sustainable competitive advantage through: <br>1. <strong>Proprietary Technology:</strong> Unique search algorithms or automation integrations that are hard to replicate.<br>2. <strong>Customer Lock-in:</strong> Developing a high switching cost ecosystem (e.g., Apple iOS, customized databases).<br>3. <strong>Brand Equity:</strong> Establishing organic consumer trust and a strong reputation.<br>4. <strong>Supply Chain Efficiency:</strong> Low cost fulfillment operations (e.g. Amazon Prime networks) permitting lower sales margins than competitors.</span>
+                        <span class="lang-cn">电子商务企业可以通过以下方式获得可持续的竞争优势：<br>1. <strong>专有技术：</strong>难以复制的独特搜索算法或自动化集成。<br>2. <strong>客户锁定：</strong>开发高切换成本的生态系统（如苹果 iOS、定制数据库）。<br>3. <strong>品牌资产：</strong>建立消费者有机的信任和强大的声誉。<br>4. <strong>供应链效率：</strong>低成本的物流配送业务（如亚马逊 Prime 网络），允许比竞争对手更低的销售利润率。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            document.body.classList.toggle('cn-active');
+        }
+
+        function showCodeAns(id) {
+            const el = document.getElementById('code-ans-' + id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleQA(id) {
+            const el = document.getElementById('qa-' + id);
+            el.classList.toggle('open');
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            const total = 8;
+            const answers = [1, 2, 1, 2, 1, 2, 3, 1];
+            
+            // Highlight options
+            for (let qIdx = 0; qIdx < total; qIdx++) {
+                const checkedOpt = document.querySelector(`input[name="q${qIdx}"]:checked`);
+                const expEl = document.getElementById(`exp-${qIdx}`);
+                if (expEl) {
+                    expEl.style.display = 'block';
+                }
+                
+                if (checkedOpt) {
+                    const val = parseInt(checkedOpt.value);
+                    if (val === answers[qIdx]) {
+                        score++;
+                    }
+                }
+            }
+            
+            const resEl = document.getElementById('quiz-result');
+            resEl.innerHTML = `<span class='correct-ans'>
+                <span class="lang-en">You scored: ${score} / ${total}</span>
+                <span class="lang-cn">您的得分：${score} / ${total}</span>
+            </span>`;
+        }
+
+        // Matching Game JS Logic
+        let selectedTerm = null;
+        let selectedDef = null;
+
+        document.querySelectorAll('.match-term').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-term').forEach(t => t.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedTerm = item;
+                checkMatch();
+            });
+        });
+
+        document.querySelectorAll('.match-def').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-def').forEach(d => d.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedDef = item;
+                checkMatch();
+            });
+        });
+
+        function checkMatch() {
+            if (selectedTerm && selectedDef) {
+                const termKey = selectedTerm.getAttribute('data-key');
+                const defKey = selectedDef.getAttribute('data-key');
+                const msgEl = document.getElementById('match-message');
+                
+                if (termKey === defKey) {
+                    selectedTerm.classList.add('matched');
+                    selectedDef.classList.add('matched');
+                    selectedTerm.classList.remove('selected');
+                    selectedDef.classList.remove('selected');
+                    selectedTerm = null;
+                    selectedDef = null;
+                    
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132;">
+                            <span class="lang-en">✓ Correct Match!</span>
+                            <span class="lang-cn">✓ 配对正确！</span>
+                        </span>`;
+                    }
+                    
+                    const unmatched = document.querySelectorAll('.match-term:not(.matched)');
+                    if (unmatched.length === 0 && msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132; font-size: 1.2rem; font-weight: bold;">
+                            <span class="lang-en">🎉 Congratulations! You matched all terms correctly!</span>
+                            <span class="lang-cn">🎉 恭喜！您已成功配对所有词汇！</span>
+                        </span>`;
+                    }
+                } else {
+                    selectedTerm.classList.add('error');
+                    selectedDef.classList.add('error');
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #842029;">
+                            <span class="lang-en">✗ Incorrect Match! Try again.</span>
+                            <span class="lang-cn">✗ 配对错误！请再试一次。</span>
+                        </span>`;
+                    }
+                    const t = selectedTerm;
+                    const d = selectedDef;
+                    setTimeout(() => {
+                        t.classList.remove('error', 'selected');
+                        d.classList.remove('error', 'selected');
+                    }, 400);
+                    selectedTerm = null;
+                    selectedDef = null;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

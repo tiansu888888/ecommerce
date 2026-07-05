@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week WK6: E-commerce Marketing and Advertising - DBEC2653</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Macaron Palette */
+            --pastel-pink: #FFD1DC;
+            --pastel-mint: #B0EACD;
+            --pastel-blue: #AEC6CF;
+            --pastel-lavender: #C3B1E1;
+            --pastel-yellow: #FDFD96;
+            
+            --ink: #111111;
+            --ink-muted: #333333;
+            
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            --radius-lg: 32px;
+            --radius-md: 16px;
+            
+            --spring: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender), var(--pastel-blue), var(--pastel-mint));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Auras */
+        body::before {
+            content: ''; position: fixed; top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, var(--pastel-yellow) 0%, transparent 70%);
+            filter: blur(80px); opacity: 0.6; z-index: -1;
+            animation: floatAura 20s ease-in-out infinite alternate;
+        }
+        body::after {
+            content: ''; position: fixed; bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, var(--pastel-pink) 0%, transparent 70%);
+            filter: blur(100px); opacity: 0.5; z-index: -1;
+            animation: floatAura 25s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatAura {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: var(--ink); }
+        
+        .header { text-align: center; padding: 40px 20px 20px; position: relative; }
+        .header h1 { font-size: 2.3rem; margin-top: 20px; font-weight: 800; color: var(--ink); }
+        .nav-link { color: var(--ink-muted); text-decoration: none; font-weight: 700; display: inline-block; transition: all 0.4s var(--spring); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--glass-bg); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--glass-border); }
+        .nav-link:hover { color: var(--ink); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: rgba(255,255,255,0.7); }
+        
+        .lang-btn {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .container { max-width: 900px; margin: 20px auto 40px; padding: 0 20px; position: relative; z-index: 1; }
+        
+        .card { 
+            background: var(--glass-bg); 
+            border-radius: var(--radius-lg); 
+            padding: 40px; 
+            box-shadow: var(--glass-shadow); 
+            margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            transition: all 0.5s var(--spring);
+        }
+        .card h2 { border-bottom: 2px solid rgba(255,255,255,0.5); padding-bottom: 15px; margin-top: 0; font-size: 1.8rem;}
+        
+        .step { background: rgba(255,255,255,0.3); padding: 20px; margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .step h3 { margin-top: 0; font-size: 1.3rem; }
+        
+        .btn { 
+            background: linear-gradient(135deg, var(--pastel-lavender), var(--pastel-pink));
+            color: var(--ink); 
+            padding: 12px 28px; 
+            border: 2px solid rgba(255,255,255,0.8); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.4s var(--spring);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(195, 177, 225, 0.4); background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender)); }
+        
+        /* Quiz */
+        .quiz-q { margin-bottom: 25px; background: rgba(255,255,255,0.2); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .quiz-label { display: block; padding: 10px 16px; cursor: pointer; transition: all 0.4s var(--spring); border-radius: 12px; border: 1px solid transparent; font-weight: 600; font-size: 1.1rem;}
+        .quiz-label:hover { background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); transform: translateX(5px);}
+        .explanation { display: none; margin-top: 10px; padding: 10px 16px; background: rgba(255,255,255,0.6); border-radius: 8px; font-weight: 600; border-left: 4px solid var(--pastel-blue); }
+        
+        /* Coding */
+        .code-editor { background: rgba(0,0,0,0.85); color: #F8F9FA; padding: 20px; border-radius: var(--radius-md); font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-top: 10px; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); white-space: pre-wrap; }
+        .correct-ans { color: #0f5132; font-weight: 700; margin-top: 15px; display: inline-block; padding: 10px 16px; background: rgba(176, 234, 205, 0.6); border-radius: 12px; border: 1px solid var(--pastel-mint);}
+        
+        /* Table Styles (Bilingual High Contrast) */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(255,255,255,0.2); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--glass-border); }
+        .data-table th, .data-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--glass-border); font-size: 1.1rem; }
+        .data-table th { background: rgba(255,255,255,0.6); font-weight: 800; font-family: 'Orbitron', sans-serif; }
+        .data-table tr:last-child td { border-bottom: none; }
+        
+        /* SVG Tweaks for Macaron Glassmorphism & High Contrast */
+        svg { background: transparent !important; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05)); margin: 10px auto; display: block; max-width: 100%; }
+        svg text { font-family: 'Arial', sans-serif !important; font-weight: bold !important; fill: #000000 !important; }
+        svg [fill="url(#blueGrad)"], svg [fill="url(#purpleGrad)"], svg [fill="url(#mintGrad)"], svg [fill="url(#pinkGrad)"], svg [fill="url(#yellowGrad)"] { fill-opacity: 0.8 !important; stroke: #000000 !important; stroke-width: 2px !important; }
+        svg [fill="#FFF"], svg [fill="#ffffff"], svg [fill="none"] { stroke: #000000 !important; }
+        
+        /* Vocabulary Matching Game Styles */
+        .match-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .match-col { width: 48%; display: flex; flex-direction: column; gap: 10px; }
+        .match-btn {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s var(--spring);
+            user-select: none;
+            text-align: left;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+        .match-btn:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(3px);
+        }
+        .match-btn.selected {
+            background: var(--pastel-yellow) !important;
+            border: 2px solid var(--ink);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .match-btn.matched {
+            background: var(--pastel-mint) !important;
+            border: 1px solid var(--pastel-mint);
+            opacity: 0.6;
+            cursor: default;
+            pointer-events: none;
+            transform: none !important;
+        }
+        .match-btn.error {
+            background: var(--pastel-pink) !important;
+            border: 1px solid var(--pastel-pink);
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Collapsible Q&A Review style */
+        .qa-block { margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); background: rgba(255,255,255,0.25); overflow: hidden; }
+        .qa-header { padding: 18px 24px; font-weight: 700; cursor: pointer; background: rgba(255,255,255,0.4); display: flex; justify-content: space-between; align-items: center; font-size: 1.15rem; }
+        .qa-body { padding: 20px 24px; display: none; border-top: 1px solid var(--glass-border); background: rgba(255,255,255,0.5); font-size: 1.1rem; line-height: 1.7; }
+        .qa-icon { transition: transform 0.3s; font-weight: bold; }
+        .qa-block.open .qa-body { display: block; }
+        .qa-block.open .qa-icon { transform: rotate(90deg); }
+
+        /* Translation CSS Rules */
+        .lang-cn { display: none !important; }
+        body.cn-active .lang-en { display: none !important; }
+        body.cn-active .lang-cn { display: block !important; }
+        
+        span.lang-cn { display: none !important; }
+        body.cn-active span.lang-en { display: none !important; }
+        body.cn-active span.lang-cn { display: inline !important; }
+
+        @media (max-width: 768px) {
+            .lang-btn {
+                position: static;
+                margin-top: 15px;
+            }
+            .match-col { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="nav-link">
+            <span class="lang-en">← Back to Hub</span>
+            <span class="lang-cn">← 返回主页</span>
+        </a>
+        <h1>
+            <span class="lang-en">Week 6: E-commerce Marketing and Advertising</span>
+            <span class="lang-cn">第 6 周：电子商务营销与广告</span>
+        </h1>
+        <button class="btn lang-btn" onclick="toggleLanguage()">🌐 EN / 中文</button>
+    </div>
+
+    <div class="container">
+        <!-- Objectives Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-lavender);">
+            <h2>
+                <span class="lang-en">Learning Objectives</span>
+                <span class="lang-cn">学习目标</span>
+            </h2>
+            <div class="lang-en">
+                <ul>
+                    <li>Apply online marketing and communication concepts to promote e-commerce (CLO3).</li><li>Understand consumer behavior patterns and demographics of the online audience.</li><li>Explain online marketing technologies and calculate marketing costs (CPC, CPM).</li>
+                </ul>
+            </div>
+            <div class="lang-cn">
+                <ul>
+                    <li>应用在线营销和传播概念来推广电子商务 (CLO3)。</li><li>了解在线受众的消费者行为模式和人口统计特征。</li><li>解释在线营销技术并计算营销成本（CPC、CPM）。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sample Company / Case Study Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Bustiness Case Context</span>
+                <span class="lang-cn">商业案例情境</span>
+            </h2>
+            <div class="lang-en">
+                <p><strong>Kompas Ads Agency:</strong> A digital advertising consultancy that structures pay-per-click and display ad campaigns for e-tailers. The firm uses tracking cookies and user history parameters to calculate ROI metrics like Click-Through Rate (CTR), Cost Per Click (CPC), and Cost Per Thousand Impressions (CPM).</p>
+            </div>
+            <div class="lang-cn">
+                <p><strong>Kompas 广告代理：</strong>一家为电子零售商规划点击付费和展示广告系列的数字广告咨询公司。该公司利用追踪 Cookie 和用户历史参数来计算投资回报率 (ROI) 指标，如点击率 (CTR)、每次点击成本 (CPC) 和每千次展示成本 (CPM)。</p>
+            </div>
+        </div>
+
+        <!-- Comparative Table Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Key Comparison: CPM vs. CPC vs. CPA Marketing Models</span>
+                <span class="lang-cn">关键对比：CPM、CPC 与 CPA 营销模式</span>
+            </h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th><span class="lang-en">Metric / Model</span><span class="lang-cn">指标 / 模式</span></th><th><span class="lang-en">Billing Trigger</span><span class="lang-cn">计费触发点</span></th><th><span class="lang-en">Formula</span><span class="lang-cn">计算公式</span></th><th><span class="lang-en">Best Used For</span><span class="lang-cn">最佳使用场景</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="lang-en">CPM (Cost Per Mille)</span><span class="lang-cn">CPM (每千次展示成本)</span></td><td><span class="lang-en">Every 1,000 ad impressions loaded on user screens.</span><span class="lang-cn">用户屏幕上每加载 1,000 次广告展示。</span></td><td><span class="lang-en">(Total Cost / Impressions) * 1000</span><span class="lang-cn">（总成本 / 展示次数）* 1000</span></td><td><span class="lang-en">Brand awareness and displaying banner graphics.</span><span class="lang-cn">品牌建设与横幅广告展示。</span></td></tr><tr><td><span class="lang-en">CPC (Cost Per Click)</span><span class="lang-cn">CPC (每次点击成本)</span></td><td><span class="lang-en">Every time a user actively clicks on the ad banner.</span><span class="lang-cn">用户每次主动点击广告横幅时。</span></td><td><span class="lang-en">Total Cost / Total Clicks</span><span class="lang-cn">总成本 / 总点击次数</span></td><td><span class="lang-en">Driving traffic to online stores and landing pages.</span><span class="lang-cn">引导流量至在线商店和落地页。</span></td></tr><tr><td><span class="lang-en">CPA (Cost Per Acquisition)</span><span class="lang-cn">CPA (每次获取成本)</span></td><td><span class="lang-en">Every time a user completes a transaction or signup.</span><span class="lang-cn">用户每次完成交易或注册时。</span></td><td><span class="lang-en">Total Cost / Total Conversions</span><span class="lang-cn">总成本 / 总转化次数</span></td><td><span class="lang-en">Direct conversion tracking and sales campaigns.</span><span class="lang-cn">直接转化追踪和销售系列。</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Concept Visualization Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Concept Visualization</span>
+                <span class="lang-cn">概念可视化</span>
+            </h2>
+            <div style="background: rgba(255,255,255,0.5); border-radius: var(--radius-md); padding: 20px; border: 1px solid var(--glass-border);">
+                
+        <svg height="240" viewBox="0 0 600 240" width="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="yellowGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stop-color="#FDFD96"></stop>
+                    <stop offset="100%" stop-color="#B0EACD"></stop>
+                </linearGradient>
+            </defs>
+            <!-- Funnel polygons -->
+            <polygon points="100,20 500,20 420,80 180,80" fill="url(#yellowGrad)" stroke="#111" stroke-width="1.5"></polygon>
+            <text fill="#111" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="300" y="50">1. IMPRESSIONS (CPM) - 100,000</text>
+            
+            <polygon points="180,80 420,80 370,140 230,140" fill="url(#yellowGrad)" stroke="#111" stroke-width="1.5" opacity="0.85"></polygon>
+            <text fill="#111" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="300" y="110">2. CLICKS (CPC) - 2,000</text>
+            
+            <polygon points="230,140 370,140 330,200 270,200" fill="url(#yellowGrad)" stroke="#111" stroke-width="1.5" opacity="0.7"></polygon>
+            <text fill="#111" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="300" y="175">3. SALES (CPA) - 100</text>
+            
+            <path d="M 520 20 L 520 200" fill="none" id="funnelPath" stroke="#D81B60" stroke-width="2"></path>
+            <circle fill="#D81B60" r="5">
+                <animateMotion dur="2.5s" repeatCount="indefinite">
+                    <mpath href="#funnelPath"></mpath>
+                </animateMotion>
+            </circle>
+            <text fill="#D81B60" font-family="Arial" font-size="11" x="460" y="120">Conversion</text>
+        </svg>
+        
+            </div>
+        </div>
+
+        <!-- Practical Exercise Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-mint);">
+            <h2>
+                <span class="lang-en">Practical Exercise: Calculating CPM, CPC, and CTR</span>
+                <span class="lang-cn">实践练习：计算 CPM、CPC 与 CTR</span>
+            </h2>
+            <div class="lang-en">
+                <p><b>Steps to complete:</b></p>
+                <ol>
+                    <li>Assume a marketing budget of $500.</li><li>If the campaign gets 50,000 impressions and 1,000 clicks, calculate the CTR (Clicks/Impressions) and CPC (Cost/Clicks).</li><li>Solve for the CPM (Cost/Impressions * 1000) of this campaign.</li>
+                </ol>
+            </div>
+            <div class="lang-cn">
+                <p><b>操作步骤：</b></p>
+                <ol>
+                    <li>假设营销预算为 500 美元。</li><li>如果该广告系列获得 50,000 次展示和 1,000 次点击，计算点击率 CTR (Clicks/Impressions) 和每次点击成本 CPC (Cost/Clicks)。</li><li>计算此广告系列的每千次展示成本 CPM (Cost/Impressions * 1000)。</li>
+                </ol>
+            </div>
+            <button class="btn" onclick="showCodeAns('practical')">
+                <span class="lang-en">Show Worked Math Solutions</span>
+                <span class="lang-cn">显示计算解答</span>
+            </button>
+            <div class="code-editor" id="code-ans-practical" style="display:none;">Click-Through Rate (CTR) = 1,000 / 50,000 = 2.0%\nCost Per Click (CPC) = $500 / 1,000 = $0.50\nCost Per Thousand Impressions (CPM) = ($500 / 50,000) * 1,000 = $10.00</div>
+        </div>
+
+        <!-- Vocabulary Matching Game -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Vocabulary Connection Game</span>
+                <span class="lang-cn">词汇连线互动游戏</span>
+            </h2>
+            <p>
+                <span class="lang-en">Match the term on the left with its definition on the right. (Click a term, then click its matching definition).</span>
+                <span class="lang-cn">将左侧的术语与右侧的定义进行配对。（点击术语，然后点击匹配的定义）。</span>
+            </p>
+            <div class="match-grid">
+                <!-- Terms Column -->
+                <div class="match-col">
+                    <div class="match-btn match-term" data-key="term_3"><span class="lang-en">CPA</span><span class="lang-cn">每次获取成本</span></div><div class="match-btn match-term" data-key="term_1"><span class="lang-en">CPM</span><span class="lang-cn">每千次展示成本</span></div><div class="match-btn match-term" data-key="term_0"><span class="lang-en">CPC</span><span class="lang-cn">每次点击成本</span></div><div class="match-btn match-term" data-key="term_2"><span class="lang-en">CTR</span><span class="lang-cn">点击率</span></div><div class="match-btn match-term" data-key="term_4"><span class="lang-en">SEO</span><span class="lang-cn">搜索引擎优化</span></div>
+                </div>
+                <!-- Definitions Column -->
+                <div class="match-col">
+                    <div class="match-btn match-def" data-key="term_2"><span class="lang-en">Click-Through Rate: percentage of impressions that result in an active click</span><span class="lang-cn">点击率：广告展示次数中产生点击的百分比</span></div><div class="match-btn match-def" data-key="term_3"><span class="lang-en">Cost Per Acquisition: total marketing cost divided by actual conversions/sales</span><span class="lang-cn">每次获取成本：营销总成本除以实际完成的转化数/销售数</span></div><div class="match-btn match-def" data-key="term_1"><span class="lang-en">Cost Per Mille: billing model based on every 1,000 graphic ad impressions</span><span class="lang-cn">每千次展示成本：基于广告图片每 1,000 次展示的计费模式</span></div><div class="match-btn match-def" data-key="term_0"><span class="lang-en">Cost Per Click: total marketing cost divided by total active link clicks</span><span class="lang-cn">每次点击成本：营销总成本除以获得的活动链接点击数</span></div><div class="match-btn match-def" data-key="term_4"><span class="lang-en">Search Engine Optimization: structural practices to rank organic traffic higher</span><span class="lang-cn">搜索引擎优化：提高网站在搜索引擎中自然排名流量的结构性实践</span></div>
+                </div>
+            </div>
+            <div id="match-message" style="margin-top: 20px; font-weight: bold; text-align: center; min-height: 28px;"></div>
+        </div>
+
+        <!-- MCQ Practice Quiz -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Knowledge Check Practice</span>
+                <span class="lang-cn">知识自测练习</span>
+            </h2>
+            <form id="quiz-form">
+                
+            <div class="quiz-q">
+                <p><b>1. 
+                    <span class="lang-en">What does the acronym 'SEO' stand for in digital marketing?</span>
+                    <span class="lang-cn">数字营销中的“SEO”代表什么？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="0"> A. 
+                    <span class="lang-en">Secure Electronic Ordering</span>
+                    <span class="lang-cn">安全电子订购</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="1"> B. 
+                    <span class="lang-en">Search Engine Optimization</span>
+                    <span class="lang-cn">搜索引擎优化</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="2"> C. 
+                    <span class="lang-en">System Evaluation Operation</span>
+                    <span class="lang-cn">系统评估操作</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="3"> D. 
+                    <span class="lang-en">Social Engagement Outreach</span>
+                    <span class="lang-cn">社交参与拓展</span>
+                </label>
+                <div class="explanation" id="exp-0">
+                    <span class="lang-en">Explanation: SEO stands for Search Engine Optimization, which focuses on gaining organic search result placement.</span>
+                    <span class="lang-cn">解析：SEO 代表搜索引擎优化，侧重于获取自然搜索结果位置。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>2. 
+                    <span class="lang-en">If a merchant pays $200 for a banner campaign that generates 20,000 impressions, what is the CPM?</span>
+                    <span class="lang-cn">如果商家为产生 20,000 次展示的横幅广告系列支付 200 美元，CPM 是多少？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="0"> A. 
+                    <span class="lang-en">$1.00</span>
+                    <span class="lang-cn">$1.00</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="1"> B. 
+                    <span class="lang-en">$5.00</span>
+                    <span class="lang-cn">$5.00</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="2"> C. 
+                    <span class="lang-en">$10.00</span>
+                    <span class="lang-cn">$10.00</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="3"> D. 
+                    <span class="lang-en">$20.00</span>
+                    <span class="lang-cn">$20.00</span>
+                </label>
+                <div class="explanation" id="exp-1">
+                    <span class="lang-en">Explanation: CPM = (Cost / Impressions) * 1000 = ($200 / 20,000) * 1000 = $10.00.</span>
+                    <span class="lang-cn">解析：CPM = (成本 / 展示量) * 1000 = ($200 / 20,000) * 1000 = $10.00。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>3. 
+                    <span class="lang-en">Click-Through Rate (CTR) is calculated as __________________.</span>
+                    <span class="lang-cn">点击率 (CTR) 的计算方式为 __________________。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="0"> A. 
+                    <span class="lang-en">Clicks / Acquisitions</span>
+                    <span class="lang-cn">点击数 / 获取数</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="1"> B. 
+                    <span class="lang-en">Clicks / Impressions</span>
+                    <span class="lang-cn">点击数 / 展示数</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="2"> C. 
+                    <span class="lang-en">Impressions / Clicks</span>
+                    <span class="lang-cn">展示数 / 点击数</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="3"> D. 
+                    <span class="lang-en">Cost / Clicks</span>
+                    <span class="lang-cn">成本 / 点击数</span>
+                </label>
+                <div class="explanation" id="exp-2">
+                    <span class="lang-en">Explanation: CTR is the ratio of users who click on a specific link to the number of total users who view the page/ad (impressions).</span>
+                    <span class="lang-cn">解析：CTR 是点击特定链接的用户数与查看页面/广告的总用户数（展示数）的比率。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>4. 
+                    <span class="lang-en">Which tracking technology is placed on client browsers to identify returning website users?</span>
+                    <span class="lang-cn">哪种追踪技术被放置在客户端浏览器上以识别返回网站的用户？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="0"> A. 
+                    <span class="lang-en">IP resolver</span>
+                    <span class="lang-cn">IP 解析器</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="1"> B. 
+                    <span class="lang-en">SSL handshake</span>
+                    <span class="lang-cn">SSL 握手</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="2"> C. 
+                    <span class="lang-en">Tracking cookie</span>
+                    <span class="lang-cn">追踪 Cookie</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="3"> D. 
+                    <span class="lang-en">CSS style sheet</span>
+                    <span class="lang-cn">CSS 样式表</span>
+                </label>
+                <div class="explanation" id="exp-3">
+                    <span class="lang-en">Explanation: Cookies are small text files stored by browsers to persist session identifiers and track user navigation history.</span>
+                    <span class="lang-cn">解析：Cookie 是浏览器存储的小文本文件，用于持久化会话标识符并追踪用户导航历史。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>5. 
+                    <span class="lang-en">If a campaign costs $300 and drives 600 active clicks, what is the CPC?</span>
+                    <span class="lang-cn">如果一个广告系列花费 300 美元并带来 600 次点击，CPC 是多少？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="0"> A. 
+                    <span class="lang-en">$0.20</span>
+                    <span class="lang-cn">$0.20</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="1"> B. 
+                    <span class="lang-en">$0.50</span>
+                    <span class="lang-cn">$0.50</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="2"> C. 
+                    <span class="lang-en">$2.00</span>
+                    <span class="lang-cn">$2.00</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="3"> D. 
+                    <span class="lang-en">$5.00</span>
+                    <span class="lang-cn">$5.00</span>
+                </label>
+                <div class="explanation" id="exp-4">
+                    <span class="lang-en">Explanation: CPC = Cost / Clicks = $300 / 600 = $0.50.</span>
+                    <span class="lang-cn">解析：CPC = 成本 / 点击数 = $300 / 600 = $0.50。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>6. 
+                    <span class="lang-en">What is organic search traffic?</span>
+                    <span class="lang-cn">什么是自然搜索流量？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="0"> A. 
+                    <span class="lang-en">Traffic driven by paid banner ads</span>
+                    <span class="lang-cn">付费横幅广告带来的流量</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="1"> B. 
+                    <span class="lang-en">Traffic driven by users typing direct URLs</span>
+                    <span class="lang-cn">用户输入直接 URL 带来的流量</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="2"> C. 
+                    <span class="lang-en">Unpaid search results placement driven by search algorithms</span>
+                    <span class="lang-cn">搜索引擎算法驱动的未付费搜索结果位置</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="3"> D. 
+                    <span class="lang-en">Traffic from bot scanners</span>
+                    <span class="lang-cn">来自爬虫扫描器的流量</span>
+                </label>
+                <div class="explanation" id="exp-5">
+                    <span class="lang-en">Explanation: Organic traffic is unpaid traffic arriving at a website through search engines, which is optimized using SEO.</span>
+                    <span class="lang-cn">解析：自然流量是指通过搜索引擎到达网站的未付费流量，这可以通过 SEO 进行优化。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>7. 
+                    <span class="lang-en">Which metric focuses purely on direct transactions and acquisitions divided by cost?</span>
+                    <span class="lang-cn">哪个指标纯粹关注直接交易数和获取数除以成本？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="0"> A. 
+                    <span class="lang-en">CPM</span>
+                    <span class="lang-cn">CPM</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="1"> B. 
+                    <span class="lang-en">CPC</span>
+                    <span class="lang-cn">CPC</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="2"> C. 
+                    <span class="lang-en">CPA</span>
+                    <span class="lang-cn">CPA</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="3"> D. 
+                    <span class="lang-en">CTR</span>
+                    <span class="lang-cn">CTR</span>
+                </label>
+                <div class="explanation" id="exp-6">
+                    <span class="lang-en">Explanation: CPA (Cost Per Acquisition) determines the direct average cost of a customer conversion transaction.</span>
+                    <span class="lang-cn">解析：CPA（每次获取成本）确定了客户转化交易的直接平均成本。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>8. 
+                    <span class="lang-en">Search Engine Marketing (SEM) differs from SEO in that SEM:</span>
+                    <span class="lang-cn">搜索引擎营销 (SEM) 与 SEO 的不同之处在于 SEM：</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="0"> A. 
+                    <span class="lang-en">Only runs on local networks</span>
+                    <span class="lang-cn">仅在本地网络上运行</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="1"> B. 
+                    <span class="lang-en">Is completely free</span>
+                    <span class="lang-cn">是完全免费的</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="2"> C. 
+                    <span class="lang-en">Involves bidding for paid search ads</span>
+                    <span class="lang-cn">涉及竞价付费搜索广告</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="3"> D. 
+                    <span class="lang-en">Does not use keywords</span>
+                    <span class="lang-cn">不使用关键词</span>
+                </label>
+                <div class="explanation" id="exp-7">
+                    <span class="lang-en">Explanation: SEM involves paying for search placement using keyword bidding tools, whereas SEO is organic.</span>
+                    <span class="lang-cn">解析：SEM 涉及使用关键词竞价工具付费获取搜索排名，而 SEO 是自然排名的。</span>
+                </div>
+            </div>
+            </form>
+            <button class="btn" type="button" onclick="checkQuiz()">
+                <span class="lang-en">Submit & Grade Answers</span>
+                <span class="lang-cn">提交并评定答案</span>
+            </button>
+            <div id="quiz-result" style="margin-top: 20px; font-weight: bold; min-height: 30px;"></div>
+        </div>
+
+        <!-- Review Q&A Section (Hidden QP answers) -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Revision Review Q&A</span>
+                <span class="lang-cn">课程复习问答</span>
+            </h2>
+            
+            <div class="qa-block" id="qa-WK6-0">
+                <div class="qa-header" onclick="toggleQA('WK6-0')">
+                    <span>
+                        <span class="lang-en">Review Exercise 1</span>
+                        <span class="lang-cn">复习练习题 1</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">A business runs an online marketing campaign with a budget of $1200. The campaign generates 60,000 impressions, resulting in 1,500 clicks and 75 final purchase conversions. Calculate the CTR, CPC, and CPA for this campaign.</span>
+                        <span class="lang-cn">某企业运行在线营销，预算为 1200 美元。该活动产生 60,000 次展示，带来 1,500 次点击和 75 次最终购买转化。计算此营销的 CTR、CPC 和 CPA。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en"><strong>1. Click-Through Rate (CTR) Calculation:</strong> <br>Formula: (Clicks / Impressions) * 100 = (1,500 / 60,000) * 100 = <strong>2.50%</strong> (1 Mark)<br><strong>2. Cost Per Click (CPC) Calculation:</strong> <br>Formula: Total Cost / Clicks = $1,200 / 1,500 = <strong>$0.80</strong> (1 Mark)<br><strong>3. Cost Per Acquisition (CPA) Calculation:</strong> <br>Formula: Total Cost / Conversions = $1,200 / 75 = <strong>$16.00</strong> (1 Mark)</span>
+                        <span class="lang-cn"><strong>1. 点击率 (CTR) 计算：</strong><br>公式：（点击数 / 展示数）* 100 = (1,500 / 60,000) * 100 = <strong>2.50%</strong>（1分）<br><strong>2. 每次点击成本 (CPC) 计算：</strong><br>公式：总成本 / 点击数 = $1,200 / 1,500 = <strong>$0.80</strong>（1分）<br><strong>3. 每次获取成本 (CPA) 计算：</strong><br>公式：总成本 / 转化数 = $1,200 / 75 = <strong>$16.00</strong>（1分）</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            document.body.classList.toggle('cn-active');
+        }
+
+        function showCodeAns(id) {
+            const el = document.getElementById('code-ans-' + id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleQA(id) {
+            const el = document.getElementById('qa-' + id);
+            el.classList.toggle('open');
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            const total = 8;
+            const answers = [1, 2, 1, 2, 1, 2, 2, 2];
+            
+            // Highlight options
+            for (let qIdx = 0; qIdx < total; qIdx++) {
+                const checkedOpt = document.querySelector(`input[name="q${qIdx}"]:checked`);
+                const expEl = document.getElementById(`exp-${qIdx}`);
+                if (expEl) {
+                    expEl.style.display = 'block';
+                }
+                
+                if (checkedOpt) {
+                    const val = parseInt(checkedOpt.value);
+                    if (val === answers[qIdx]) {
+                        score++;
+                    }
+                }
+            }
+            
+            const resEl = document.getElementById('quiz-result');
+            resEl.innerHTML = `<span class='correct-ans'>
+                <span class="lang-en">You scored: ${score} / ${total}</span>
+                <span class="lang-cn">您的得分：${score} / ${total}</span>
+            </span>`;
+        }
+
+        // Matching Game JS Logic
+        let selectedTerm = null;
+        let selectedDef = null;
+
+        document.querySelectorAll('.match-term').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-term').forEach(t => t.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedTerm = item;
+                checkMatch();
+            });
+        });
+
+        document.querySelectorAll('.match-def').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-def').forEach(d => d.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedDef = item;
+                checkMatch();
+            });
+        });
+
+        function checkMatch() {
+            if (selectedTerm && selectedDef) {
+                const termKey = selectedTerm.getAttribute('data-key');
+                const defKey = selectedDef.getAttribute('data-key');
+                const msgEl = document.getElementById('match-message');
+                
+                if (termKey === defKey) {
+                    selectedTerm.classList.add('matched');
+                    selectedDef.classList.add('matched');
+                    selectedTerm.classList.remove('selected');
+                    selectedDef.classList.remove('selected');
+                    selectedTerm = null;
+                    selectedDef = null;
+                    
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132;">
+                            <span class="lang-en">✓ Correct Match!</span>
+                            <span class="lang-cn">✓ 配对正确！</span>
+                        </span>`;
+                    }
+                    
+                    const unmatched = document.querySelectorAll('.match-term:not(.matched)');
+                    if (unmatched.length === 0 && msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132; font-size: 1.2rem; font-weight: bold;">
+                            <span class="lang-en">🎉 Congratulations! You matched all terms correctly!</span>
+                            <span class="lang-cn">🎉 恭喜！您已成功配对所有词汇！</span>
+                        </span>`;
+                    }
+                } else {
+                    selectedTerm.classList.add('error');
+                    selectedDef.classList.add('error');
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #842029;">
+                            <span class="lang-en">✗ Incorrect Match! Try again.</span>
+                            <span class="lang-cn">✗ 配对错误！请再试一次。</span>
+                        </span>`;
+                    }
+                    const t = selectedTerm;
+                    const d = selectedDef;
+                    setTimeout(() => {
+                        t.classList.remove('error', 'selected');
+                        d.classList.remove('error', 'selected');
+                    }, 400);
+                    selectedTerm = null;
+                    selectedDef = null;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

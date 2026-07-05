@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week WK8: Ethical, Social, and Political Issues - DBEC2653</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Macaron Palette */
+            --pastel-pink: #FFD1DC;
+            --pastel-mint: #B0EACD;
+            --pastel-blue: #AEC6CF;
+            --pastel-lavender: #C3B1E1;
+            --pastel-yellow: #FDFD96;
+            
+            --ink: #111111;
+            --ink-muted: #333333;
+            
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            --radius-lg: 32px;
+            --radius-md: 16px;
+            
+            --spring: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender), var(--pastel-blue), var(--pastel-mint));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Auras */
+        body::before {
+            content: ''; position: fixed; top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, var(--pastel-yellow) 0%, transparent 70%);
+            filter: blur(80px); opacity: 0.6; z-index: -1;
+            animation: floatAura 20s ease-in-out infinite alternate;
+        }
+        body::after {
+            content: ''; position: fixed; bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, var(--pastel-pink) 0%, transparent 70%);
+            filter: blur(100px); opacity: 0.5; z-index: -1;
+            animation: floatAura 25s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatAura {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: var(--ink); }
+        
+        .header { text-align: center; padding: 40px 20px 20px; position: relative; }
+        .header h1 { font-size: 2.3rem; margin-top: 20px; font-weight: 800; color: var(--ink); }
+        .nav-link { color: var(--ink-muted); text-decoration: none; font-weight: 700; display: inline-block; transition: all 0.4s var(--spring); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--glass-bg); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--glass-border); }
+        .nav-link:hover { color: var(--ink); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: rgba(255,255,255,0.7); }
+        
+        .lang-btn {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .container { max-width: 900px; margin: 20px auto 40px; padding: 0 20px; position: relative; z-index: 1; }
+        
+        .card { 
+            background: var(--glass-bg); 
+            border-radius: var(--radius-lg); 
+            padding: 40px; 
+            box-shadow: var(--glass-shadow); 
+            margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            transition: all 0.5s var(--spring);
+        }
+        .card h2 { border-bottom: 2px solid rgba(255,255,255,0.5); padding-bottom: 15px; margin-top: 0; font-size: 1.8rem;}
+        
+        .step { background: rgba(255,255,255,0.3); padding: 20px; margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .step h3 { margin-top: 0; font-size: 1.3rem; }
+        
+        .btn { 
+            background: linear-gradient(135deg, var(--pastel-lavender), var(--pastel-pink));
+            color: var(--ink); 
+            padding: 12px 28px; 
+            border: 2px solid rgba(255,255,255,0.8); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.4s var(--spring);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(195, 177, 225, 0.4); background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender)); }
+        
+        /* Quiz */
+        .quiz-q { margin-bottom: 25px; background: rgba(255,255,255,0.2); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .quiz-label { display: block; padding: 10px 16px; cursor: pointer; transition: all 0.4s var(--spring); border-radius: 12px; border: 1px solid transparent; font-weight: 600; font-size: 1.1rem;}
+        .quiz-label:hover { background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); transform: translateX(5px);}
+        .explanation { display: none; margin-top: 10px; padding: 10px 16px; background: rgba(255,255,255,0.6); border-radius: 8px; font-weight: 600; border-left: 4px solid var(--pastel-blue); }
+        
+        /* Coding */
+        .code-editor { background: rgba(0,0,0,0.85); color: #F8F9FA; padding: 20px; border-radius: var(--radius-md); font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-top: 10px; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); white-space: pre-wrap; }
+        .correct-ans { color: #0f5132; font-weight: 700; margin-top: 15px; display: inline-block; padding: 10px 16px; background: rgba(176, 234, 205, 0.6); border-radius: 12px; border: 1px solid var(--pastel-mint);}
+        
+        /* Table Styles (Bilingual High Contrast) */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(255,255,255,0.2); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--glass-border); }
+        .data-table th, .data-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--glass-border); font-size: 1.1rem; }
+        .data-table th { background: rgba(255,255,255,0.6); font-weight: 800; font-family: 'Orbitron', sans-serif; }
+        .data-table tr:last-child td { border-bottom: none; }
+        
+        /* SVG Tweaks for Macaron Glassmorphism & High Contrast */
+        svg { background: transparent !important; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05)); margin: 10px auto; display: block; max-width: 100%; }
+        svg text { font-family: 'Arial', sans-serif !important; font-weight: bold !important; fill: #000000 !important; }
+        svg [fill="url(#blueGrad)"], svg [fill="url(#purpleGrad)"], svg [fill="url(#mintGrad)"], svg [fill="url(#pinkGrad)"], svg [fill="url(#yellowGrad)"] { fill-opacity: 0.8 !important; stroke: #000000 !important; stroke-width: 2px !important; }
+        svg [fill="#FFF"], svg [fill="#ffffff"], svg [fill="none"] { stroke: #000000 !important; }
+        
+        /* Vocabulary Matching Game Styles */
+        .match-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .match-col { width: 48%; display: flex; flex-direction: column; gap: 10px; }
+        .match-btn {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s var(--spring);
+            user-select: none;
+            text-align: left;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+        .match-btn:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(3px);
+        }
+        .match-btn.selected {
+            background: var(--pastel-yellow) !important;
+            border: 2px solid var(--ink);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .match-btn.matched {
+            background: var(--pastel-mint) !important;
+            border: 1px solid var(--pastel-mint);
+            opacity: 0.6;
+            cursor: default;
+            pointer-events: none;
+            transform: none !important;
+        }
+        .match-btn.error {
+            background: var(--pastel-pink) !important;
+            border: 1px solid var(--pastel-pink);
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Collapsible Q&A Review style */
+        .qa-block { margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); background: rgba(255,255,255,0.25); overflow: hidden; }
+        .qa-header { padding: 18px 24px; font-weight: 700; cursor: pointer; background: rgba(255,255,255,0.4); display: flex; justify-content: space-between; align-items: center; font-size: 1.15rem; }
+        .qa-body { padding: 20px 24px; display: none; border-top: 1px solid var(--glass-border); background: rgba(255,255,255,0.5); font-size: 1.1rem; line-height: 1.7; }
+        .qa-icon { transition: transform 0.3s; font-weight: bold; }
+        .qa-block.open .qa-body { display: block; }
+        .qa-block.open .qa-icon { transform: rotate(90deg); }
+
+        /* Translation CSS Rules */
+        .lang-cn { display: none !important; }
+        body.cn-active .lang-en { display: none !important; }
+        body.cn-active .lang-cn { display: block !important; }
+        
+        span.lang-cn { display: none !important; }
+        body.cn-active span.lang-en { display: none !important; }
+        body.cn-active span.lang-cn { display: inline !important; }
+
+        @media (max-width: 768px) {
+            .lang-btn {
+                position: static;
+                margin-top: 15px;
+            }
+            .match-col { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="nav-link">
+            <span class="lang-en">← Back to Hub</span>
+            <span class="lang-cn">← 返回主页</span>
+        </a>
+        <h1>
+            <span class="lang-en">Week 8: Ethical, Social, and Political Issues</span>
+            <span class="lang-cn">第 8 周：伦理、社会与政治问题</span>
+        </h1>
+        <button class="btn lang-btn" onclick="toggleLanguage()">🌐 EN / 中文</button>
+    </div>
+
+    <div class="container">
+        <!-- Objectives Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-lavender);">
+            <h2>
+                <span class="lang-en">Learning Objectives</span>
+                <span class="lang-cn">学习目标</span>
+            </h2>
+            <div class="lang-en">
+                <ul>
+                    <li>Discuss ethical, social and political issues in e-commerce (CLO2).</li><li>Explain privacy rights and information property regulations (GDPR/PDPA).</li><li>Analyze intellectual property issues, governance structures, and public safety.</li>
+                </ul>
+            </div>
+            <div class="lang-cn">
+                <ul>
+                    <li>讨论电子商务中的伦理、社会和政治问题 (CLO2)。</li><li>解释隐私权和信息财产法规（GDPR/PDPA）。</li><li>分析知识产权问题、治理结构和公共安全。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sample Company / Case Study Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Bustiness Case Context</span>
+                <span class="lang-cn">商业案例情境</span>
+            </h2>
+            <div class="lang-en">
+                <p><strong>KompasVibe Social Commerce:</strong> An independent designer platform that was hit by an ethical and legal scandal (The 'SmartInfluence' Debacle). The platform scanned private merchant DMs and transactional data without consent, copied a designer's signature jacket, and leaked supplier specifications. This case highlights critical violations of information privacy, intellectual property rights, and platform accountability.</p>
+            </div>
+            <div class="lang-cn">
+                <p><strong>KompasVibe 社交电商：</strong>一个受到道德和法律丑闻（“SmartInfluence”风波）打击的独立设计师平台。该平台在未经同意的情况下扫描了商家的私人 DM 和交易数据，复制了一位设计师的签名夹克，并泄露了供应商规格。该案例突出了对信息隐私、知识产权和平台问责制的严重侵犯。</p>
+            </div>
+        </div>
+
+        <!-- Comparative Table Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Key Ethical Theories: Kant's Categorical Imperative vs. Utilitarianism</span>
+                <span class="lang-cn">关键伦理学理论：康德的绝对命令与功利主义原理</span>
+            </h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th><span class="lang-en">Theoretical System</span><span class="lang-cn">理论体系</span></th><th><span class="lang-en">Core Premise</span><span class="lang-cn">核心前提</span></th><th><span class="lang-en">Application Rule</span><span class="lang-cn">应用规则</span></th><th><span class="lang-en">Evaluation of KompasVibe</span><span class="lang-cn">对 KompasVibe 的评估</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="lang-en">Categorical Imperative (Kant)</span><span class="lang-cn">绝对命令 (康德)</span></td><td><span class="lang-en">Actions must be universally moral. People should never be treated as mere means.</span><span class="lang-cn">行为必须具有普遍道德性。人绝不能被仅仅当作手段。</span></td><td><span class="lang-en">If an action is not right for everyone, it is not right for anyone.</span><span class="lang-cn">如果一个行为不适合所有人，那它就不适合任何人。</span></td><td><span class="lang-en">Violated: scanned merchant DMs silently and copied designs. This cannot be universally willed.</span><span class="lang-cn">违背：默默扫描商家私信并抄袭设计。这不能作为普遍意志。</span></td></tr><tr><td><span class="lang-en">Utilitarian Principle</span><span class="lang-cn">功利主义原理</span></td><td><span class="lang-en">Maximize the greatest total happiness and utility.</span><span class="lang-cn">最大化最大多数人的总幸福和效用。</span></td><td><span class="lang-en">Choose the path that yields the highest net benefit.</span><span class="lang-cn">选择产生最高净收益的路径。</span></td><td><span class="lang-en">Failed: benefited one platform at the cost of hundreds of creators and user trust, yielding negative utility.</span><span class="lang-cn">失败：以牺牲数百名创作者和用户信任为代价，使单个平台受益，产生了负效用。</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Concept Visualization Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Concept Visualization</span>
+                <span class="lang-cn">概念可视化</span>
+            </h2>
+            <div style="background: rgba(255,255,255,0.5); border-radius: var(--radius-md); padding: 20px; border: 1px solid var(--glass-border);">
+                
+        <svg height="240" viewBox="0 0 600 240" width="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="pinkGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stop-color="#FFD1DC"></stop>
+                    <stop offset="100%" stop-color="#FFB5BA"></stop>
+                </linearGradient>
+            </defs>
+            <!-- Flow -->
+            <rect fill="url(#pinkGrad)" stroke="#111" stroke-width="1.5" height="50" rx="10" width="120" x="30" y="95"></rect>
+            <text fill="#111" font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="90" y="125">Action Proposal</text>
+            
+            <line x1="150" y1="120" x2="210" y2="120" stroke="#111" stroke-width="2"></line>
+            
+            <polygon points="210,120 270,70 330,120 270,170" fill="url(#pinkGrad)" stroke="#111" stroke-width="1.5"></polygon>
+            <text fill="#111" font-family="Arial" font-size="9" font-weight="bold" text-anchor="middle" x="270" y="115">Is it right</text>
+            <text fill="#111" font-family="Arial" font-size="9" font-weight="bold" text-anchor="middle" x="270" y="130">for everyone?</text>
+            
+            <path d="M 270 70 L 270 30" stroke="#111" stroke-width="2" fill="none"></path>
+            <text fill="#0f5132" font-family="Arial" font-size="11" font-weight="bold" x="285" y="45">Yes (Moral)</text>
+            
+            <path d="M 270 170 L 270 210" stroke="#D81B60" stroke-width="2" fill="none"></path>
+            <text fill="#D81B60" font-family="Arial" font-size="11" font-weight="bold" x="285" y="195">No (Immoral)</text>
+        </svg>
+        
+            </div>
+        </div>
+
+        <!-- Practical Exercise Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-mint);">
+            <h2>
+                <span class="lang-en">Practical Exercise: Drafting a Privacy Policy</span>
+                <span class="lang-cn">实践练习：撰写隐私政策</span>
+            </h2>
+            <div class="lang-en">
+                <p><b>Steps to complete:</b></p>
+                <ol>
+                    <li>Review key requirements of the Personal Data Protection Act (PDPA).</li><li>Draft a 2-paragraph **Privacy Policy** declaring: What personal data is collected, how it is processed, and user opt-out controls.</li><li>Ensure it explicitly forbids scanning private user communication channels without explicit consent.</li>
+                </ol>
+            </div>
+            <div class="lang-cn">
+                <p><b>操作步骤：</b></p>
+                <ol>
+                    <li>审查个人数据保护法 (PDPA) 的关键要求。</li><li>起草一份两段的<strong>隐私政策 (Privacy Policy)</strong>，声明：收集哪些个人数据、如何处理这些数据以及用户的退出控制。</li><li>确保其中明确禁止在未经明确同意的情况下扫描私人用户通信渠道。</li>
+                </ol>
+            </div>
+            <button class="btn" onclick="showCodeAns('practical')">
+                <span class="lang-en">Show Compliant Privacy Policy Sample</span>
+                <span class="lang-cn">显示符合规范的隐私政策示例</span>
+            </button>
+            <div class="code-editor" id="code-ans-practical" style="display:none;">PRIVACY POLICY:\n1. Collection: We collect name, email, and transactional data only to process orders.\n2. Communication Protection: We explicitly declare that private customer messages (DMs) are private and will NEVER be scanned, processed, or utilized for internal business analytics.\n3. Consent: Users may review, update, or request deletion of their data at any time via support@kompasvibe.com.</div>
+        </div>
+
+        <!-- Vocabulary Matching Game -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Vocabulary Connection Game</span>
+                <span class="lang-cn">词汇连线互动游戏</span>
+            </h2>
+            <p>
+                <span class="lang-en">Match the term on the left with its definition on the right. (Click a term, then click its matching definition).</span>
+                <span class="lang-cn">将左侧的术语与右侧的定义进行配对。（点击术语，然后点击匹配的定义）。</span>
+            </p>
+            <div class="match-grid">
+                <!-- Terms Column -->
+                <div class="match-col">
+                    <div class="match-btn match-term" data-key="term_2"><span class="lang-en">Intellectual Property</span><span class="lang-cn">知识产权</span></div><div class="match-btn match-term" data-key="term_4"><span class="lang-en">Utilitarianism</span><span class="lang-cn">功利主义</span></div><div class="match-btn match-term" data-key="term_3"><span class="lang-en">Categorical Imperative</span><span class="lang-cn">绝对命令</span></div><div class="match-btn match-term" data-key="term_1"><span class="lang-en">GDPR</span><span class="lang-cn">通用数据保护条例</span></div><div class="match-btn match-term" data-key="term_0"><span class="lang-en">Privacy</span><span class="lang-cn">隐私权</span></div>
+                </div>
+                <!-- Definitions Column -->
+                <div class="match-col">
+                    <div class="match-btn match-def" data-key="term_3"><span class="lang-en">Kantian ethics stating that actions are moral only if universalized</span><span class="lang-cn">康德伦理学指出，行为只有在能够被普遍化时才是道德的</span></div><div class="match-btn match-def" data-key="term_2"><span class="lang-en">Intangible property created by individuals or corporations (copyrights, patents, trademarks)</span><span class="lang-cn">个人或公司创建的无形财产（著作权、专利、商标）</span></div><div class="match-btn match-def" data-key="term_4"><span class="lang-en">Ethics system advocating actions that maximize net social utility</span><span class="lang-cn">提倡最大化净社会效用的伦理学体系</span></div><div class="match-btn match-def" data-key="term_0"><span class="lang-en">The right of individuals to be left alone and control their personal details</span><span class="lang-cn">个人不受骚扰并控制其个人信息的权利</span></div><div class="match-btn match-def" data-key="term_1"><span class="lang-en">Strict European Union data privacy regulations requiring explicit consent</span><span class="lang-cn">欧盟要求明确同意的严格的数据隐私条例</span></div>
+                </div>
+            </div>
+            <div id="match-message" style="margin-top: 20px; font-weight: bold; text-align: center; min-height: 28px;"></div>
+        </div>
+
+        <!-- MCQ Practice Quiz -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Knowledge Check Practice</span>
+                <span class="lang-cn">知识自测练习</span>
+            </h2>
+            <form id="quiz-form">
+                
+            <div class="quiz-q">
+                <p><b>1. 
+                    <span class="lang-en">Under Kant's Categorical Imperative, how should a firm evaluate an ethical decision?</span>
+                    <span class="lang-cn">根据康德的绝对命令，企业应该如何评估伦理决策？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="0"> A. 
+                    <span class="lang-en">Check if it yields the highest profit margin</span>
+                    <span class="lang-cn">检查它是否能带来最高的利润率</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="1"> B. 
+                    <span class="lang-en">Ask if the action would be acceptable if everyone acted this way</span>
+                    <span class="lang-cn">询问如果每个人都这样做，该行为是否可以被接受</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="2"> C. 
+                    <span class="lang-en">Consult the local police guidelines</span>
+                    <span class="lang-cn">咨询当地警方指南</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="3"> D. 
+                    <span class="lang-en">Follow the competitors' behavior</span>
+                    <span class="lang-cn">遵循竞争对手的行为</span>
+                </label>
+                <div class="explanation" id="exp-0">
+                    <span class="lang-en">Explanation: Kant's Categorical Imperative states that if an action is not right for everyone to do, it is not right for anyone.</span>
+                    <span class="lang-cn">解析：康德的绝对命令指出，如果一个行为不适合所有人去做，那它就不适合任何人。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>2. 
+                    <span class="lang-en">Which ethical principle advises taking the action that achieves the greatest net benefit for society?</span>
+                    <span class="lang-cn">哪种伦理学原理建议采取能够为社会带来最大净收益的行动？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="0"> A. 
+                    <span class="lang-en">The Golden Rule</span>
+                    <span class="lang-cn">黄金法则</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="1"> B. 
+                    <span class="lang-en">The Utilitarian Principle</span>
+                    <span class="lang-cn">功利主义原理</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="2"> C. 
+                    <span class="lang-en">Kantian Imperative</span>
+                    <span class="lang-cn">康德绝对命令</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="3"> D. 
+                    <span class="lang-en">The Slippery Slope</span>
+                    <span class="lang-cn">滑坡效应</span>
+                </label>
+                <div class="explanation" id="exp-1">
+                    <span class="lang-en">Explanation: The Utilitarian Principle states that we should perform actions that result in the greatest total happiness/benefit.</span>
+                    <span class="lang-cn">解析：功利主义原理指出，我们应该执行能够带来最大总幸福/收益的行动。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>3. 
+                    <span class="lang-en">GDPR is a privacy regulation framework enacted by which region?</span>
+                    <span class="lang-cn">GDPR 是哪个地区颁布的隐私监管框架？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="0"> A. 
+                    <span class="lang-en">United States</span>
+                    <span class="lang-cn">美国</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="1"> B. 
+                    <span class="lang-en">European Union</span>
+                    <span class="lang-cn">欧盟</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="2"> C. 
+                    <span class="lang-en">Southeast Asia</span>
+                    <span class="lang-cn">东南亚</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="3"> D. 
+                    <span class="lang-en">Latin America</span>
+                    <span class="lang-cn">拉丁美洲</span>
+                </label>
+                <div class="explanation" id="exp-2">
+                    <span class="lang-en">Explanation: GDPR (General Data Protection Regulation) is a strict privacy regulation framework in the European Union.</span>
+                    <span class="lang-cn">解析：GDPR（通用数据保护条例）是欧盟严格的隐私监管框架。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>4. 
+                    <span class="lang-en">Which intellectual property category protects intangible literary and artistic assets (e.g., photos, livestream videos)?</span>
+                    <span class="lang-cn">哪种知识产权类别保护无形的文学和艺术资产（例如照片、直播视频）？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="0"> A. 
+                    <span class="lang-en">Patent</span>
+                    <span class="lang-cn">专利</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="1"> B. 
+                    <span class="lang-en">Copyright</span>
+                    <span class="lang-cn">著作权 (Copyright)</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="2"> C. 
+                    <span class="lang-en">Trademark</span>
+                    <span class="lang-cn">商标</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="3"> D. 
+                    <span class="lang-en">Trade Secret</span>
+                    <span class="lang-cn">商业秘密</span>
+                </label>
+                <div class="explanation" id="exp-3">
+                    <span class="lang-en">Explanation: Copyright protects expression of ideas, including text, media, videos, and product design assets.</span>
+                    <span class="lang-cn">解析：著作权（版权）保护思想的表达，包括文本、媒体、视频和产品设计资产。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>5. 
+                    <span class="lang-en">What is the primary function of a Trademark?</span>
+                    <span class="lang-cn">商标（Trademark）的主要功能是什么？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="0"> A. 
+                    <span class="lang-en">To protect manufacturing formulas</span>
+                    <span class="lang-cn">保护制造配方</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="1"> B. 
+                    <span class="lang-en">To identify and distinguish the source of goods or brands</span>
+                    <span class="lang-cn">识别并区分商品或品牌的来源</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="2"> C. 
+                    <span class="lang-en">To record database structures</span>
+                    <span class="lang-cn">记录数据库结构</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="3"> D. 
+                    <span class="lang-en">To host SSL keys</span>
+                    <span class="lang-cn">托管 SSL 密钥</span>
+                </label>
+                <div class="explanation" id="exp-4">
+                    <span class="lang-en">Explanation: A trademark is a recognizable sign, design, or expression which identifies products or services of a particular source.</span>
+                    <span class="lang-cn">解析：商标是识别特定来源的产品或服务的可识别标志、设计或表达。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>6. 
+                    <span class="lang-en">A patent protects which of the following?</span>
+                    <span class="lang-cn">专利保护以下哪项？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="0"> A. 
+                    <span class="lang-en">Brand logos</span>
+                    <span class="lang-cn">品牌徽标</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="1"> B. 
+                    <span class="lang-en">Written narrative texts</span>
+                    <span class="lang-cn">书写的叙述性文本</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="2"> C. 
+                    <span class="lang-en">New, novel, and non-obvious inventions or processes</span>
+                    <span class="lang-cn">新颖且非显而易见的发明或工艺</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="3"> D. 
+                    <span class="lang-en">Server IP locations</span>
+                    <span class="lang-cn">服务器 IP 位置</span>
+                </label>
+                <div class="explanation" id="exp-5">
+                    <span class="lang-en">Explanation: A patent grants exclusive rights for an invention, which is a product or a process that provides a new way of doing something.</span>
+                    <span class="lang-cn">解析：专利授予一项发明的专有权，该发明是提供一种做某事的新方法的产品或工艺。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>7. 
+                    <span class="lang-en">Which data regulation law governs personal data protection specifically in Malaysia?</span>
+                    <span class="lang-cn">哪项数据监管法律专门管辖马来西亚的个人数据保护？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="0"> A. 
+                    <span class="lang-en">GDPR</span>
+                    <span class="lang-cn">GDPR</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="1"> B. 
+                    <span class="lang-en">PDPA 2010</span>
+                    <span class="lang-cn">PDPA 2010</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="2"> C. 
+                    <span class="lang-en">COPPA</span>
+                    <span class="lang-cn">COPPA</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="3"> D. 
+                    <span class="lang-en">HIPAA</span>
+                    <span class="lang-cn">HIPAA</span>
+                </label>
+                <div class="explanation" id="exp-6">
+                    <span class="lang-en">Explanation: In Malaysia, personal data in commercial transactions is governed by the Personal Data Protection Act (PDPA) 2010.</span>
+                    <span class="lang-cn">解析：在马来西亚，商业交易中的个人数据受 2010 年《个人数据保护法》(PDPA) 管辖。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>8. 
+                    <span class="lang-en">What is the primary ethical issue surrounding 'Platform Accountability'?</span>
+                    <span class="lang-cn">围绕“平台问责制”的主要伦理问题是什么？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="0"> A. 
+                    <span class="lang-en">The cost of domain registration</span>
+                    <span class="lang-cn">域名注册成本</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="1"> B. 
+                    <span class="lang-en">Determining if platforms are responsible for actions and content on their sites</span>
+                    <span class="lang-cn">确定平台是否对其网站上的行为和内容负责</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="2"> C. 
+                    <span class="lang-en">The programming language chosen</span>
+                    <span class="lang-cn">选择的编程语言</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="3"> D. 
+                    <span class="lang-en">Configuring email clients</span>
+                    <span class="lang-cn">配置邮件客户端</span>
+                </label>
+                <div class="explanation" id="exp-7">
+                    <span class="lang-en">Explanation: Platform accountability deals with whether platforms act as neutral hosts or exert editorial/operational control, making them liable.</span>
+                    <span class="lang-cn">解析：平台问责制涉及平台是作为中立主机运行，还是施加编辑/运营控制，从而使其承担责任。</span>
+                </div>
+            </div>
+            </form>
+            <button class="btn" type="button" onclick="checkQuiz()">
+                <span class="lang-en">Submit & Grade Answers</span>
+                <span class="lang-cn">提交并评定答案</span>
+            </button>
+            <div id="quiz-result" style="margin-top: 20px; font-weight: bold; min-height: 30px;"></div>
+        </div>
+
+        <!-- Review Q&A Section (Hidden QP answers) -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Revision Review Q&A</span>
+                <span class="lang-cn">课程复习问答</span>
+            </h2>
+            
+            <div class="qa-block" id="qa-WK8-0">
+                <div class="qa-header" onclick="toggleQA('WK8-0')">
+                    <span>
+                        <span class="lang-en">Review Exercise 1</span>
+                        <span class="lang-cn">复习练习题 1</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Explain the four ethical dimensions of e-commerce: Information Rights, Property Rights, Governance, and Public Safety.</span>
+                        <span class="lang-cn">解释电子商务的四个伦理维度：信息权、财产权、治理和公共安全。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en">The four main dimensions are:<br>1. <strong>Information Rights (信息权):</strong> What rights to personal privacy do individuals possess? What data can platforms collect and scan?<br>2. <strong>Property Rights (财产权):</strong> How can intellectual property (copyrights, patents, trademarks) be protected in the digital space where replication is cheap?<br>3. <strong>Governance (治理):</strong> Who controls e-commerce platforms? How should digital transactions be taxed and regulated across national lines?<br>4. <strong>Public Safety (公共安全):</strong> How do we prevent access to illegal materials and protect vulnerable demographics online?</span>
+                        <span class="lang-cn">四个主要维度是：<br>1. <strong>信息权：</strong>个人拥有哪些个人隐私权？平台可以收集和扫描哪些数据？<br>2. <strong>财产权：</strong>在复制成本低廉的数字空间中，如何保护知识产权（著作权、专利、商标）？<br>3. <strong>治理：</strong>谁控制电子商务平台？如何跨国界对数字交易进行征税和监管？<br>4. <strong>公共安全：</strong>我们如何防止获取非法材料并保护在线的弱势群体？</span>
+                    </div>
+                </div>
+            </div>
+            <div class="qa-block" id="qa-WK8-1">
+                <div class="qa-header" onclick="toggleQA('WK8-1')">
+                    <span>
+                        <span class="lang-en">Review Exercise 2</span>
+                        <span class="lang-cn">复习练习题 2</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Analyze the ShopVibe scenario under Information Rights, Intellectual Property, and Platform Accountability. Apply Kantian and Utilitarian principles.</span>
+                        <span class="lang-cn">分析 ShopVibe 案例（信息权、知识产权和平台问责制）。应用康德和功利主义原理。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en"><strong>1. Information Rights (2 Marks):</strong> ShopVibe violated the independent merchants' privacy by silently scanning private DMs and transaction histories without consent, using this data for internal competitor brand analytics.<br><strong>2. Intellectual Property (2 Marks):</strong> Buried ToS co-ownership clauses do not justify copyright plagiarism of Elena's signature design assets. The data breach leaking proprietary specifications represents a trade secret violation.<br><strong>3. Accountability & Control (3 Marks):</strong> ShopVibe's neutral host defense is invalid because they active-copied designs and placed cheap copies at the top of search listings, exerting direct market control.<br><strong>4. Ethical Principles (3 Marks):</strong> <br>- <em>Kantian (绝对命令):</em> Action fails. Scanning DMs and plagiarizing designs cannot be universalized (no business would transact under those terms).<br>- <em>Utilitarian (功利主义):</em> Action fails. Maximized benefit for one firm at the cost of massive negative utility for creators and overall consumer trust.</span>
+                        <span class="lang-cn"><strong>1. 信息权（2分）：</strong>ShopVibe 在未经同意的情况下默默扫描私人信件和交易历史记录，并将此数据用于内部竞争品牌分析，侵犯了独立商家的隐私。<br><strong>2. 知识产权（2分）：</strong>隐蔽的 ToS 共同所有权条款不能合理化对 Elena 签名设计资产的著作权抄袭。泄露专有规格的数据泄露代表了对商业秘密的侵犯。<br><strong>3. 问责制与控制（3分）：</strong>ShopVibe 的中立主机辩护是无效的，因为他们主动抄袭设计，并将廉价的复制品放在搜索列表的顶部，施加了直接的市场控制。<br><strong>4. 伦理原则（3分）：</strong><br>- <em>康德绝对命令：</em>失败。扫描信件和剽窃设计无法被普遍化（没有任何企业会在此类条款下进行交易）。<br>- <em>功利主义：</em>失败。以创作者的巨大负效用和整体消费者信任为代价，最大化了单个企业的利益。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            document.body.classList.toggle('cn-active');
+        }
+
+        function showCodeAns(id) {
+            const el = document.getElementById('code-ans-' + id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleQA(id) {
+            const el = document.getElementById('qa-' + id);
+            el.classList.toggle('open');
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            const total = 8;
+            const answers = [1, 1, 1, 1, 1, 2, 1, 1];
+            
+            // Highlight options
+            for (let qIdx = 0; qIdx < total; qIdx++) {
+                const checkedOpt = document.querySelector(`input[name="q${qIdx}"]:checked`);
+                const expEl = document.getElementById(`exp-${qIdx}`);
+                if (expEl) {
+                    expEl.style.display = 'block';
+                }
+                
+                if (checkedOpt) {
+                    const val = parseInt(checkedOpt.value);
+                    if (val === answers[qIdx]) {
+                        score++;
+                    }
+                }
+            }
+            
+            const resEl = document.getElementById('quiz-result');
+            resEl.innerHTML = `<span class='correct-ans'>
+                <span class="lang-en">You scored: ${score} / ${total}</span>
+                <span class="lang-cn">您的得分：${score} / ${total}</span>
+            </span>`;
+        }
+
+        // Matching Game JS Logic
+        let selectedTerm = null;
+        let selectedDef = null;
+
+        document.querySelectorAll('.match-term').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-term').forEach(t => t.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedTerm = item;
+                checkMatch();
+            });
+        });
+
+        document.querySelectorAll('.match-def').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-def').forEach(d => d.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedDef = item;
+                checkMatch();
+            });
+        });
+
+        function checkMatch() {
+            if (selectedTerm && selectedDef) {
+                const termKey = selectedTerm.getAttribute('data-key');
+                const defKey = selectedDef.getAttribute('data-key');
+                const msgEl = document.getElementById('match-message');
+                
+                if (termKey === defKey) {
+                    selectedTerm.classList.add('matched');
+                    selectedDef.classList.add('matched');
+                    selectedTerm.classList.remove('selected');
+                    selectedDef.classList.remove('selected');
+                    selectedTerm = null;
+                    selectedDef = null;
+                    
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132;">
+                            <span class="lang-en">✓ Correct Match!</span>
+                            <span class="lang-cn">✓ 配对正确！</span>
+                        </span>`;
+                    }
+                    
+                    const unmatched = document.querySelectorAll('.match-term:not(.matched)');
+                    if (unmatched.length === 0 && msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132; font-size: 1.2rem; font-weight: bold;">
+                            <span class="lang-en">🎉 Congratulations! You matched all terms correctly!</span>
+                            <span class="lang-cn">🎉 恭喜！您已成功配对所有词汇！</span>
+                        </span>`;
+                    }
+                } else {
+                    selectedTerm.classList.add('error');
+                    selectedDef.classList.add('error');
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #842029;">
+                            <span class="lang-en">✗ Incorrect Match! Try again.</span>
+                            <span class="lang-cn">✗ 配对错误！请再试一次。</span>
+                        </span>`;
+                    }
+                    const t = selectedTerm;
+                    const d = selectedDef;
+                    setTimeout(() => {
+                        t.classList.remove('error', 'selected');
+                        d.classList.remove('error', 'selected');
+                    }, 400);
+                    selectedTerm = null;
+                    selectedDef = null;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

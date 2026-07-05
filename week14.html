@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week WK14: B2B E-commerce Supply Chain (Part 2) - DBEC2653</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Macaron Palette */
+            --pastel-pink: #FFD1DC;
+            --pastel-mint: #B0EACD;
+            --pastel-blue: #AEC6CF;
+            --pastel-lavender: #C3B1E1;
+            --pastel-yellow: #FDFD96;
+            
+            --ink: #111111;
+            --ink-muted: #333333;
+            
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            --radius-lg: 32px;
+            --radius-md: 16px;
+            
+            --spring: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender), var(--pastel-blue), var(--pastel-mint));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Auras */
+        body::before {
+            content: ''; position: fixed; top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, var(--pastel-yellow) 0%, transparent 70%);
+            filter: blur(80px); opacity: 0.6; z-index: -1;
+            animation: floatAura 20s ease-in-out infinite alternate;
+        }
+        body::after {
+            content: ''; position: fixed; bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, var(--pastel-pink) 0%, transparent 70%);
+            filter: blur(100px); opacity: 0.5; z-index: -1;
+            animation: floatAura 25s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatAura {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: var(--ink); }
+        
+        .header { text-align: center; padding: 40px 20px 20px; position: relative; }
+        .header h1 { font-size: 2.3rem; margin-top: 20px; font-weight: 800; color: var(--ink); }
+        .nav-link { color: var(--ink-muted); text-decoration: none; font-weight: 700; display: inline-block; transition: all 0.4s var(--spring); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--glass-bg); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--glass-border); }
+        .nav-link:hover { color: var(--ink); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: rgba(255,255,255,0.7); }
+        
+        .lang-btn {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .container { max-width: 900px; margin: 20px auto 40px; padding: 0 20px; position: relative; z-index: 1; }
+        
+        .card { 
+            background: var(--glass-bg); 
+            border-radius: var(--radius-lg); 
+            padding: 40px; 
+            box-shadow: var(--glass-shadow); 
+            margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            transition: all 0.5s var(--spring);
+        }
+        .card h2 { border-bottom: 2px solid rgba(255,255,255,0.5); padding-bottom: 15px; margin-top: 0; font-size: 1.8rem;}
+        
+        .step { background: rgba(255,255,255,0.3); padding: 20px; margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .step h3 { margin-top: 0; font-size: 1.3rem; }
+        
+        .btn { 
+            background: linear-gradient(135deg, var(--pastel-lavender), var(--pastel-pink));
+            color: var(--ink); 
+            padding: 12px 28px; 
+            border: 2px solid rgba(255,255,255,0.8); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.4s var(--spring);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(195, 177, 225, 0.4); background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender)); }
+        
+        /* Quiz */
+        .quiz-q { margin-bottom: 25px; background: rgba(255,255,255,0.2); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+        .quiz-label { display: block; padding: 10px 16px; cursor: pointer; transition: all 0.4s var(--spring); border-radius: 12px; border: 1px solid transparent; font-weight: 600; font-size: 1.1rem;}
+        .quiz-label:hover { background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); transform: translateX(5px);}
+        .explanation { display: none; margin-top: 10px; padding: 10px 16px; background: rgba(255,255,255,0.6); border-radius: 8px; font-weight: 600; border-left: 4px solid var(--pastel-blue); }
+        
+        /* Coding */
+        .code-editor { background: rgba(0,0,0,0.85); color: #F8F9FA; padding: 20px; border-radius: var(--radius-md); font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-top: 10px; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); white-space: pre-wrap; }
+        .correct-ans { color: #0f5132; font-weight: 700; margin-top: 15px; display: inline-block; padding: 10px 16px; background: rgba(176, 234, 205, 0.6); border-radius: 12px; border: 1px solid var(--pastel-mint);}
+        
+        /* Table Styles (Bilingual High Contrast) */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(255,255,255,0.2); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--glass-border); }
+        .data-table th, .data-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--glass-border); font-size: 1.1rem; }
+        .data-table th { background: rgba(255,255,255,0.6); font-weight: 800; font-family: 'Orbitron', sans-serif; }
+        .data-table tr:last-child td { border-bottom: none; }
+        
+        /* SVG Tweaks for Macaron Glassmorphism & High Contrast */
+        svg { background: transparent !important; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05)); margin: 10px auto; display: block; max-width: 100%; }
+        svg text { font-family: 'Arial', sans-serif !important; font-weight: bold !important; fill: #000000 !important; }
+        svg [fill="url(#blueGrad)"], svg [fill="url(#purpleGrad)"], svg [fill="url(#mintGrad)"], svg [fill="url(#pinkGrad)"], svg [fill="url(#yellowGrad)"] { fill-opacity: 0.8 !important; stroke: #000000 !important; stroke-width: 2px !important; }
+        svg [fill="#FFF"], svg [fill="#ffffff"], svg [fill="none"] { stroke: #000000 !important; }
+        
+        /* Vocabulary Matching Game Styles */
+        .match-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .match-col { width: 48%; display: flex; flex-direction: column; gap: 10px; }
+        .match-btn {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s var(--spring);
+            user-select: none;
+            text-align: left;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+        .match-btn:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(3px);
+        }
+        .match-btn.selected {
+            background: var(--pastel-yellow) !important;
+            border: 2px solid var(--ink);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .match-btn.matched {
+            background: var(--pastel-mint) !important;
+            border: 1px solid var(--pastel-mint);
+            opacity: 0.6;
+            cursor: default;
+            pointer-events: none;
+            transform: none !important;
+        }
+        .match-btn.error {
+            background: var(--pastel-pink) !important;
+            border: 1px solid var(--pastel-pink);
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Collapsible Q&A Review style */
+        .qa-block { margin-bottom: 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); background: rgba(255,255,255,0.25); overflow: hidden; }
+        .qa-header { padding: 18px 24px; font-weight: 700; cursor: pointer; background: rgba(255,255,255,0.4); display: flex; justify-content: space-between; align-items: center; font-size: 1.15rem; }
+        .qa-body { padding: 20px 24px; display: none; border-top: 1px solid var(--glass-border); background: rgba(255,255,255,0.5); font-size: 1.1rem; line-height: 1.7; }
+        .qa-icon { transition: transform 0.3s; font-weight: bold; }
+        .qa-block.open .qa-body { display: block; }
+        .qa-block.open .qa-icon { transform: rotate(90deg); }
+
+        /* Translation CSS Rules */
+        .lang-cn { display: none !important; }
+        body.cn-active .lang-en { display: none !important; }
+        body.cn-active .lang-cn { display: block !important; }
+        
+        span.lang-cn { display: none !important; }
+        body.cn-active span.lang-en { display: none !important; }
+        body.cn-active span.lang-cn { display: inline !important; }
+
+        @media (max-width: 768px) {
+            .lang-btn {
+                position: static;
+                margin-top: 15px;
+            }
+            .match-col { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="nav-link">
+            <span class="lang-en">← Back to Hub</span>
+            <span class="lang-cn">← 返回主页</span>
+        </a>
+        <h1>
+            <span class="lang-en">Week 14: B2B E-commerce Supply Chain (Part 2)</span>
+            <span class="lang-cn">第 14 周：B2B 电子商务供应链（第二部分）</span>
+        </h1>
+        <button class="btn lang-btn" onclick="toggleLanguage()">🌐 EN / 中文</button>
+    </div>
+
+    <div class="container">
+        <!-- Objectives Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-lavender);">
+            <h2>
+                <span class="lang-en">Learning Objectives</span>
+                <span class="lang-cn">学习目标</span>
+            </h2>
+            <div class="lang-en">
+                <ul>
+                    <li>Describe net marketplaces and private industrial networks in B2B (CLO3).</li><li>Present the e-commerce website project with full digital marketing demonstration.</li>
+                </ul>
+            </div>
+            <div class="lang-cn">
+                <ul>
+                    <li>描述 B2B 中的净市场和私有工业网络 (CLO3)。</li><li>展示带有完整数字营销演示的电子商务网站项目。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sample Company / Case Study Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Bustiness Case Context</span>
+                <span class="lang-cn">商业案例情境</span>
+            </h2>
+            <div class="lang-en">
+                <p><strong>Kompas Industrial Network:</strong> A private industrial B2B network owned by an automotive alliance. The closed network connects raw steel mills, parts manufacturers, and logistics firms to coordinate production levels, using secure database integration to automate scheduling.</p>
+            </div>
+            <div class="lang-cn">
+                <p><strong>Kompas 工业网络：</strong>由汽车联盟拥有的私有工业 B2B 网络。该闭环网络连接粗钢厂、零部件制造商和物流公司以协调生产水平，使用安全的数据库集成实现自动调度。</p>
+            </div>
+        </div>
+
+        <!-- Comparative Table Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Key Comparison: Net Marketplaces vs. Private Industrial Networks</span>
+                <span class="lang-cn">关键对比：净市场与私有工业网络</span>
+            </h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th><span class="lang-en">Parameter / Dimension</span><span class="lang-cn">参数 / 维度</span></th><th><span class="lang-en">Net Marketplaces (E-Hubs)</span><span class="lang-cn">净市场 (Net Marketplaces)</span></th><th><span class="lang-en">Private Industrial Networks</span><span class="lang-cn">私有工业网络 (Private Networks)</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="lang-en">Network Ownership</span><span class="lang-cn">网络所有权</span></td><td><span class="lang-en">Third-party digital broker, consortium of buyers/sellers.</span><span class="lang-cn">第三方数字中介，买方/卖方联盟。</span></td><td><span class="lang-en">A single dominant buyer or manufacturing alliance.</span><span class="lang-cn">单个主导买方或制造联盟。</span></td></tr><tr><td><span class="lang-en">Participation</span><span class="lang-cn">参与范围</span></td><td><span class="lang-en">Open marketspace: many buying and selling firms.</span><span class="lang-cn">开放市场空间：众多买方和卖方企业。</span></td><td><span class="lang-en">Closed network: invite-only trusted supplier guilds.</span><span class="lang-cn">闭环网络：仅限受邀的受信任供应商协会。</span></td></tr><tr><td><span class="lang-en">Pricing Strategy</span><span class="lang-cn">定价策略</span></td><td><span class="lang-en">Dynamic pricing (auctions, catalogs, quotes).</span><span class="lang-cn">动态定价（拍卖、目录、报价）。</span></td><td><span class="lang-en">Fixed contracted pricing, long-term procurement terms.</span><span class="lang-cn">固定的合同定价，长期的采购条款。</span></td></tr><tr><td><span class="lang-en">Integration Level</span><span class="lang-cn">集成级别</span></td><td><span class="lang-en">Low-to-medium database coordination.</span><span class="lang-cn">中低水平的数据库协调。</span></td><td><span class="lang-en">Deep integration of ERP, schedule planning, and CAD/design designs.</span><span class="lang-cn">ERP、日程计划以及 CAD/设计图纸的深度集成。</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Concept Visualization Card -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Concept Visualization</span>
+                <span class="lang-cn">概念可视化</span>
+            </h2>
+            <div style="background: rgba(255,255,255,0.5); border-radius: var(--radius-md); padding: 20px; border: 1px solid var(--glass-border);">
+                
+        <svg height="240" viewBox="0 0 600 240" width="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="purpleGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stop-color="#C3B1E1"></stop>
+                    <stop offset="100%" stop-color="#FFD1DC"></stop>
+                </linearGradient>
+            </defs>
+            <!-- Hub Node -->
+            <rect fill="url(#purpleGrad)" stroke="#111" stroke-width="2" height="70" rx="35" width="160" x="220" y="85"></rect>
+            <text fill="#111" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="300" y="120">Alliance Hub</text>
+            <text fill="#D81B60" font-family="Arial" font-size="10" font-weight="bold" text-anchor="middle" x="300" y="135">(Private ERP Portal)</text>
+            
+            <!-- Supplier Nodes -->
+            <circle cx="100" cy="50" fill="#B0EACD" r="25" stroke="#111" stroke-width="1.5"></circle>
+            <text fill="#111" font-family="Arial" font-size="9" font-weight="bold" text-anchor="middle" x="100" y="53">Supplier A</text>
+            
+            <circle cx="100" cy="190" fill="#B0EACD" r="25" stroke="#111" stroke-width="1.5"></circle>
+            <text fill="#111" font-family="Arial" font-size="9" font-weight="bold" text-anchor="middle" x="100" y="193">Supplier B</text>
+            
+            <circle cx="500" cy="50" fill="#AEC6CF" r="25" stroke="#111" stroke-width="1.5"></circle>
+            <text fill="#111" font-family="Arial" font-size="9" font-weight="bold" text-anchor="middle" x="500" y="53">Logistics</text>
+            
+            <circle cx="500" cy="190" fill="#AEC6CF" r="25" stroke="#111" stroke-width="1.5"></circle>
+            <text fill="#111" font-family="Arial" font-size="9" font-weight="bold" text-anchor="middle" x="500" y="193">Factory</text>
+            
+            <!-- Connection lines -->
+            <path d="M 125 50 L 220 100 M 125 190 L 220 140 M 380 100 L 475 50 M 380 140 L 475 190" fill="none" id="networkPath" stroke="#111" stroke-width="1.5"></path>
+        </svg>
+        
+            </div>
+        </div>
+
+        <!-- Practical Exercise Card -->
+        <div class="card" style="border-left: 6px solid var(--pastel-mint);">
+            <h2>
+                <span class="lang-en">Practical Exercise: Demonstrating Checkout Flow</span>
+                <span class="lang-cn">实践练习：演示结账流程</span>
+            </h2>
+            <div class="lang-en">
+                <p><b>Steps to complete:</b></p>
+                <ol>
+                    <li>Visit the WooCommerce store frontend, add a product to the cart, and proceed to Checkout.</li><li>Verify that checkout parameters (coupon codes, currency indicators) are computed correctly.</li><li>Complete a test order and inspect the backend order dashboard to confirm inventory stock count updates.</li>
+                </ol>
+            </div>
+            <div class="lang-cn">
+                <p><b>操作步骤：</b></p>
+                <ol>
+                    <li>访问 WooCommerce 商店前台，将产品加入购物车，并进入结账页面。</li><li>验证结账参数（优惠券代码、货币标识）是否计算正确。</li><li>完成测试订单，并检查后端订单控制台，以确认库存数量的更新。</li>
+                </ol>
+            </div>
+            <button class="btn" onclick="showCodeAns('practical')">
+                <span class="lang-en">Show Checkout Order Output</span>
+                <span class="lang-cn">显示结账订单输出</span>
+            </button>
+            <div class="code-editor" id="code-ans-practical" style="display:none;">Cart Subtotal: $100.00\nCoupon Apply: 'WELCOME10' (-10%)\nTotal Charged: $90.00\nInventory Action: Item SKU-001 stock count reduced from 50 to 49\nOrder Status: Processing (notification sent to customer)</div>
+        </div>
+
+        <!-- Vocabulary Matching Game -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Vocabulary Connection Game</span>
+                <span class="lang-cn">词汇连线互动游戏</span>
+            </h2>
+            <p>
+                <span class="lang-en">Match the term on the left with its definition on the right. (Click a term, then click its matching definition).</span>
+                <span class="lang-cn">将左侧的术语与右侧的定义进行配对。（点击术语，然后点击匹配的定义）。</span>
+            </p>
+            <div class="match-grid">
+                <!-- Terms Column -->
+                <div class="match-col">
+                    <div class="match-btn match-term" data-key="term_0"><span class="lang-en">Net Marketplace</span><span class="lang-cn">净市场</span></div><div class="match-btn match-term" data-key="term_1"><span class="lang-en">Private Network</span><span class="lang-cn">私有工业网络</span></div><div class="match-btn match-term" data-key="term_2"><span class="lang-en">Industry Consortium</span><span class="lang-cn">行业联盟</span></div><div class="match-btn match-term" data-key="term_3"><span class="lang-en">E-distributor</span><span class="lang-cn">电子分销商</span></div><div class="match-btn match-term" data-key="term_4"><span class="lang-en">Independent Exchange</span><span class="lang-cn">独立交易所</span></div>
+                </div>
+                <!-- Definitions Column -->
+                <div class="match-col">
+                    <div class="match-btn match-def" data-key="term_4"><span class="lang-en">A third-party owned digital B2B marketplace facilitating transactional spot trading</span><span class="lang-cn">由第三方拥有的数字 B2B 市场，用以促进交易性的现货交易</span></div><div class="match-btn match-def" data-key="term_3"><span class="lang-en">A B2B e-tailer that sells maintenance, repair, and operations (MRO) goods</span><span class="lang-cn">向企业销售维护、维修和运营（MRO）商品的 B2B 电商</span></div><div class="match-btn match-def" data-key="term_0"><span class="lang-en">An open B2B digital market linking multiple buying firms with multiple suppliers</span><span class="lang-cn">连接多个买方企业与多个供应商的开放式 B2B 数字市场</span></div><div class="match-btn match-def" data-key="term_1"><span class="lang-en">A closed B2B network owned by a dominant buyer or manufacturing alliance</span><span class="lang-cn">由主导买方或制造联盟拥有的闭环 B2B 网络</span></div><div class="match-btn match-def" data-key="term_2"><span class="lang-en">A B2B net marketplace sponsored by several large buyers in a specific sector</span><span class="lang-cn">由特定行业内的数家大型买方赞助的 B2B 净市场</span></div>
+                </div>
+            </div>
+            <div id="match-message" style="margin-top: 20px; font-weight: bold; text-align: center; min-height: 28px;"></div>
+        </div>
+
+        <!-- MCQ Practice Quiz -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Knowledge Check Practice</span>
+                <span class="lang-cn">知识自测练习</span>
+            </h2>
+            <form id="quiz-form">
+                
+            <div class="quiz-q">
+                <p><b>1. 
+                    <span class="lang-en">Private industrial networks represent __________________.</span>
+                    <span class="lang-cn">私有工业网络代表 __________________。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="0"> A. 
+                    <span class="lang-en">Open databases for public users</span>
+                    <span class="lang-cn">面向公众用户的开放式数据库</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="1"> B. 
+                    <span class="lang-en">Closed B2B networks owned by a dominant buyer or alliance</span>
+                    <span class="lang-cn">由主导买方或联盟拥有的闭环 B2B 网络</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="2"> C. 
+                    <span class="lang-en">Symmetric key databases</span>
+                    <span class="lang-cn">对称密钥数据库</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q0" value="3"> D. 
+                    <span class="lang-en">Television marketing channels</span>
+                    <span class="lang-cn">电视营销渠道</span>
+                </label>
+                <div class="explanation" id="exp-0">
+                    <span class="lang-en">Explanation: Private industrial networks are closed, invite-only B2B networks owned by a major firm to coordinate with trusted suppliers.</span>
+                    <span class="lang-cn">解析：私有工业网络是由主要公司拥有的闭环、仅限邀请的 B2B 网络，用于与受信任的供应商进行协调。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>2. 
+                    <span class="lang-en">Which of the following is a key characteristic of Net Marketplaces?</span>
+                    <span class="lang-cn">以下哪项是净市场（Net Marketplaces）的关键特征？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="0"> A. 
+                    <span class="lang-en">Completely closed to external vendors</span>
+                    <span class="lang-cn">完全向外部商家关闭</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="1"> B. 
+                    <span class="lang-en">Open digital hubs linking multiple buyers with multiple sellers</span>
+                    <span class="lang-cn">连接多个买家与多个卖家的开放式数字中心</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="2"> C. 
+                    <span class="lang-en">No database security used</span>
+                    <span class="lang-cn">未使用任何数据库安全机制</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q1" value="3"> D. 
+                    <span class="lang-en">Only sell digital e-books</span>
+                    <span class="lang-cn">仅销售数字电子书</span>
+                </label>
+                <div class="explanation" id="exp-1">
+                    <span class="lang-en">Explanation: Net marketplaces are open digital e-hubs that connect many buying businesses with multiple selling suppliers.</span>
+                    <span class="lang-cn">解析：净市场是开放式的数字电子枢纽，连接众多买方企业与多家销售供应商。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>3. 
+                    <span class="lang-en">An industry consortium is a B2B net marketplace sponsored by __________________.</span>
+                    <span class="lang-cn">行业联盟（Industry consortium）是由 __________________ 赞助的 B2B 净市场。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="0"> A. 
+                    <span class="lang-en">A third-party startup</span>
+                    <span class="lang-cn">第三方创业公司</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="1"> B. 
+                    <span class="lang-en">Several major buyer firms in a specific industry sector</span>
+                    <span class="lang-cn">特定行业内的几家主要买方公司</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="2"> C. 
+                    <span class="lang-en">Individual retail consumers</span>
+                    <span class="lang-cn">个人零售消费者</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q2" value="3"> D. 
+                    <span class="lang-en">Domain registries</span>
+                    <span class="lang-cn">域名注册商</span>
+                </label>
+                <div class="explanation" id="exp-2">
+                    <span class="lang-en">Explanation: Industry consortia are B2B hubs owned and sponsored by a group of leading buyer corporations in a specific industry.</span>
+                    <span class="lang-cn">解析：行业联盟是由特定行业内的一组领先买方企业所有并赞助的 B2B 枢纽。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>4. 
+                    <span class="lang-en">A B2B e-distributor sells __________________.</span>
+                    <span class="lang-cn">B2B 电子分销商销售 __________________。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="0"> A. 
+                    <span class="lang-en">Consumer retail clothing</span>
+                    <span class="lang-cn">消费者零售服装</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="1"> B. 
+                    <span class="lang-en">Maintenance, repair, and operations (MRO) goods to businesses</span>
+                    <span class="lang-cn">向企业销售维护、维修和运营（MRO）商品</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="2"> C. 
+                    <span class="lang-en">Domain URLs</span>
+                    <span class="lang-cn">域名 URL</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q3" value="3"> D. 
+                    <span class="lang-en">Livestream video files</span>
+                    <span class="lang-cn">直播视频文件</span>
+                </label>
+                <div class="explanation" id="exp-3">
+                    <span class="lang-en">Explanation: E-distributors sell indirect goods (MRO supplies) directly to other business clients (e.g. Grainger).</span>
+                    <span class="lang-cn">解析：电子分销商直接向其他企业客户销售间接商品（MRO 物资）（例如 Grainger）。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>5. 
+                    <span class="lang-en">Which pricing strategy is commonly used in net marketplaces compared to private networks?</span>
+                    <span class="lang-cn">与私有网络相比，净市场中通常使用哪种定价策略？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="0"> A. 
+                    <span class="lang-en">Unregulated free pricing</span>
+                    <span class="lang-cn">不受监管的自由定价</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="1"> B. 
+                    <span class="lang-en">Dynamic pricing (e.g. auctions, bidding, request quotes)</span>
+                    <span class="lang-cn">动态定价（如拍卖、竞价、请求报价）</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="2"> C. 
+                    <span class="lang-en">Fixed contracted long-term prices</span>
+                    <span class="lang-cn">固定的长期合同价格</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q4" value="3"> D. 
+                    <span class="lang-en">Symmetric encryption prices</span>
+                    <span class="lang-cn">对称加密价格</span>
+                </label>
+                <div class="explanation" id="exp-4">
+                    <span class="lang-en">Explanation: Net marketplaces often employ dynamic pricing mechanisms (bidding, catalogs, spot pricing), whereas private networks use contracted pricing.</span>
+                    <span class="lang-cn">解析：净市场通常采用动态定价机制（竞价、目录、现货价格），而私有网络使用合同定价。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>6. 
+                    <span class="lang-en">Independent exchanges are owned by __________________.</span>
+                    <span class="lang-cn">独立交易所（Independent exchanges）由 __________________ 所有。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="0"> A. 
+                    <span class="lang-en">The local government</span>
+                    <span class="lang-cn">当地政府</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="1"> B. 
+                    <span class="lang-en">Third-party digital marketplace brokers</span>
+                    <span class="lang-cn">第三方数字市场中介</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="2"> C. 
+                    <span class="lang-en">A dominant manufacturing buyer</span>
+                    <span class="lang-cn">主导的制造买方</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q5" value="3"> D. 
+                    <span class="lang-en">Consumer retail alliances</span>
+                    <span class="lang-cn">消费者零售联盟</span>
+                </label>
+                <div class="explanation" id="exp-5">
+                    <span class="lang-en">Explanation: Independent exchanges are B2B hubs owned by third-party intermediaries seeking transaction fee commissions.</span>
+                    <span class="lang-cn">解析：独立交易所是由寻求交易费佣金的第三方中介拥有的 B2B 枢纽。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>7. 
+                    <span class="lang-en">Private industrial networks enable deep integration of which system?</span>
+                    <span class="lang-cn">私有工业网络实现了哪个系统的深度集成？</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="0"> A. 
+                    <span class="lang-en">Client CSS sheets</span>
+                    <span class="lang-cn">客户端 CSS 样式表</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="1"> B. 
+                    <span class="lang-en">Enterprise Resource Planning (ERP) and supply scheduling systems</span>
+                    <span class="lang-cn">企业资源计划 (ERP) 和供应调度系统</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="2"> C. 
+                    <span class="lang-en">General portal pages</span>
+                    <span class="lang-cn">通用门户网页</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q6" value="3"> D. 
+                    <span class="lang-en">HTML font tags</span>
+                    <span class="lang-cn">HTML 字体标签</span>
+                </label>
+                <div class="explanation" id="exp-6">
+                    <span class="lang-en">Explanation: Private networks enable deep integration of partner ERP, inventory database, and production planning databases.</span>
+                    <span class="lang-cn">解析：私有网络实现合作伙伴 ERP、库存数据库和生产计划数据库的深度集成。</span>
+                </div>
+            </div>
+            <div class="quiz-q">
+                <p><b>8. 
+                    <span class="lang-en">A B2B checkout flow simulation verifies __________________.</span>
+                    <span class="lang-cn">B2B 结账流程模拟验证了 __________________。</span>
+                </b></p>
+                
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="0"> A. 
+                    <span class="lang-en">If domain names are resolved</span>
+                    <span class="lang-cn">域名是否已解析</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="1"> B. 
+                    <span class="lang-en">That coupon codes, tax calculations, and database stock levels update correctly</span>
+                    <span class="lang-cn">优惠券代码、税费计算和数据库库存水平更新是否正确</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="2"> C. 
+                    <span class="lang-en">The server room humidity</span>
+                    <span class="lang-cn">服务器机房湿度</span>
+                </label>
+                <label class="quiz-label">
+                    <input type="radio" name="q7" value="3"> D. 
+                    <span class="lang-en">CSS layout styles</span>
+                    <span class="lang-cn">CSS 布局样式</span>
+                </label>
+                <div class="explanation" id="exp-7">
+                    <span class="lang-en">Explanation: Simulating the cart checkout flow ensures transaction databases update stock counts and verify processing logic.</span>
+                    <span class="lang-cn">解析：模拟购物车结账流程可确保交易数据库更新库存计数并验证处理逻辑。</span>
+                </div>
+            </div>
+            </form>
+            <button class="btn" type="button" onclick="checkQuiz()">
+                <span class="lang-en">Submit & Grade Answers</span>
+                <span class="lang-cn">提交并评定答案</span>
+            </button>
+            <div id="quiz-result" style="margin-top: 20px; font-weight: bold; min-height: 30px;"></div>
+        </div>
+
+        <!-- Review Q&A Section (Hidden QP answers) -->
+        <div class="card">
+            <h2>
+                <span class="lang-en">Revision Review Q&A</span>
+                <span class="lang-cn">课程复习问答</span>
+            </h2>
+            
+            <div class="qa-block" id="qa-WK14-0">
+                <div class="qa-header" onclick="toggleQA('WK14-0')">
+                    <span>
+                        <span class="lang-en">Review Exercise 1</span>
+                        <span class="lang-cn">复习练习题 1</span>
+                    </span>
+                    <span class="qa-icon">▶</span>
+                </div>
+                <div class="qa-body">
+                    <p><b>
+                        <span class="lang-en">Compare Net Marketplaces and Private Industrial Networks. Discuss how they differ in ownership, membership, and pricing.</span>
+                        <span class="lang-cn">对比净市场（Net Marketplaces）与私有工业网络。讨论它们在所有权、成员资格和定价方面的差异。</span>
+                    </b></p>
+                    <div style="margin-top: 15px; border-left: 4px solid var(--pastel-mint); padding-left: 15px;">
+                        <span class="lang-en"><strong>1. Ownership (所有权):</strong> Net marketplaces are owned by third-party intermediaries or buyer consortia. Private industrial networks are owned by a single dominant buyer or manufacturing alliance (1 Mark).<br><strong>2. Membership (成员资格):</strong> Net marketplaces are open digital hubs connecting many buying businesses with multiple selling vendors. Private networks are closed, invite-only trusted supplier guilds (1 Mark).<br><strong>3. Pricing (定价):</strong> Net marketplaces use dynamic pricing (auctions, catalogs, spot exchanges), while private networks use fixed contracted prices (1 Mark).</span>
+                        <span class="lang-cn"><strong>1. 所有权：</strong>净市场由第三方中介或买方联盟所有。私有工业网络由单个主导买方或制造联盟所有（1分）。<br><strong>2. 成员资格：</strong>净市场是开放式的数字中心，连接众多买方企业与多家销售供应商。私有网络是闭环的、仅限邀请的受信任供应商协会（1分）。<br><strong>3. 定价：</strong>净市场采用动态定价（拍卖、目录、现货交易），而私有网络使用固定的合同价格（1分）。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            document.body.classList.toggle('cn-active');
+        }
+
+        function showCodeAns(id) {
+            const el = document.getElementById('code-ans-' + id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleQA(id) {
+            const el = document.getElementById('qa-' + id);
+            el.classList.toggle('open');
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            const total = 8;
+            const answers = [1, 1, 1, 1, 1, 1, 1, 1];
+            
+            // Highlight options
+            for (let qIdx = 0; qIdx < total; qIdx++) {
+                const checkedOpt = document.querySelector(`input[name="q${qIdx}"]:checked`);
+                const expEl = document.getElementById(`exp-${qIdx}`);
+                if (expEl) {
+                    expEl.style.display = 'block';
+                }
+                
+                if (checkedOpt) {
+                    const val = parseInt(checkedOpt.value);
+                    if (val === answers[qIdx]) {
+                        score++;
+                    }
+                }
+            }
+            
+            const resEl = document.getElementById('quiz-result');
+            resEl.innerHTML = `<span class='correct-ans'>
+                <span class="lang-en">You scored: ${score} / ${total}</span>
+                <span class="lang-cn">您的得分：${score} / ${total}</span>
+            </span>`;
+        }
+
+        // Matching Game JS Logic
+        let selectedTerm = null;
+        let selectedDef = null;
+
+        document.querySelectorAll('.match-term').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-term').forEach(t => t.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedTerm = item;
+                checkMatch();
+            });
+        });
+
+        document.querySelectorAll('.match-def').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('matched')) return;
+                document.querySelectorAll('.match-def').forEach(d => d.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedDef = item;
+                checkMatch();
+            });
+        });
+
+        function checkMatch() {
+            if (selectedTerm && selectedDef) {
+                const termKey = selectedTerm.getAttribute('data-key');
+                const defKey = selectedDef.getAttribute('data-key');
+                const msgEl = document.getElementById('match-message');
+                
+                if (termKey === defKey) {
+                    selectedTerm.classList.add('matched');
+                    selectedDef.classList.add('matched');
+                    selectedTerm.classList.remove('selected');
+                    selectedDef.classList.remove('selected');
+                    selectedTerm = null;
+                    selectedDef = null;
+                    
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132;">
+                            <span class="lang-en">✓ Correct Match!</span>
+                            <span class="lang-cn">✓ 配对正确！</span>
+                        </span>`;
+                    }
+                    
+                    const unmatched = document.querySelectorAll('.match-term:not(.matched)');
+                    if (unmatched.length === 0 && msgEl) {
+                        msgEl.innerHTML = `<span style="color: #0f5132; font-size: 1.2rem; font-weight: bold;">
+                            <span class="lang-en">🎉 Congratulations! You matched all terms correctly!</span>
+                            <span class="lang-cn">🎉 恭喜！您已成功配对所有词汇！</span>
+                        </span>`;
+                    }
+                } else {
+                    selectedTerm.classList.add('error');
+                    selectedDef.classList.add('error');
+                    if (msgEl) {
+                        msgEl.innerHTML = `<span style="color: #842029;">
+                            <span class="lang-en">✗ Incorrect Match! Try again.</span>
+                            <span class="lang-cn">✗ 配对错误！请再试一次。</span>
+                        </span>`;
+                    }
+                    const t = selectedTerm;
+                    const d = selectedDef;
+                    setTimeout(() => {
+                        t.classList.remove('error', 'selected');
+                        d.classList.remove('error', 'selected');
+                    }, 400);
+                    selectedTerm = null;
+                    selectedDef = null;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
